@@ -2,200 +2,1384 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aplikasi Catatan</title>
+  <title>Keluh Kesah</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
+    * {
       margin: 0;
       padding: 0;
-      background: linear-gradient(135deg, #89f7fe, #66a6ff);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      padding: 20px;
-    }
-    .container {
-      width: 100%;
-      max-width: 800px;
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-      overflow: hidden;
-    }
-    header {
-      background: #4CAF50;
-      color: white;
-      padding: 20px;
-      text-align: center;
-    }
-    nav {
-      display: flex;
-      justify-content: space-around;
-      background: #f1f1f1;
-      padding: 10px;
-    }
-    nav button {
-      flex: 1;
-      margin: 0 5px;
-      padding: 10px;
-      border: none;
-      background: #ddd;
-      cursor: pointer;
-      border-radius: 8px;
-      transition: background 0.3s;
-    }
-    nav button.active, nav button:hover {
-      background: #4CAF50;
-      color: white;
-    }
-    .page {
-      display: none;
-      padding: 20px;
-    }
-    .page.active {
-      display: block;
-    }
-    input, textarea, select, button {
-      width: 100%;
-      padding: 10px;
-      margin: 8px 0;
-      border: 1px solid #ccc;
-      border-radius: 8px;
       box-sizing: border-box;
     }
-    button.save-btn {
-      background: #4CAF50;
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    button.save-btn:hover {
-      background: #45a049;
-    }
-    .note {
-      background: #f9f9f9;
-      padding: 15px;
-      margin: 10px 0;
-      border-left: 8px solid #4CAF50;
-      border-radius: 8px;
-      position: relative;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    }
-    .note h4 {
-      margin: 0 0 5px;
+
+    body { 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
       color: #333;
     }
-    .note small {
-      color: #555;
-      font-size: 12px;
-      display: block;
-      margin-bottom: 5px;
+
+    header { 
+      background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #ffeaa7);
+      background-size: 300% 300%;
+      animation: gradientShift 8s ease infinite;
+      color: white; 
+      padding: 2rem; 
+      text-align: center; 
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
     }
-    .delete-btn {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: #e74c3c;
-      border: none;
-      color: white;
-      padding: 6px 10px;
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      margin-bottom: 0.5rem;
+    }
+
+    header p {
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .stat-item {
+      background: rgba(255,255,255,0.2);
+      padding: 0.5rem 1rem;
+      border-radius: 15px;
+      backdrop-filter: blur(10px);
+    }
+
+    nav { 
+      display: flex; 
+      justify-content: center; 
+      gap: 1rem; 
+      margin: 2rem 0;
+      padding: 0 1rem;
+      flex-wrap: wrap;
+    }
+
+    nav button { 
+      padding: 0.8rem 1.5rem; 
+      border: none; 
+      border-radius: 25px; 
       cursor: pointer;
-      border-radius: 6px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255,255,255,0.3);
     }
-    .delete-btn:hover {
-      background: #c0392b;
+
+    nav button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+      background: rgba(255,255,255,0.3);
+    }
+
+    nav button.active { 
+      background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+      color: white;
+      border-color: transparent;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+
+    .page { 
+      display: none; 
+      padding: 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .page.active { 
+      display: block; 
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .form-container {
+      background: rgba(255,255,255,0.95);
+      padding: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+    }
+
+    form { 
+      display: flex; 
+      flex-direction: column; 
+      gap: 1rem;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .input-group {
+      position: relative;
+      flex: 1;
+    }
+
+    input, textarea, select { 
+      padding: 1rem; 
+      border-radius: 15px; 
+      border: 2px solid #e1e8ed;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background: rgba(255,255,255,0.9);
+      width: 100%;
+    }
+
+    input:focus, textarea:focus, select:focus {
+      outline: none;
+      border-color: #4ecdc4;
+      box-shadow: 0 0 20px rgba(78, 205, 196, 0.2);
+      transform: translateY(-2px);
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .mood-selector {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .mood-option {
+      padding: 0.5rem 1rem;
+      border: 2px solid #e1e8ed;
+      border-radius: 25px;
+      background: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+    }
+
+    .mood-option:hover {
+      transform: scale(1.05);
+    }
+
+    .mood-option.selected {
+      border-color: #4ecdc4;
+      background: #4ecdc4;
+      color: white;
+    }
+
+    .anonymous-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin: 0.5rem 0;
+    }
+
+    .switch {
+      position: relative;
+      width: 50px;
+      height: 25px;
+      background: #e1e8ed;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .switch.active {
+      background: #4ecdc4;
+    }
+
+    .switch::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 21px;
+      height: 21px;
+      background: white;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+    }
+
+    .switch.active::after {
+      left: 27px;
+    }
+
+    button.submit { 
+      background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+      color: white; 
+      padding: 1rem 2rem; 
+      border: none; 
+      border-radius: 25px; 
+      cursor: pointer;
+      font-size: 1.1rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      margin-top: 1rem;
+    }
+
+    button.submit:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(78, 205, 196, 0.4);
+    }
+
+    .search-container {
+      margin-bottom: 2rem;
+    }
+
+    .search-box {
+      background: rgba(255,255,255,0.95);
+      padding: 1rem;
+      border-radius: 15px;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .filter-section {
+      background: rgba(255,255,255,0.95);
+      padding: 1rem;
+      border-radius: 15px;
+      margin-bottom: 1rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .filter-row {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .filter-group {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .filter-btn {
+      padding: 0.5rem 1rem;
+      border: 2px solid #e1e8ed;
+      border-radius: 20px;
+      background: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.8rem;
+    }
+
+    .filter-btn.active {
+      border-color: #4ecdc4;
+      background: #4ecdc4;
+      color: white;
+    }
+
+    ul { 
+      list-style: none; 
+      padding: 0; 
+      display: grid;
+      gap: 1rem;
+    }
+
+    li { 
+      background: rgba(255,255,255,0.95);
+      padding: 1.5rem; 
+      border-radius: 15px; 
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    li:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+    }
+
+    li::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+      background-size: 300% 300%;
+      animation: gradientShift 3s ease infinite;
+    }
+
+    .note-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+    }
+
+    .note-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .author-info {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .author-name {
+      font-weight: 700;
+      color: #2d3748;
+      font-size: 1.1rem;
+    }
+
+    .mood-badge {
+      padding: 0.3rem 0.8rem;
+      border-radius: 15px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .mood-happy { background: #fef3c7; color: #d97706; }
+    .mood-sad { background: #dbeafe; color: #2563eb; }
+    .mood-angry { background: #fecaca; color: #dc2626; }
+    .mood-excited { background: #ecfdf5; color: #059669; }
+    .mood-confused { background: #f3e8ff; color: #7c3aed; }
+    .mood-grateful { background: #fdf2f8; color: #db2777; }
+
+    .note-text {
+      color: #4a5568;
+      line-height: 1.6;
+      margin-bottom: 1rem;
+      word-wrap: break-word;
+    }
+
+    .note-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .timestamp {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      color: #718096;
+      font-size: 0.85rem;
+      background: rgba(113, 128, 150, 0.1);
+      padding: 0.3rem 0.8rem;
+      border-radius: 15px;
+      font-weight: 500;
+    }
+
+    .reactions-section {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .reaction-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.4rem 0.8rem;
+      border: 2px solid #e1e8ed;
+      border-radius: 20px;
+      background: white;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.85rem;
+    }
+
+    .reaction-btn:hover {
+      transform: scale(1.05);
+    }
+
+    .reaction-btn.active {
+      border-color: #4ecdc4;
+      background: #4ecdc4;
+      color: white;
+    }
+
+    .actions-section {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .action-btn {
+      padding: 0.4rem 0.8rem;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .delete-btn {
+      background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+      color: white;
+    }
+
+    .edit-btn {
+      background: linear-gradient(45deg, #45b7d1, #64b5f6);
+      color: white;
+    }
+
+    .share-btn {
+      background: linear-gradient(45deg, #96ceb4, #81c784);
+      color: white;
+    }
+
+    .action-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: rgba(255,255,255,0.8);
+    }
+
+    .empty-state h3 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .empty-state p {
+      font-size: 1rem;
+      opacity: 0.8;
+    }
+
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 2rem;
+      border-radius: 20px;
+      max-width: 500px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #666;
+    }
+
+    .trending-section {
+      background: rgba(255,255,255,0.95);
+      padding: 1.5rem;
+      border-radius: 15px;
+      margin-bottom: 2rem;
+      backdrop-filter: blur(10px);
+    }
+
+    .trending-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: #2d3748;
+    }
+
+    .trending-tags {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .trending-tag {
+      padding: 0.4rem 0.8rem;
+      background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+      color: white;
+      border-radius: 15px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .trending-tag:hover {
+      transform: scale(1.05);
+    }
+
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 1rem 1.5rem;
+      background: linear-gradient(45deg, #4ecdc4, #45b7d1);
+      color: white;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      transform: translateX(400px);
+      transition: all 0.3s ease;
+      z-index: 1001;
+    }
+
+    .notification.show {
+      transform: translateX(0);
+    }
+
+    .character-count {
+      text-align: right;
+      font-size: 0.8rem;
+      color: #666;
+      margin-top: 0.5rem;
+    }
+
+    .character-count.warning {
+      color: #ff6b6b;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 2rem;
+      }
+      
+      .stats {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      
+      nav {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      
+      nav button {
+        width: 200px;
+      }
+      
+      .page {
+        padding: 1rem;
+      }
+      
+      .form-row {
+        flex-direction: column;
+      }
+      
+      .filter-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .note-footer {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .reactions-section {
+        width: 100%;
+        justify-content: space-between;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>📒 Aplikasi Catatan</h1>
-    </header>
-    <nav>
-      <button class="tab-btn active" data-target="formPage">✍️ Tulis Catatan</button>
-      <button class="tab-btn" data-target="listPage">📑 Daftar Catatan</button>
-    </nav>
-    <div id="formPage" class="page active">
-      <h2>Tulis Catatan Baru</h2>
-      <input type="text" id="name" placeholder="Nama Anda">
-      <textarea id="note" rows="4" placeholder="Apa yang ingin dicatat?"></textarea>
-      <select id="category">
-        <option value="Pribadi">❤️ Pribadi</option>
-        <option value="Pekerjaan">💼 Pekerjaan</option>
-        <option value="Belajar">📚 Belajar</option>
-      </select>
-      <label for="color">Pilih Warna Catatan:</label>
-      <input type="color" id="color" value="#4CAF50">
-      <button class="save-btn" onclick="saveNote()">Simpan Catatan</button>
+  <header>
+    <h1>💭 Keluh Kesah</h1>
+    <p>Tempat berbagi cerita dan keluh kesah</p>
+    <div class="stats">
+      <div class="stat-item">📝 <span id="totalPosts">0</span> cerita</div>
+      <div class="stat-item">❤️ <span id="totalLikes">0</span> likes</div>
+      <div class="stat-item">👥 <span id="activeUsers">0</span> kontributor</div>
     </div>
-    <div id="listPage" class="page">
-      <h2>Daftar Catatan</h2>
-      <div id="notesList"></div>
+  </header>
+  
+  <nav>
+    <button id="btn-tulis" class="active">✍️ Tulis Cerita</button>
+    <button id="btn-daftar">📋 Daftar Cerita</button>
+    <button id="btn-trending">🔥 Trending</button>
+    <button id="btn-analytics">📊 Analytics</button>
+  </nav>
+
+  <!-- Halaman Tulis -->
+  <div id="page-tulis" class="page active">
+    <div class="form-container">
+      <form id="noteForm">
+        <div class="form-row">
+          <div class="input-group">
+            <input type="text" id="nama" placeholder="Siapa nama kamu?" required>
+          </div>
+          <div class="anonymous-toggle">
+            <span>Anonim</span>
+            <div class="switch" id="anonymousSwitch"></div>
+          </div>
+        </div>
+        
+        <div class="input-group">
+          <label style="font-weight: 600; margin-bottom: 0.5rem; display: block;">Mood saat ini:</label>
+          <div class="mood-selector">
+            <div class="mood-option" data-mood="happy">😊 Senang</div>
+            <div class="mood-option" data-mood="sad">😢 Sedih</div>
+            <div class="mood-option" data-mood="angry">😠 Marah</div>
+            <div class="mood-option" data-mood="excited">🤩 Antusias</div>
+            <div class="mood-option" data-mood="confused">😕 Bingung</div>
+            <div class="mood-option" data-mood="grateful">🙏 Bersyukur</div>
+          </div>
+        </div>
+        
+        <div class="input-group">
+          <textarea id="catatan" placeholder="Ceritakan keluh kesah atau pengalaman kamu di sini..." required maxlength="500"></textarea>
+          <div class="character-count">
+            <span id="charCount">0</span>/500 karakter
+          </div>
+        </div>
+        
+        <button type="submit" class="submit">🚀 Kirim Cerita</button>
+      </form>
     </div>
   </div>
 
-  <script>
-    const notes = [];
+  <!-- Halaman Daftar -->
+  <div id="page-daftar" class="page">
+    <div class="search-container">
+      <div class="search-box">
+        <input type="text" id="searchInput" placeholder="🔍 Cari cerita..." style="border: none; background: transparent; flex: 1;">
+        <select id="sortSelect" style="border: none; background: transparent;">
+          <option value="newest">Terbaru</option>
+          <option value="oldest">Terlama</option>
+          <option value="popular">Terpopuler</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="filter-section">
+      <div class="filter-row">
+        <span style="font-weight: 600;">Filter mood:</span>
+        <div class="filter-group">
+          <div class="filter-btn active" data-filter="all">Semua</div>
+          <div class="filter-btn" data-filter="happy">😊 Senang</div>
+          <div class="filter-btn" data-filter="sad">😢 Sedih</div>
+          <div class="filter-btn" data-filter="angry">😠 Marah</div>
+          <div class="filter-btn" data-filter="excited">🤩 Antusias</div>
+          <div class="filter-btn" data-filter="confused">😕 Bingung</div>
+          <div class="filter-btn" data-filter="grateful">🙏 Bersyukur</div>
+        </div>
+      </div>
+    </div>
+    
+    <ul id="notesList"></ul>
+    <div id="emptyState" class="empty-state" style="display: none;">
+      <h3>📝 Belum ada cerita</h3>
+      <p>Jadilah yang pertama membagikan keluh kesah atau cerita!</p>
+    </div>
+  </div>
 
-    function saveNote() {
-      const name = document.getElementById("name").value.trim();
-      const text = document.getElementById("note").value.trim();
-      const category = document.getElementById("category").value;
-      const color = document.getElementById("color").value;
-      if (name === "" || text === "") {
-        alert("Nama dan Catatan tidak boleh kosong!");
+  <!-- Halaman Trending -->
+  <div id="page-trending" class="page">
+    <div class="trending-section">
+      <div class="trending-title">🔥 Trending Topics</div>
+      <div class="trending-tags" id="trendingTags">
+        <div class="trending-tag">#keluhkesah</div>
+        <div class="trending-tag">#ceritasedih</div>
+        <div class="trending-tag">#motivasi</div>
+        <div class="trending-tag">#pengalaman</div>
+      </div>
+    </div>
+    
+    <div class="trending-section">
+      <div class="trending-title">⭐ Cerita Terpopuler</div>
+      <ul id="popularNotes"></ul>
+    </div>
+  </div>
+
+  <!-- Halaman Analytics -->
+  <div id="page-analytics" class="page">
+    <div class="trending-section">
+      <div class="trending-title">📊 Analytics Dashboard</div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+        <div style="background: linear-gradient(45deg, #ff6b6b, #ff8e8e); color: white; padding: 1.5rem; border-radius: 15px; text-align: center;">
+          <div style="font-size: 2rem; font-weight: bold;" id="totalPostsAnalytics">0</div>
+          <div>Total Cerita</div>
+        </div>
+        <div style="background: linear-gradient(45deg, #4ecdc4, #45b7d1); color: white; padding: 1.5rem; border-radius: 15px; text-align: center;">
+          <div style="font-size: 2rem; font-weight: bold;" id="totalReactionsAnalytics">0</div>
+          <div>Total Reaksi</div>
+        </div>
+        <div style="background: linear-gradient(45deg, #96ceb4, #81c784); color: white; padding: 1.5rem; border-radius: 15px; text-align: center;">
+          <div style="font-size: 2rem; font-weight: bold;" id="avgReactionsAnalytics">0</div>
+          <div>Rata-rata Reaksi</div>
+        </div>
+        <div style="background: linear-gradient(45deg, #ffeaa7, #fdcb6e); color: white; padding: 1.5rem; border-radius: 15px; text-align: center;">
+          <div style="font-size: 2rem; font-weight: bold;" id="topMoodAnalytics">😊</div>
+          <div>Mood Terpopuler</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="trending-section">
+      <div class="trending-title">📈 Mood Distribution</div>
+      <div id="moodChart" style="display: flex; gap: 1rem; flex-wrap: wrap;"></div>
+    </div>
+  </div>
+
+  <!-- Modal Edit -->
+  <div id="editModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>✏️ Edit Cerita</h3>
+        <button class="close-btn" onclick="closeEditModal()">&times;</button>
+      </div>
+      <form id="editForm">
+        <div class="input-group">
+          <textarea id="editCatatan" placeholder="Edit cerita..." required maxlength="500"></textarea>
+          <div class="character-count">
+            <span id="editCharCount">0</span>/500 karakter
+          </div>
+        </div>
+        <button type="submit" class="submit">💾 Simpan Perubahan</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Notification -->
+  <div id="notification" class="notification"></div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+    import { 
+      getFirestore, collection, addDoc, serverTimestamp, onSnapshot, query, orderBy, deleteDoc, doc, updateDoc, arrayUnion, arrayRemove, increment
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyD_sEU0Kn1Y15D0bfVw5gEvoJoU6slJUyA",
+      authDomain: "keluhkesah-ec444.firebaseapp.com",
+      projectId: "keluhkesah-ec444",
+      storageBucket: "keluhkesah-ec444.firebasestorage.app",
+      messagingSenderId: "96252446492",
+      appId: "1:96252446492:web:1d1465382023793a189cd9",
+      measurementId: "G-0N1ENCKMTN"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Global variables
+    let allNotes = [];
+    let currentEditId = null;
+    let currentFilter = 'all';
+    let currentSort = 'newest';
+    let selectedMood = null;
+    let isAnonymous = false;
+    let userId = 'user_' + Math.random().toString(36).substr(2, 9);
+
+    // DOM elements
+    const noteForm = document.getElementById('noteForm');
+    const editForm = document.getElementById('editForm');
+    const notesList = document.getElementById('notesList');
+    const popularNotes = document.getElementById('popularNotes');
+    const emptyState = document.getElementById('emptyState');
+    const searchInput = document.getElementById('searchInput');
+    const sortSelect = document.getElementById('sortSelect');
+    const anonymousSwitch = document.getElementById('anonymousSwitch');
+    const catatan = document.getElementById('catatan');
+    const charCount = document.getElementById('charCount');
+    const editCatatan = document.getElementById('editCatatan');
+    const editCharCount = document.getElementById('editCharCount');
+
+    // Initialize
+    initializeEventListeners();
+    loadNotes();
+
+    function initializeEventListeners() {
+      // Navigation
+      document.getElementById('btn-tulis').addEventListener('click', () => switchPage('page-tulis'));
+      document.getElementById('btn-daftar').addEventListener('click', () => switchPage('page-daftar'));
+      document.getElementById('btn-trending').addEventListener('click', () => switchPage('page-trending'));
+      document.getElementById('btn-analytics').addEventListener('click', () => switchPage('page-analytics'));
+
+      // Forms
+      noteForm.addEventListener('submit', handleSubmitNote);
+      editForm.addEventListener('submit', handleEditNote);
+
+      // Mood selector
+      document.querySelectorAll('.mood-option').forEach(option => {
+        option.addEventListener('click', () => selectMood(option.dataset.mood));
+      });
+
+      // Anonymous toggle
+      anonymousSwitch.addEventListener('click', toggleAnonymous);
+
+      // Character count
+      catatan.addEventListener('input', updateCharCount);
+      editCatatan.addEventListener('input', updateEditCharCount);
+
+      // Search and filter
+      searchInput.addEventListener('input', filterNotes);
+      sortSelect.addEventListener('change', (e) => {
+        currentSort = e.target.value;
+        filterNotes();
+      });
+
+      // Filter buttons
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => setFilter(btn.dataset.filter));
+      });
+
+      // Modal
+      document.addEventListener('click', (e) => {
+        if (e.target === document.getElementById('editModal')) {
+          closeEditModal();
+        }
+      });
+    }
+
+    function selectMood(mood) {
+      document.querySelectorAll('.mood-option').forEach(option => {
+        option.classList.remove('selected');
+      });
+      document.querySelector(`[data-mood="${mood}"]`).classList.add('selected');
+      selectedMood = mood;
+    }
+
+    function toggleAnonymous() {
+      isAnonymous = !isAnonymous;
+      anonymousSwitch.classList.toggle('active', isAnonymous);
+      const namaInput = document.getElementById('nama');
+      namaInput.disabled = isAnonymous;
+      if (isAnonymous) {
+        namaInput.value = 'Anonim';
+        namaInput.style.background = '#f5f5f5';
+      } else {
+        namaInput.value = '';
+        namaInput.style.background = 'rgba(255,255,255,0.9)';
+      }
+    }
+
+    function updateCharCount() {
+      const count = catatan.value.length;
+      charCount.textContent = count;
+      charCount.parentElement.classList.toggle('warning', count > 450);
+    }
+
+    function updateEditCharCount() {
+      const count = editCatatan.value.length;
+      editCharCount.textContent = count;
+      editCharCount.parentElement.classList.toggle('warning', count > 450);
+    }
+
+    async function handleSubmitNote(e) {
+      e.preventDefault();
+      
+      const nama = isAnonymous ? 'Anonim' : document.getElementById('nama').value.trim();
+      const catatanText = catatan.value.trim();
+      
+      if ((!isAnonymous && !nama) || !catatanText || !selectedMood) {
+        showNotification('Harap lengkapi semua field!', 'error');
         return;
       }
-      const note = {
-        name,
-        text,
-        category,
-        color,
-        time: new Date().toLocaleString()
+
+      if (catatanText.length > 500) {
+        showNotification('Cerita terlalu panjang! Maksimal 500 karakter.', 'error');
+        return;
+      }
+
+      try {
+        await addDoc(collection(db, "notes"), {
+          nama,
+          catatan: catatanText,
+          mood: selectedMood,
+          waktu: serverTimestamp(),
+          likes: [],
+          hearts: [],
+          supports: [],
+          totalReactions: 0,
+          userId: isAnonymous ? 'anonymous' : userId,
+          isAnonymous
+        });
+        
+        noteForm.reset();
+        selectedMood = null;
+        document.querySelectorAll('.mood-option').forEach(option => {
+          option.classList.remove('selected');
+        });
+        updateCharCount();
+        
+        showNotification('Cerita berhasil dikirim! 🎉');
+        switchPage('page-daftar');
+      } catch (error) {
+        console.error("Error adding document: ", error);
+        showNotification('Terjadi kesalahan saat mengirim cerita.', 'error');
+      }
+    }
+
+    async function handleEditNote(e) {
+      e.preventDefault();
+      
+      const newText = editCatatan.value.trim();
+      
+      if (!newText) {
+        showNotification('Cerita tidak boleh kosong!', 'error');
+        return;
+      }
+
+      if (newText.length > 500) {
+        showNotification('Cerita terlalu panjang! Maksimal 500 karakter.', 'error');
+        return;
+      }
+
+      try {
+        await updateDoc(doc(db, "notes", currentEditId), {
+          catatan: newText,
+          lastEdited: serverTimestamp()
+        });
+        
+        showNotification('Cerita berhasil diupdate! ✨');
+        closeEditModal();
+      } catch (error) {
+        console.error("Error updating document: ", error);
+        showNotification('Terjadi kesalahan saat mengupdate cerita.', 'error');
+      }
+    }
+
+    function openEditModal(id, currentText) {
+      currentEditId = id;
+      editCatatan.value = currentText;
+      updateEditCharCount();
+      document.getElementById('editModal').classList.add('active');
+    }
+
+    function closeEditModal() {
+      document.getElementById('editModal').classList.remove('active');
+      currentEditId = null;
+      editCatatan.value = '';
+    }
+
+    window.closeEditModal = closeEditModal;
+
+    async function toggleReaction(noteId, reactionType) {
+      try {
+        const noteRef = doc(db, "notes", noteId);
+        const note = allNotes.find(n => n.id === noteId);
+        
+        if (!note) return;
+
+        const userReacted = note[reactionType] && note[reactionType].includes(userId);
+        
+        if (userReacted) {
+          // Remove reaction
+          await updateDoc(noteRef, {
+            [reactionType]: arrayRemove(userId),
+            totalReactions: increment(-1)
+          });
+        } else {
+          // Add reaction
+          await updateDoc(noteRef, {
+            [reactionType]: arrayUnion(userId),
+            totalReactions: increment(1)
+          });
+        }
+      } catch (error) {
+        console.error("Error toggling reaction: ", error);
+        showNotification('Terjadi kesalahan saat memberikan reaksi.', 'error');
+      }
+    }
+
+    async function deleteNote(id, authorUserId) {
+      if (authorUserId !== userId && authorUserId !== 'anonymous') {
+        showNotification('Anda hanya bisa menghapus cerita sendiri!', 'error');
+        return;
+      }
+
+      if (confirm("Yakin ingin menghapus cerita ini?")) {
+        try {
+          await deleteDoc(doc(db, "notes", id));
+          showNotification('Cerita berhasil dihapus! 🗑️');
+        } catch (error) {
+          console.error("Error deleting document: ", error);
+          showNotification('Terjadi kesalahan saat menghapus cerita.', 'error');
+        }
+      }
+    }
+
+    function shareNote(noteId) {
+      const url = `${window.location.origin}${window.location.pathname}#note-${noteId}`;
+      
+      if (navigator.share) {
+        navigator.share({
+          title: 'Keluh Kesah',
+          text: 'Lihat cerita menarik ini!',
+          url: url
+        });
+      } else {
+        navigator.clipboard.writeText(url).then(() => {
+          showNotification('Link berhasil disalin! 🔗');
+        });
+      }
+    }
+
+    function formatTime(timestamp) {
+      if (!timestamp) return "Menunggu waktu...";
+      
+      const date = timestamp.toDate();
+      const now = new Date();
+      const diffInSeconds = Math.floor((now - date) / 1000);
+      
+      if (diffInSeconds < 60) {
+        return "Baru saja";
+      } else if (diffInSeconds < 3600) {
+        const minutes = Math.floor(diffInSeconds / 60);
+        return `${minutes} menit yang lalu`;
+      } else if (diffInSeconds < 86400) {
+        const hours = Math.floor(diffInSeconds / 3600);
+        return `${hours} jam yang lalu`;
+      } else if (diffInSeconds < 604800) {
+        const days = Math.floor(diffInSeconds / 86400);
+        return `${days} hari yang lalu`;
+      } else {
+        const options = { 
+          year: 'numeric', 
+          month: 'short', 
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        };
+        return date.toLocaleDateString('id-ID', options);
+      }
+    }
+
+    function getMoodBadgeClass(mood) {
+      return `mood-${mood}`;
+    }
+
+    function getMoodEmoji(mood) {
+      const emojis = {
+        happy: '😊',
+        sad: '😢',
+        angry: '😠',
+        excited: '🤩',
+        confused: '😕',
+        grateful: '🙏'
       };
-      notes.push(note);
-      document.getElementById("name").value = "";
-      document.getElementById("note").value = "";
-      renderNotes();
-      switchTab("listPage");
+      return emojis[mood] || '😐';
     }
 
-    function renderNotes() {
-      const notesList = document.getElementById("notesList");
+    function createNoteElement(docSnap) {
+      const data = docSnap.data();
+      const waktuFormatted = formatTime(data.waktu);
+      const li = document.createElement("li");
+      li.id = `note-${docSnap.id}`;
+
+      const isOwner = data.userId === userId;
+      const authorName = data.isAnonymous ? '👤 Anonim' : `👤 ${data.nama}`;
+      
+      const likesCount = data.likes ? data.likes.length : 0;
+      const heartsCount = data.hearts ? data.hearts.length : 0;
+      const supportsCount = data.supports ? data.supports.length : 0;
+      
+      const userLiked = data.likes ? data.likes.includes(userId) : false;
+      const userHearted = data.hearts ? data.hearts.includes(userId) : false;
+      const userSupported = data.supports ? data.supports.includes(userId) : false;
+
+      li.innerHTML = `
+        <div class="note-header">
+          <div class="note-info">
+            <div class="author-info">
+              <span class="author-name">${authorName}</span>
+              <span class="mood-badge ${getMoodBadgeClass(data.mood)}">${getMoodEmoji(data.mood)} ${data.mood}</span>
+            </div>
+          </div>
+        </div>
+        <div class="note-text">${data.catatan}</div>
+        <div class="note-footer">
+          <div class="timestamp">🕒 ${waktuFormatted}</div>
+          <div class="reactions-section">
+            <button class="reaction-btn ${userLiked ? 'active' : ''}" onclick="toggleReaction('${docSnap.id}', 'likes')">
+              👍 ${likesCount}
+            </button>
+            <button class="reaction-btn ${userHearted ? 'active' : ''}" onclick="toggleReaction('${docSnap.id}', 'hearts')">
+              ❤️ ${heartsCount}
+            </button>
+            <button class="reaction-btn ${userSupported ? 'active' : ''}" onclick="toggleReaction('${docSnap.id}', 'supports')">
+              🤗 ${supportsCount}
+            </button>
+          </div>
+          <div class="actions-section">
+            <button class="action-btn share-btn" onclick="shareNote('${docSnap.id}')" title="Bagikan">
+              🔗 Bagikan
+            </button>
+            ${isOwner ? `
+              <button class="action-btn edit-btn" onclick="openEditModal('${docSnap.id}', '${data.catatan.replace(/'/g, "\\'")}' )" title="Edit">
+                ✏️ Edit
+              </button>
+              <button class="action-btn delete-btn" onclick="deleteNote('${docSnap.id}', '${data.userId}')" title="Hapus">
+                🗑️ Hapus
+              </button>
+            ` : ''}
+          </div>
+        </div>
+      `;
+      
+      return li;
+    }
+
+    function loadNotes() {
+      const q = query(collection(db, "notes"), orderBy("waktu", "desc"));
+      onSnapshot(q, (snapshot) => {
+        allNotes = [];
+        snapshot.forEach((docSnap) => {
+          allNotes.push({
+            id: docSnap.id,
+            ...docSnap.data()
+          });
+        });
+        
+        updateStats();
+        filterNotes();
+        updatePopularNotes();
+        updateAnalytics();
+      });
+    }
+
+    function filterNotes() {
+      let filteredNotes = [...allNotes];
+      
+      // Filter by search
+      const searchTerm = searchInput.value.toLowerCase().trim();
+      if (searchTerm) {
+        filteredNotes = filteredNotes.filter(note => 
+          note.catatan.toLowerCase().includes(searchTerm) ||
+          note.nama.toLowerCase().includes(searchTerm)
+        );
+      }
+      
+      // Filter by mood
+      if (currentFilter !== 'all') {
+        filteredNotes = filteredNotes.filter(note => note.mood === currentFilter);
+      }
+      
+      // Sort
+      filteredNotes.sort((a, b) => {
+        switch(currentSort) {
+          case 'oldest':
+            return a.waktu?.toDate() - b.waktu?.toDate();
+          case 'popular':
+            return (b.totalReactions || 0) - (a.totalReactions || 0);
+          default: // newest
+            return b.waktu?.toDate() - a.waktu?.toDate();
+        }
+      });
+      
+      displayNotes(filteredNotes);
+    }
+
+    function displayNotes(notes) {
       notesList.innerHTML = "";
-      notes.forEach((note, index) => {
-        const noteDiv = document.createElement("div");
-        noteDiv.className = "note";
-        noteDiv.style.borderLeftColor = note.color;
-        noteDiv.innerHTML = `
-          <h4>${note.name} - <span>${note.category}</span></h4>
-          <p>${note.text}</p>
-          <small>${note.time}</small>
-          <button class="delete-btn" onclick="deleteNote(${index})">Hapus</button>
+      
+      if (notes.length === 0) {
+        emptyState.style.display = "block";
+        return;
+      }
+      
+      emptyState.style.display = "none";
+      
+      notes.forEach((note) => {
+        const li = createNoteElement({ id: note.id, data: () => note });
+        notesList.appendChild(li);
+      });
+    }
+
+    function updatePopularNotes() {
+      const popular = [...allNotes]
+        .sort((a, b) => (b.totalReactions || 0) - (a.totalReactions || 0))
+        .slice(0, 5);
+      
+      popularNotes.innerHTML = "";
+      
+      if (popular.length === 0) {
+        popularNotes.innerHTML = '<li style="text-align: center; padding: 2rem; color: #666;">Belum ada cerita populer</li>';
+        return;
+      }
+      
+      popular.forEach((note) => {
+        const li = createNoteElement({ id: note.id, data: () => note });
+        popularNotes.appendChild(li);
+      });
+    }
+
+    function setFilter(filter) {
+      currentFilter = filter;
+      
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      
+      document.querySelector(`[data-filter="${filter}"]`).classList.add('active');
+      
+      filterNotes();
+    }
+
+    function updateStats() {
+      const totalPosts = allNotes.length;
+      const totalLikes = allNotes.reduce((sum, note) => 
+        sum + (note.totalReactions || 0), 0);
+      const uniqueUsers = new Set(allNotes.map(note => note.userId)).size;
+      
+      document.getElementById('totalPosts').textContent = totalPosts;
+      document.getElementById('totalLikes').textContent = totalLikes;
+      document.getElementById('activeUsers').textContent = uniqueUsers;
+    }
+
+    function updateAnalytics() {
+      const totalPosts = allNotes.length;
+      const totalReactions = allNotes.reduce((sum, note) => 
+        sum + (note.totalReactions || 0), 0);
+      const avgReactions = totalPosts > 0 ? Math.round(totalReactions / totalPosts * 10) / 10 : 0;
+      
+      // Count moods
+      const moodCounts = {};
+      allNotes.forEach(note => {
+        moodCounts[note.mood] = (moodCounts[note.mood] || 0) + 1;
+      });
+      
+      const topMood = Object.keys(moodCounts).reduce((a, b) => 
+        moodCounts[a] > moodCounts[b] ? a : b, 'happy');
+      
+      document.getElementById('totalPostsAnalytics').textContent = totalPosts;
+      document.getElementById('totalReactionsAnalytics').textContent = totalReactions;
+      document.getElementById('avgReactionsAnalytics').textContent = avgReactions;
+      document.getElementById('topMoodAnalytics').textContent = getMoodEmoji(topMood);
+      
+      // Update mood chart
+      const moodChart = document.getElementById('moodChart');
+      moodChart.innerHTML = '';
+      
+      Object.entries(moodCounts).forEach(([mood, count]) => {
+        const percentage = totalPosts > 0 ? Math.round(count / totalPosts * 100) : 0;
+        const bar = document.createElement('div');
+        bar.style.cssText = `
+          background: linear-gradient(45deg, #4ecdc4, #45b7d1);
+          color: white;
+          padding: 1rem;
+          border-radius: 10px;
+          text-align: center;
+          min-width: 120px;
         `;
-        notesList.appendChild(noteDiv);
+        bar.innerHTML = `
+          <div style="font-size: 1.5rem;">${getMoodEmoji(mood)}</div>
+          <div style="font-weight: bold;">${count}</div>
+          <div style="font-size: 0.8rem;">${percentage}%</div>
+        `;
+        moodChart.appendChild(bar);
       });
     }
 
-    function deleteNote(index) {
-      notes.splice(index, 1);
-      renderNotes();
+    function switchPage(pageId) {
+      document.querySelectorAll('.page').forEach(page => {
+        page.classList.remove('active');
+      });
+      document.getElementById(pageId).classList.add('active');
+      
+      document.querySelectorAll('nav button').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      
+      if (pageId === 'page-tulis') document.getElementById('btn-tulis').classList.add('active');
+      else if (pageId === 'page-daftar') document.getElementById('btn-daftar').classList.add('active');
+      else if (pageId === 'page-trending') document.getElementById('btn-trending').classList.add('active');
+      else if (pageId === 'page-analytics') document.getElementById('btn-analytics').classList.add('active');
     }
 
-    function switchTab(target) {
-      document.querySelectorAll(".page").forEach(page => {
-        page.classList.remove("active");
-      });
-      document.getElementById(target).classList.add("active");
-      document.querySelectorAll(".tab-btn").forEach(btn => {
-        btn.classList.remove("active");
-      });
-      document.querySelector(`.tab-btn[data-target="${target}"]`).classList.add("active");
+    function showNotification(message, type = 'success') {
+      const notification = document.getElementById('notification');
+      notification.textContent = message;
+      notification.className = `notification ${type}`;
+      notification.classList.add('show');
+      
+      setTimeout(() => {
+        notification.classList.remove('show');
+      }, 3000);
+    }
+
+    // Make functions global for onclick handlers
+    window.toggleReaction = toggleReaction;
+    window.deleteNote = deleteNote;
+    window.shareNote = shareNote;
+    window.openEditModal = openEditModal;
+
+    // Auto-refresh timestamps
+    setInterval(() => {
+      if (document.getElementById('page-daftar').classList.contains('active') ||
+          document.getElementById('page-trending').classList.contains('active')) {
+        document.querySelectorAll('.timestamp').forEach(timestamp => {
+          // Timestamps will be updated on next Firebase update
+        });
+      }
+    }, 60000);
+
+    // Handle deep linking to specific notes
+    if (window.location.hash.startsWith('#note-')) {
+      const noteId = window.location.hash.substring(6);
+      setTimeout(() => {
+        const noteElement = document.getElementById(`note-${noteId}`);
+        if (noteElement) {
+          switchPage('page-daftar');
+          noteElement.scrollIntoView({ behavior: 'smooth' });
+          noteElement.style.animation = 'pulse 2s ease-in-out';
+        }
+      }, 1000);
     }
   </script>
+
+  <style>
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); box-shadow: 0 20px 50px rgba(78, 205, 196, 0.3); }
+    }
+  </style>
 </body>
 </html>
