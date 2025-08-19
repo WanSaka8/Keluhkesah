@@ -278,13 +278,19 @@
     }
 
     .filter-btn {
-      padding: 0.5rem 1rem;
-      border: 2px solid #e1e8ed;
-      border-radius: 20px;
-      background: white;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-size: 0.8rem;
+  padding: 0.4rem; 
+  border: 2px solid #e1e8ed;
+  border-radius: 50%;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1.2rem; /* Ukuran emoji */
+  min-width: auto;
+  min-height: auto;
+  width: 45px;
+  height: 45px;
+  text-align: center;
+  line-height: 1.2;
     }
 
     .filter-btn.active {
@@ -703,12 +709,12 @@
         <span style="font-weight: 600;">Filter mood:</span>
         <div class="filter-group">
           <div class="filter-btn active" data-filter="all">Semua</div>
-          <div class="filter-btn" data-filter="happy">😊 Senang</div>
-          <div class="filter-btn" data-filter="sad">😢 Sedih</div>
-          <div class="filter-btn" data-filter="angry">😠 Marah</div>
-          <div class="filter-btn" data-filter="excited">🤩 Antusias</div>
-          <div class="filter-btn" data-filter="confused">😕 Bingung</div>
-          <div class="filter-btn" data-filter="grateful">🙏 Bersyukur</div>
+          <div class="filter-btn" data-filter="happy">😊</div>
+          <div class="filter-btn" data-filter="sad">😢</div>
+          <div class="filter-btn" data-filter="angry">😠</div>
+          <div class="filter-btn" data-filter="excited">🤩</div>
+          <div class="filter-btn" data-filter="confused">😕</div>
+          <div class="filter-btn" data-filter="grateful">🙏</div>
         </div>
       </div>
     </div>
