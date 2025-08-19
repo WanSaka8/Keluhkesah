@@ -70,39 +70,42 @@
     }
 
     nav {
-  display: flex;
-  justify-content: center;
-  gap: 0.8rem;
-  margin: 1.5rem 0;
-  padding: 0 1rem;
-  flex-wrap: nowrap; /* jangan turun kebawah */
-}
+      display: flex;
+      justify-content: center;
+      gap: 0.8rem;
+      margin: 1.5rem 0;
+      padding: 0 1rem;
+      flex-wrap: nowrap;
+      /* jangan turun kebawah */
+    }
 
-nav button {
-  flex: 1; /* bagi rata lebarnya */
-  padding: 1rem 0.5rem;
-  border: none; 
-  border-radius: 25px; 
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 0.9rem; 
-  transition: all 0.3s ease;
-  background: rgba(255,255,255,0.2);
-  color: white;
-  backdrop-filter: blur(10px);
-  border: 2px solid rgba(255,255,255,0.3);
-  text-align: center;
-}
+    nav button {
+      flex: 1;
+      /* bagi rata lebarnya */
+      padding: 1rem 0.5rem;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      text-align: center;
+    }
 
-@media (max-width: 767px) {
-  nav {
-    gap: 0.5rem;
-  }
-  nav button {
-    font-size: 0.8rem;
-    padding: 0.8rem 0.3rem;
-  }
-}
+    @media (max-width: 767px) {
+      nav {
+        gap: 0.5rem;
+      }
+
+      nav button {
+        font-size: 0.8rem;
+        padding: 0.8rem 0.3rem;
+      }
+    }
 
 
     nav button:hover {
@@ -714,7 +717,7 @@ nav button {
   </nav>
 
   <!-- Halaman Tulis -->
-  <div id="page-tulis" class="page active">
+  <div id="page-tulis" class="page">
     <div class="form-container">
       <form id="noteForm">
         <div class="form-row">
@@ -906,6 +909,15 @@ nav button {
     // Initialize
     initializeEventListeners();
     loadNotes();
+
+    // Cek halaman terakhir dari localStorage
+    const lastPage = localStorage.getItem('lastPage');
+    if (lastPage && document.getElementById(lastPage)) {
+      switchPage(lastPage);
+    } else {
+      switchPage('page-tulis'); // fallback default
+    }
+
 
     function initializeEventListeners() {
       // Navigation
@@ -1216,20 +1228,17 @@ nav button {
               🤗 ${supportsCount}
             </button>
           </div>
-          <div class="actions-section">
-  <button class="action-btn delete-btn" onclick="deleteNote('${docSnap.id}', '${data.userId}')" title="Hapus">
-    🗑️ Hapus
+         <div class="actions-section">
+  <button class="action-btn edit-btn" onclick="openEditModal('${docSnap.id}', '${data.catatan.replace(/'/g, "\\'")}')" title="Edit">
+    ✏️ Edit
   </button>
   <button class="action-btn share-btn" onclick="shareNote('${docSnap.id}')" title="Bagikan">
     🔗 Bagikan
   </button>
-  ${isOwner ? `
-    <button class="action-btn edit-btn" onclick="openEditModal('${docSnap.id}', '${data.catatan.replace(/'/g, "\\'")}' )" title="Edit">
-      ✏️ Edit
-    </button>
-  ` : ''}
+  <button class="action-btn delete-btn" onclick="deleteNote('${docSnap.id}', '${data.userId}')" title="Hapus">
+    🗑️ Hapus
+  </button>
 </div>
-
         </div>
       `;
 
@@ -1401,7 +1410,11 @@ nav button {
       else if (pageId === 'page-daftar') document.getElementById('btn-daftar').classList.add('active');
       else if (pageId === 'page-trending') document.getElementById('btn-trending').classList.add('active');
       else if (pageId === 'page-analytics') document.getElementById('btn-analytics').classList.add('active');
+
+      // simpan halaman terakhir
+      localStorage.setItem('lastPage', pageId);
     }
+
 
     function showNotification(message, type = 'success') {
       const notification = document.getElementById('notification');
