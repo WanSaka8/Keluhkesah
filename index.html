@@ -7,177 +7,195 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f5f7fa;
       margin: 0;
       padding: 0;
-    }
-    header {
-      background: #4A90E2;
-      color: white;
-      padding: 15px;
-      text-align: center;
-      font-size: 20px;
-      font-weight: bold;
+      background: linear-gradient(135deg, #89f7fe, #66a6ff);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 20px;
     }
     .container {
-      max-width: 600px;
-      margin: 20px auto;
-      background: white;
-      padding: 20px;
+      width: 100%;
+      max-width: 800px;
+      background: #fff;
       border-radius: 12px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+      overflow: hidden;
+    }
+    header {
+      background: #4CAF50;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    nav {
+      display: flex;
+      justify-content: space-around;
+      background: #f1f1f1;
+      padding: 10px;
+    }
+    nav button {
+      flex: 1;
+      margin: 0 5px;
+      padding: 10px;
+      border: none;
+      background: #ddd;
+      cursor: pointer;
+      border-radius: 8px;
+      transition: background 0.3s;
+    }
+    nav button.active, nav button:hover {
+      background: #4CAF50;
+      color: white;
+    }
+    .page {
+      display: none;
+      padding: 20px;
+    }
+    .page.active {
+      display: block;
     }
     input, textarea, select, button {
       width: 100%;
       padding: 10px;
       margin: 8px 0;
-      border-radius: 8px;
       border: 1px solid #ccc;
-      font-size: 14px;
+      border-radius: 8px;
+      box-sizing: border-box;
     }
-    button {
-      background: #4A90E2;
+    button.save-btn {
+      background: #4CAF50;
       color: white;
+      border: none;
       cursor: pointer;
       font-weight: bold;
-      border: none;
     }
-    button:hover {
-      background: #357ABD;
+    button.save-btn:hover {
+      background: #45a049;
     }
     .note {
+      background: #f9f9f9;
       padding: 15px;
-      margin: 12px 0;
-      border-radius: 10px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      margin: 10px 0;
+      border-left: 8px solid #4CAF50;
+      border-radius: 8px;
       position: relative;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .note h4 {
+      margin: 0 0 5px;
       color: #333;
     }
-    .note h3 {
-      margin: 0;
-      font-size: 16px;
-    }
-    .note p {
-      margin: 8px 0;
-      font-size: 14px;
-    }
     .note small {
-      color: gray;
+      color: #555;
       font-size: 12px;
+      display: block;
+      margin-bottom: 5px;
     }
     .delete-btn {
       position: absolute;
       top: 10px;
       right: 10px;
-      background: crimson;
-      color: white;
+      background: #e74c3c;
       border: none;
-      padding: 5px 10px;
-      border-radius: 6px;
+      color: white;
+      padding: 6px 10px;
       cursor: pointer;
-      font-size: 12px;
+      border-radius: 6px;
     }
     .delete-btn:hover {
-      background: darkred;
+      background: #c0392b;
     }
   </style>
 </head>
 <body>
-  <header>📒 Aplikasi Catatan</header>
-
   <div class="container">
-    <h2>Tulis Catatan Baru</h2>
-    <input type="text" id="nameInput" placeholder="Nama Anda">
-    <textarea id="noteInput" rows="4" placeholder="Apa yang ingin dicatat?"></textarea>
-    <select id="categoryInput">
-      <option value="Pribadi">❤️ Pribadi</option>
-      <option value="Pekerjaan">💼 Pekerjaan</option>
-      <option value="Belajar">📚 Belajar</option>
-      <option value="Random">✨ Random</option>
-    </select>
-    <label>Pilih Warna Catatan:</label>
-    <input type="color" id="colorInput" value="#f9f9f9">
-    <button id="saveBtn">Simpan Catatan</button>
+    <header>
+      <h1>📒 Aplikasi Catatan</h1>
+    </header>
+    <nav>
+      <button class="tab-btn active" data-target="formPage">✍️ Tulis Catatan</button>
+      <button class="tab-btn" data-target="listPage">📑 Daftar Catatan</button>
+    </nav>
+    <div id="formPage" class="page active">
+      <h2>Tulis Catatan Baru</h2>
+      <input type="text" id="name" placeholder="Nama Anda">
+      <textarea id="note" rows="4" placeholder="Apa yang ingin dicatat?"></textarea>
+      <select id="category">
+        <option value="Pribadi">❤️ Pribadi</option>
+        <option value="Pekerjaan">💼 Pekerjaan</option>
+        <option value="Belajar">📚 Belajar</option>
+      </select>
+      <label for="color">Pilih Warna Catatan:</label>
+      <input type="color" id="color" value="#4CAF50">
+      <button class="save-btn" onclick="saveNote()">Simpan Catatan</button>
+    </div>
+    <div id="listPage" class="page">
+      <h2>Daftar Catatan</h2>
+      <div id="notesList"></div>
+    </div>
   </div>
 
-  <div class="container">
-    <h2>Daftar Catatan</h2>
-    <div id="notesList"></div>
-  </div>
+  <script>
+    const notes = [];
 
-  <!-- Firebase -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyD_sEU0Kn1Y15D0bfVw5gEvoJoU6slJUyA",
-      authDomain: "keluhkesah-ec444.firebaseapp.com",
-      projectId: "keluhkesah-ec444",
-      storageBucket: "keluhkesah-ec444.firebasestorage.app",
-      messagingSenderId: "96252446492",
-      appId: "1:96252446492:web:1d1465382023793a189cd9",
-      measurementId: "G-0N1ENCKMTN"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    const nameInput = document.getElementById("nameInput");
-    const noteInput = document.getElementById("noteInput");
-    const categoryInput = document.getElementById("categoryInput");
-    const colorInput = document.getElementById("colorInput");
-    const saveBtn = document.getElementById("saveBtn");
-    const notesList = document.getElementById("notesList");
-
-    // Simpan catatan
-    saveBtn.addEventListener("click", async () => {
-      const name = nameInput.value.trim();
-      const note = noteInput.value.trim();
-      const category = categoryInput.value;
-      const color = colorInput.value;
-
-      if (!name || !note) {
-        alert("Nama dan catatan tidak boleh kosong!");
+    function saveNote() {
+      const name = document.getElementById("name").value.trim();
+      const text = document.getElementById("note").value.trim();
+      const category = document.getElementById("category").value;
+      const color = document.getElementById("color").value;
+      if (name === "" || text === "") {
+        alert("Nama dan Catatan tidak boleh kosong!");
         return;
       }
-
-      await addDoc(collection(db, "notes"), {
+      const note = {
         name,
-        note,
+        text,
         category,
         color,
-        createdAt: serverTimestamp()
-      });
+        time: new Date().toLocaleString()
+      };
+      notes.push(note);
+      document.getElementById("name").value = "";
+      document.getElementById("note").value = "";
+      renderNotes();
+      switchTab("listPage");
+    }
 
-      nameInput.value = "";
-      noteInput.value = "";
-    });
-
-    // Ambil catatan real-time
-    const q = query(collection(db, "notes"), orderBy("createdAt", "desc"));
-    onSnapshot(q, (snapshot) => {
+    function renderNotes() {
+      const notesList = document.getElementById("notesList");
       notesList.innerHTML = "";
-      snapshot.forEach((docSnap) => {
-        const data = docSnap.data();
+      notes.forEach((note, index) => {
         const noteDiv = document.createElement("div");
-        noteDiv.classList.add("note");
-        noteDiv.style.backgroundColor = data.color || "#f9f9f9";
+        noteDiv.className = "note";
+        noteDiv.style.borderLeftColor = note.color;
         noteDiv.innerHTML = `
-          <h3>${data.name} - <small>${data.category || "Tanpa kategori"}</small></h3>
-          <p>${data.note}</p>
-          <small>${data.createdAt?.toDate().toLocaleString() || "Baru saja"}</small>
-          <button class="delete-btn">Hapus</button>
+          <h4>${note.name} - <span>${note.category}</span></h4>
+          <p>${note.text}</p>
+          <small>${note.time}</small>
+          <button class="delete-btn" onclick="deleteNote(${index})">Hapus</button>
         `;
-
-        // Hapus catatan
-        noteDiv.querySelector(".delete-btn").addEventListener("click", async () => {
-          await deleteDoc(doc(db, "notes", docSnap.id));
-        });
-
         notesList.appendChild(noteDiv);
       });
-    });
+    }
+
+    function deleteNote(index) {
+      notes.splice(index, 1);
+      renderNotes();
+    }
+
+    function switchTab(target) {
+      document.querySelectorAll(".page").forEach(page => {
+        page.classList.remove("active");
+      });
+      document.getElementById(target).classList.add("active");
+      document.querySelectorAll(".tab-btn").forEach(btn => {
+        btn.classList.remove("active");
+      });
+      document.querySelector(`.tab-btn[data-target="${target}"]`).classList.add("active");
+    }
   </script>
 </body>
 </html>
