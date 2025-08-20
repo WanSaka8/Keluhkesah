@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -30,9 +31,17 @@
     }
 
     @keyframes gradientShift {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
     }
 
     header h1 {
@@ -138,6 +147,7 @@
         opacity: 0;
         transform: translateY(20px);
       }
+
       to {
         opacity: 1;
         transform: translateY(0);
@@ -170,7 +180,9 @@
       flex: 1;
     }
 
-    input, textarea, select {
+    input,
+    textarea,
+    select {
       padding: 1rem;
       border-radius: 15px;
       border: 2px solid #e1e8ed;
@@ -180,7 +192,9 @@
       width: 100%;
     }
 
-    input:focus, textarea:focus, select:focus {
+    input:focus,
+    textarea:focus,
+    select:focus {
       outline: none;
       border-color: #4ecdc4;
       box-shadow: 0 0 20px rgba(78, 205, 196, 0.2);
@@ -277,9 +291,17 @@
     }
 
     @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-      100% { transform: scale(1); }
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.1);
+      }
+
+      100% {
+        transform: scale(1);
+      }
     }
 
     /* Anonymous Toggle */
@@ -511,12 +533,35 @@
       margin-left: 0.5rem;
     }
 
-    .mood-happy { background: #fef3c7; color: #d97706; }
-    .mood-sad { background: #dbeafe; color: #2563eb; }
-    .mood-angry { background: #fecaca; color: #dc2626; }
-    .mood-excited { background: #ecfdf5; color: #059669; }
-    .mood-confused { background: #f3e8ff; color: #7c3aed; }
-    .mood-grateful { background: #fdf2f8; color: #db2777; }
+    .mood-happy {
+      background: #fef3c7;
+      color: #d97706;
+    }
+
+    .mood-sad {
+      background: #dbeafe;
+      color: #2563eb;
+    }
+
+    .mood-angry {
+      background: #fecaca;
+      color: #dc2626;
+    }
+
+    .mood-excited {
+      background: #ecfdf5;
+      color: #059669;
+    }
+
+    .mood-confused {
+      background: #f3e8ff;
+      color: #7c3aed;
+    }
+
+    .mood-grateful {
+      background: #fdf2f8;
+      color: #db2777;
+    }
 
     .note-text {
       color: #4a5568;
@@ -647,9 +692,20 @@
       font-weight: 600;
     }
 
-    .delete-btn { background: linear-gradient(45deg, #ff6b6b, #ff8e8e); color: white; }
-    .edit-btn { background: linear-gradient(45deg, #45b7d1, #64b5f6); color: white; }
-    .share-btn { background: linear-gradient(45deg, #96ceb4, #81c784); color: white; }
+    .delete-btn {
+      background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+      color: white;
+    }
+
+    .edit-btn {
+      background: linear-gradient(45deg, #45b7d1, #64b5f6);
+      color: white;
+    }
+
+    .share-btn {
+      background: linear-gradient(45deg, #96ceb4, #81c784);
+      color: white;
+    }
 
     .action-btn:hover {
       transform: translateY(-2px);
@@ -844,8 +900,8 @@
     .dark-mode .comment div[style*="color: #666"] {
       color: #e0e0e0 !important;
     }
-    
-    .dark-mode .comment > div {
+
+    .dark-mode .comment>div {
       color: #e0e0e0 !important;
     }
 
@@ -910,36 +966,205 @@
 
     /* Responsive */
     @media (max-width: 768px) {
-      header h1 { font-size: 2rem; }
-      .stats { flex-direction: column; gap: 0.5rem; }
-      nav { flex-direction: column; align-items: center; gap: 0.5rem; }
-      nav button { width: 200px; }
-      .page { padding: 1rem; }
-      .form-row { flex-direction: column; }
-      .filter-row { flex-direction: column; align-items: flex-start; }
-      .note-footer { 
-        flex-direction: column; 
-        align-items: flex-start; 
+      header h1 {
+        font-size: 2rem;
       }
+
+      .stats {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+
+      nav {
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      nav button {
+        width: 200px;
+      }
+
+      .page {
+        padding: 1rem;
+      }
+
+      .form-row {
+        flex-direction: column;
+      }
+
+      .filter-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .note-footer {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      /* 🎨 Styling untuk halaman Galeri */
+      #page-gallery {
+        padding: 2rem;
+        background: linear-gradient(135deg, #f9f9f9, #f0fdfd);
+        min-height: 100vh;
+        border-radius: 16px;
+      }
+
+      /* Judul Galeri */
+      #page-gallery h2 {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 1.5rem;
+        text-align: center;
+      }
+
+      /* Form Upload */
+      #uploadForm {
+        background: #fff;
+        padding: 1rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        margin-bottom: 1.5rem;
+      }
+
+      #uploadForm input[type="file"],
+      #uploadForm input[type="text"] {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 0.5rem;
+        font-size: 0.9rem;
+        transition: 0.2s ease-in-out;
+      }
+
+      #uploadForm input[type="file"]:hover,
+      #uploadForm input[type="text"]:focus {
+        border-color: #4ecdc4;
+        outline: none;
+      }
+
+      #uploadForm button {
+        background: #4ecdc4;
+        color: #fff;
+        font-weight: bold;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background 0.2s ease-in-out, transform 0.1s ease-in-out;
+      }
+
+      #uploadForm button:hover {
+        background: #38b2ac;
+        transform: scale(1.05);
+      }
+
+      /* Grid Galeri */
+      #galleryGrid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 1.5rem;
+      }
+
+      /* Card Gambar */
+      .gallery-item {
+        background: #fff;
+        border-radius: 14px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.2s ease-in-out;
+      }
+
+      .gallery-item:hover {
+        transform: translateY(-4px);
+      }
+
+      /* Gambar */
+      .gallery-item img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+      }
+
+      /* Caption */
+      .gallery-caption {
+        padding: 0.8rem;
+        font-size: 0.9rem;
+        color: #444;
+        border-top: 1px solid #eee;
+        background: #fafafa;
+      }
+
+      /* Tombol Aksi */
+      .gallery-actions {
+        display: flex;
+        gap: 0.5rem;
+        padding: 0.8rem;
+        border-top: 1px solid #f0f0f0;
+      }
+
+      .gallery-actions button {
+        flex: 1;
+        padding: 0.5rem;
+        font-size: 0.85rem;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.2s ease-in-out;
+      }
+
+      .gallery-actions button:first-child {
+        background: #45b7d1;
+        color: white;
+      }
+
+      .gallery-actions button:first-child:hover {
+        background: #2ca1bb;
+      }
+
+      .gallery-actions button:last-child {
+        background: #ff6b6b;
+        color: white;
+      }
+
+      .gallery-actions button:last-child:hover {
+        background: #e63946;
+      }
+
+
       .note-footer-top {
         width: 100%;
         flex-direction: column;
         align-items: flex-start;
       }
-      .reactions-section { width: 100%; justify-content: space-between; }
-      .weather-widget { position: static; margin-bottom: 1rem; }
-      .theme-toggle { top: 10px; left: 10px; }
-      
+
+      .reactions-section {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .weather-widget {
+        position: static;
+        margin-bottom: 1rem;
+      }
+
+      .theme-toggle {
+        top: 10px;
+        left: 10px;
+      }
+
       /* Mobile mood map improvements */
       .mood-grid {
         gap: 0.3rem;
       }
-      
+
       .mood-day {
         font-size: 0.9rem;
         min-height: 35px;
       }
-      
+
       .mood-map {
         padding: 1rem;
       }
@@ -949,6 +1174,7 @@
       nav {
         gap: 0.5rem;
       }
+
       nav button {
         font-size: 0.8rem;
         padding: 0.8rem 0.3rem;
@@ -959,7 +1185,7 @@
       .mood-grid {
         gap: 0.2rem;
       }
-      
+
       .mood-day {
         font-size: 0.8rem;
         min-height: 30px;
@@ -978,7 +1204,7 @@
       <span>🌤️</span>
       <span>Loading...</span>
     </div>
-    
+
     <h1>💭 Keluh Kesah</h1>
     <p>Tempat berbagi cerita dan keluh kesah</p>
     <div class="stats">
@@ -995,6 +1221,7 @@
     <button id="btn-trending">🔥 Trending</button>
     <button id="btn-analytics">📊 Analytics</button>
     <button id="btn-mood-map">📅 Mood Map</button>
+    <button id="btn-gallery">🖼️ Galeri</button>
   </nav>
 
   <!-- Daily Challenge -->
@@ -1098,7 +1325,7 @@
           <div class="filter-btn" data-filter="grateful">🙏</div>
         </div>
       </div>
-      
+
       <div class="filter-row">
         <span style="font-weight: 600;">Filter waktu:</span>
         <div class="time-filter">
@@ -1167,27 +1394,33 @@
     <div class="trending-section">
       <div class="trending-title">📊 Analytics Dashboard</div>
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-        <div style="background: linear-gradient(45deg, #ff6b6b, #ff8e8e); color: white; padding: 1.5rem; border-radius: 15px; text-align: center;">
+        <div
+          style="background: linear-gradient(45deg, #ff6b6b, #ff8e8e); color: white; padding: 1.5rem; border-radius: 15px; text-align: center;">
           <div style="font-size: 2rem; font-weight: bold;" id="totalPostsAnalytics">0</div>
           <div>Total Cerita</div>
         </div>
-        <div style="background: linear-gradient(45deg, #4ecdc4, #45b7d1); color: white; padding: 1.5rem; border-radius: 15px; text-align: center;">
+        <div
+          style="background: linear-gradient(45deg, #4ecdc4, #45b7d1); color: white; padding: 1.5rem; border-radius: 15px; text-align: center;">
           <div style="font-size: 2rem; font-weight: bold;" id="totalReactionsAnalytics">0</div>
           <div>Total Reaksi</div>
         </div>
-        <div style="background: linear-gradient(45deg, #96ceb4, #81c784); color: white; padding: 1.5rem; border-radius: 15px; text-align: center;">
+        <div
+          style="background: linear-gradient(45deg, #96ceb4, #81c784); color: white; padding: 1.5rem; border-radius: 15px; text-align: center;">
           <div style="font-size: 2rem; font-weight: bold;" id="avgReactionsAnalytics">0</div>
           <div>Rata-rata Reaksi</div>
         </div>
-        <div style="background: linear-gradient(45deg, #ffeaa7, #fdcb6e); color: white; padding: 1.5rem; border-radius: 15px; text-align: center;">
+        <div
+          style="background: linear-gradient(45deg, #ffeaa7, #fdcb6e); color: white; padding: 1.5rem; border-radius: 15px; text-align: center;">
           <div style="font-size: 2rem; font-weight: bold;" id="topMoodAnalytics">😊</div>
           <div>Mood Terpopuler</div>
         </div>
-        <div style="background: linear-gradient(45deg, #a29bfe, #6c5ce7); color: white; padding: 1.5rem; border-radius: 15px; text-align: center;">
+        <div
+          style="background: linear-gradient(45deg, #a29bfe, #6c5ce7); color: white; padding: 1.5rem; border-radius: 15px; text-align: center;">
           <div style="font-size: 2rem; font-weight: bold;" id="activeHoursAnalytics">18:00</div>
           <div>Jam Teraktif</div>
         </div>
-        <div style="background: linear-gradient(45deg, #fd79a8, #e84393); color: white; padding: 1.5rem; border-radius: 15px; text-align: center;">
+        <div
+          style="background: linear-gradient(45deg, #fd79a8, #e84393); color: white; padding: 1.5rem; border-radius: 15px; text-align: center;">
           <div style="font-size: 2rem; font-weight: bold;" id="longestStreakAnalytics">0</div>
           <div>Streak Terpanjang</div>
         </div>
@@ -1201,7 +1434,8 @@
 
     <div class="trending-section">
       <div class="trending-title">📅 Aktivitas Harian</div>
-      <div id="activityChart" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem; margin-top: 1rem;">
+      <div id="activityChart"
+        style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem; margin-top: 1rem;">
         <div style="text-align: center; font-weight: bold; padding: 0.5rem;">Sen</div>
         <div style="text-align: center; font-weight: bold; padding: 0.5rem;">Sel</div>
         <div style="text-align: center; font-weight: bold; padding: 0.5rem;">Rab</div>
@@ -1223,7 +1457,8 @@
 
     <div class="trending-section">
       <div class="trending-title">📊 Mood Statistics</div>
-      <div id="moodStats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+      <div id="moodStats"
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
         <div style="text-align: center; padding: 1rem; background: rgba(255, 255, 255, 0.1); border-radius: 10px;">
           <div style="font-size: 2rem;">😊</div>
           <div style="font-weight: bold; margin: 0.5rem 0;">Mood Dominan</div>
@@ -1245,13 +1480,16 @@
     <div class="trending-section">
       <div class="trending-title">💡 Mood Insights</div>
       <div id="moodInsights" style="display: flex; flex-direction: column; gap: 1rem;">
-        <div style="padding: 1rem; background: rgba(78, 205, 196, 0.1); border-left: 4px solid #4ecdc4; border-radius: 0 10px 10px 0;">
+        <div
+          style="padding: 1rem; background: rgba(78, 205, 196, 0.1); border-left: 4px solid #4ecdc4; border-radius: 0 10px 10px 0;">
           <strong>💡 Insight:</strong> Kamu cenderung lebih bahagia di akhir pekan!
         </div>
-        <div style="padding: 1rem; background: rgba(255, 107, 107, 0.1); border-left: 4px solid #ff6b6b; border-radius: 0 10px 10px 0;">
+        <div
+          style="padding: 1rem; background: rgba(255, 107, 107, 0.1); border-left: 4px solid #ff6b6b; border-radius: 0 10px 10px 0;">
           <strong>⚠️ Perhatian:</strong> Mood turun pada hari Senin, mungkin Monday Blues?
         </div>
-        <div style="padding: 1rem; background: rgba(150, 206, 180, 0.1); border-left: 4px solid #96ceb4; border-radius: 0 10px 10px 0;">
+        <div
+          style="padding: 1rem; background: rgba(150, 206, 180, 0.1); border-left: 4px solid #96ceb4; border-radius: 0 10px 10px 0;">
           <strong>🎯 Saran:</strong> Coba aktivitas relaksasi di hari kerja untuk mood yang lebih baik.
         </div>
       </div>
@@ -1276,6 +1514,18 @@
       </form>
     </div>
   </div>
+  <!-- Halaman Galeri -->
+  <div id="page-gallery" class="page">
+    <h2>🖼️ Galeri</h2>
+    <form id="uploadForm" style="margin-bottom:1rem;display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;">
+      <input type="file" id="fileInput" accept="image/*" required />
+      <input type="text" id="captionInput" placeholder="Tulis caption..." style="flex:1;padding:0.5rem;" />
+      <button type="submit"
+        style="padding:0.6rem 1rem;border:none;border-radius:10px;background:#4ecdc4;color:white;cursor:pointer;">📤
+        Upload</button>
+    </form>
+    <div id="galleryGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;"></div>
+  </div>
 
   <!-- Notification -->
   <div id="notification" class="notification"></div>
@@ -1285,6 +1535,12 @@
     import {
       getFirestore, collection, addDoc, serverTimestamp, onSnapshot, query, orderBy, deleteDoc, doc, updateDoc, arrayUnion, arrayRemove, increment, where, getDocs
     } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+    import { createClient } from "https://esm.sh/@supabase/supabase-js";
+
+    const supabaseUrl = "https://hnyingatwqsemhyhbwqb.supabase.co";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhueWluZ2F0d3FzZW1oeWhid3FiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2NzU3NjIsImV4cCI6MjA3MTI1MTc2Mn0.sInRWG5g8APMXbi1nu6cLwDd4_g4TlsXAujQs_4biyk";
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
 
     const firebaseConfig = {
       apiKey: "AIzaSyD_sEU0Kn1Y15D0bfVw5gEvoJoU6slJUyA",
@@ -1349,6 +1605,10 @@
     const editCharCount = document.getElementById('editCharCount');
     const voiceBtn = document.getElementById('voiceBtn');
     const voiceStatus = document.getElementById('voiceStatus');
+    const uploadForm = document.getElementById("uploadForm");
+    const fileInput = document.getElementById("fileInput");
+    const captionInput = document.getElementById("captionInput");
+    const galleryGrid = document.getElementById("galleryGrid");
 
     // Initialize
     initializeEventListeners();
@@ -1356,7 +1616,7 @@
     loadWeather();
     generateDailyChallenge();
     generateMoodCalendar();
-    
+
     const lastPage = localStorage.getItem('lastPage');
     if (lastPage && document.getElementById(lastPage)) {
       switchPage(lastPage);
@@ -1371,6 +1631,123 @@
       document.getElementById('btn-trending').addEventListener('click', () => switchPage('page-trending'));
       document.getElementById('btn-analytics').addEventListener('click', () => switchPage('page-analytics'));
       document.getElementById('btn-mood-map').addEventListener('click', () => switchPage('page-mood-map'));
+      document.getElementById("btn-gallery").addEventListener("click", () => switchPage("page-gallery"));
+
+
+      // Upload gambar ke Supabase
+      if (uploadForm) {
+        uploadForm?.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const file = fileInput.files[0];
+          if (!file) return showNotification("Pilih gambar dulu!", "error");
+          const maxSize = 1.5 * 1024 * 1024; // 1.5 MB (bytes)
+          if (file.size > maxSize) {
+            return showNotification("Ukuran file terlalu besar! Maksimal 1.5 MB ⚠️", "error");
+          }
+
+          const fileName = `${Date.now()}_${file.name}`;
+          console.log("Uploading file:", fileName);
+
+          // Upload ke bucket 'keluhkesah'
+          const { data: uploadedFile, error: uploadError } = await supabase
+            .storage.from("keluhkesah")
+            .upload(fileName, file);
+
+          if (uploadError) {
+            console.error("Upload error:", uploadError);
+            showNotification("Upload gagal: " + uploadError.message, "error");
+            return;
+          }
+          console.log("File uploaded:", uploadedFile);
+
+          // Ambil public URL
+          const { data: publicUrl } = supabase.storage.from("keluhkesah").getPublicUrl(fileName);
+          console.log("Public URL:", publicUrl.publicUrl);
+
+          // Simpan ke tabel metadata
+          const { error: insertError } = await supabase
+            .from("gallery")
+            .insert([{ url: publicUrl.publicUrl, caption: captionInput.value }]);
+
+          if (insertError) {
+            console.error("Insert error:", insertError);
+            showNotification("Gagal simpan metadata!", "error");
+            return;
+          }
+
+          captionInput.value = "";
+          fileInput.value = "";
+          showNotification("Gambar berhasil diupload! 🎉");
+          loadGallery();
+        });
+
+      }
+
+      // Load galeri dari Supabase
+      async function loadGallery() {
+        const { data, error } = await supabase.from("gallery").select("*").order("created_at", { ascending: false });
+        if (error) {
+          console.error(error);
+          return;
+        }
+
+        galleryGrid.innerHTML = data.map(item => `
+    <div style="background:#fff;padding:10px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.1);">
+      <img src="${item.url}" style="width:100%;border-radius:10px;object-fit:cover;" />
+      <p style="margin:0.5rem 0;">${item.caption || ""}</p>
+      <div style="display:flex;gap:0.5rem;">
+<button onclick="downloadImage('${item.url}')"
+  style="flex:1;padding:0.4rem;border:none;border-radius:8px;background:#45b7d1;color:white;cursor:pointer;">
+  ⬇️ Download
+</button>
+        <button onclick="deleteImage('${item.id}','${item.url}')" style="flex:1;padding:0.4rem;border:none;border-radius:8px;background:#ff6b6b;color:white;cursor:pointer;">🗑️ Hapus</button>
+      </div>
+    </div>
+  `).join("");
+      }
+
+      // Download gambar
+      window.downloadImage = async (url) => {
+        try {
+          const response = await fetch(url);
+          const blob = await response.blob();
+          const blobUrl = window.URL.createObjectURL(blob);
+
+          // Ambil nama file asli dari url
+          const fileName = url.split("/").pop();
+
+          const a = document.createElement("a");
+          a.href = blobUrl;
+          a.download = fileName; // nama asli dari Supabase
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+
+          window.URL.revokeObjectURL(blobUrl);
+        } catch (err) {
+          console.error("Download gagal:", err);
+          alert("Gagal download gambar!");
+        }
+      };
+
+
+      // Hapus gambar
+      window.deleteImage = async (id, url) => {
+        if (!confirm("Yakin ingin menghapus gambar ini?")) return;
+
+        // Hapus metadata dari tabel
+        await supabase.from("gallery").delete().eq("id", id);
+
+        // Hapus file dari storage
+        const filePath = url.split("/").pop();
+        await supabase.storage.from("gallery").remove([filePath]);
+
+        showNotification("Gambar berhasil dihapus 🗑️");
+        loadGallery();
+      };
+      // load awal
+      loadGallery();
+
 
       // Forms
       noteForm.addEventListener('submit', handleSubmitNote);
@@ -1470,7 +1847,7 @@
     function predictMood() {
       const text = catatan.value.toLowerCase();
       let scores = {};
-      
+
       Object.keys(moodWords).forEach(mood => {
         scores[mood] = 0;
         moodWords[mood].forEach(word => {
@@ -1482,7 +1859,7 @@
 
       const predictedMood = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
       const maxScore = Math.max(...Object.values(scores));
-      
+
       if (maxScore > 0) {
         const moodEmojis = {
           happy: '😊',
@@ -1492,7 +1869,7 @@
           confused: '😕',
           grateful: '🙏'
         };
-        
+
         document.getElementById('predictedMood').textContent = moodEmojis[predictedMood];
         document.getElementById('moodPrediction').textContent = `Sepertinya kamu ${predictedMood}...`;
       } else {
@@ -1507,22 +1884,22 @@
           const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
           mediaRecorder = new MediaRecorder(stream);
           recordingChunks = [];
-          
+
           mediaRecorder.ondataavailable = (event) => {
             recordingChunks.push(event.data);
           };
-          
+
           mediaRecorder.onstop = () => {
             const blob = new Blob(recordingChunks, { type: 'audio/wav' });
             // In a real app, you'd upload this to a speech-to-text service
             voiceStatus.textContent = 'Rekaman selesai! (Fitur speech-to-text akan datang)';
           };
-          
+
           mediaRecorder.start();
           voiceRecording = true;
           voiceBtn.classList.add('recording');
           voiceStatus.textContent = 'Merekam... Klik lagi untuk berhenti';
-          
+
         } catch (error) {
           showNotification('Browser tidak mendukung perekaman suara', 'error');
         }
@@ -1545,9 +1922,9 @@
       const today = new Date();
       const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
       const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-      
+
       calendar.innerHTML = '';
-      
+
       // Days of week header
       const daysOfWeek = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
       daysOfWeek.forEach(day => {
@@ -1556,7 +1933,7 @@
         dayHeader.textContent = day;
         calendar.appendChild(dayHeader);
       });
-      
+
       // Empty cells for days before month start
       const startDay = (firstDay.getDay() + 6) % 7; // Convert to Monday = 0
       for (let i = 0; i < startDay; i++) {
@@ -1564,14 +1941,14 @@
         emptyDay.classList.add('mood-day');
         calendar.appendChild(emptyDay);
       }
-      
+
       // Days of the month
       for (let day = 1; day <= lastDay.getDate(); day++) {
         const dayElement = document.createElement('div');
         dayElement.classList.add('mood-day');
         dayElement.style.background = day === today.getDate() ? '#4ecdc4' : '#f0f0f0';
         dayElement.style.color = day === today.getDate() ? 'white' : '#333';
-        
+
         // Simulate random moods for past days
         if (day < today.getDate()) {
           const moods = ['😊', '😢', '😠', '🤩', '😕', '🙏'];
@@ -1582,13 +1959,13 @@
           dayElement.textContent = day;
           dayElement.style.opacity = '0.5';
         }
-        
+
         dayElement.addEventListener('click', () => {
           if (day <= today.getDate()) {
             showNotification(`Mood tanggal ${day}: ${dayElement.textContent}`);
           }
         });
-        
+
         calendar.appendChild(dayElement);
       }
     }
@@ -1722,7 +2099,7 @@
           option.classList.remove('selected');
         });
         updateCharCount();
-        
+
         // Update daily streak
         updateDailyStreak();
 
@@ -1806,7 +2183,7 @@
 
     async function addComment(noteId, comment) {
       if (!comment.trim()) return;
-      
+
       try {
         const noteRef = doc(db, "notes", noteId);
         const commentData = {
@@ -1815,11 +2192,11 @@
           userId: userId,
           timestamp: new Date().toISOString()
         };
-        
+
         await updateDoc(noteRef, {
           comments: arrayUnion(commentData)
         });
-        
+
         showNotification('Komentar berhasil ditambahkan! 💬');
       } catch (error) {
         console.error("Error adding comment: ", error);
@@ -1859,17 +2236,17 @@
       const today = new Date().toDateString();
       const lastPost = localStorage.getItem('lastPostDate');
       let streak = parseInt(localStorage.getItem('dailyStreak') || '0');
-      
+
       if (lastPost !== today) {
         const yesterday = new Date();
         yesterday.setDate(yesterday.getDate() - 1);
-        
+
         if (lastPost === yesterday.toDateString()) {
           streak++;
         } else if (lastPost !== today) {
           streak = 1;
         }
-        
+
         localStorage.setItem('dailyStreak', streak.toString());
         localStorage.setItem('lastPostDate', today);
         document.getElementById('dailyStreak').textContent = streak;
@@ -2008,7 +2385,7 @@
     function toggleComments(noteId) {
       const commentsList = document.getElementById(`comments-${noteId}`);
       const isVisible = commentsList.style.display !== 'none';
-      
+
       if (isVisible) {
         commentsList.style.display = 'none';
       } else {
@@ -2030,7 +2407,7 @@
     function submitComment(noteId) {
       const input = document.getElementById(`comment-input-${noteId}`);
       const comment = input.value.trim();
-      
+
       if (comment) {
         addComment(noteId, comment);
         input.value = '';
@@ -2084,7 +2461,7 @@
         filteredNotes = filteredNotes.filter(note => {
           if (!note.waktu) return false;
           const noteDate = note.waktu.toDate();
-          
+
           switch (currentTimeFilter) {
             case 'today':
               return noteDate >= today;
@@ -2157,7 +2534,7 @@
     function generateWordCloud() {
       const wordFreq = {};
       const commonWords = ['dan', 'yang', 'di', 'ke', 'dari', 'untuk', 'dengan', 'pada', 'adalah', 'ini', 'itu', 'tidak', 'juga', 'atau', 'tapi', 'karena', 'saya', 'aku', 'kamu', 'dia'];
-      
+
       allNotes.forEach(note => {
         const words = note.catatan.toLowerCase().split(/\s+/);
         words.forEach(word => {
@@ -2169,7 +2546,7 @@
       });
 
       const sortedWords = Object.entries(wordFreq)
-        .sort(([,a], [,b]) => b - a)
+        .sort(([, a], [, b]) => b - a)
         .slice(0, 15);
 
       const wordCloud = document.getElementById('wordCloud');
@@ -2242,7 +2619,7 @@
           hourCounts[hour] = (hourCounts[hour] || 0) + 1;
         }
       });
-      
+
       const mostActiveHour = Object.keys(hourCounts).reduce((a, b) =>
         hourCounts[a] > hourCounts[b] ? a : b, '18');
 
@@ -2279,7 +2656,7 @@
       // Update activity chart
       const activityChart = document.getElementById('activityChart');
       const dayNames = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
-      
+
       // Skip the headers and update activity bars
       const dayCounts = [0, 0, 0, 0, 0, 0, 0];
       allNotes.forEach(note => {
@@ -2290,7 +2667,7 @@
       });
 
       const maxCount = Math.max(...dayCounts) || 1;
-      
+
       dayCounts.forEach((count, index) => {
         const intensity = count / maxCount;
         const activityBar = document.createElement('div');
@@ -2324,7 +2701,7 @@
       else if (pageId === 'page-mood-map') document.getElementById('btn-mood-map').classList.add('active');
 
       localStorage.setItem('lastPage', pageId);
-      
+
       // Update mood calendar when switching to mood map page
       if (pageId === 'page-mood-map') {
         generateMoodCalendar();
@@ -2354,15 +2731,15 @@
     setInterval(() => {
       // Update relative timestamps
       if (document.getElementById('page-daftar').classList.contains('active') ||
-          document.getElementById('page-trending').classList.contains('active')) {
+        document.getElementById('page-trending').classList.contains('active')) {
         document.querySelectorAll('.timestamp').forEach(timestamp => {
           // Timestamps will be updated on next Firebase update
         });
       }
-      
+
       // Update daily challenge
       generateDailyChallenge();
-      
+
       // Update weather
       loadWeather();
     }, 60000);
@@ -2390,8 +2767,16 @@
 
   <style>
     @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.02); box-shadow: 0 20px 50px rgba(78, 205, 196, 0.3); }
+
+      0%,
+      100% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.02);
+        box-shadow: 0 20px 50px rgba(78, 205, 196, 0.3);
+      }
     }
   </style>
 </body>
