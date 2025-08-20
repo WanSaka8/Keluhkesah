@@ -1046,3 +1046,79 @@
       localStorage.setItem('longestStreak', currentStreak.toString());
     }
   </script>
+
+
+
+
+
+async function loadWeather() {
+      const weatherWidget = document.getElementById('weatherWidget');
+      const lat = 3.5952;   // Medan latitude
+      const lon = 98.6722;  // Medan longitude
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,weather_code,wind_speed_10m&timezone=Asia%2FJakarta`;
+
+      try {
+        const res = await fetch(url, { cache: "no-store" });
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        const data = await res.json();
+        const c = data.current;
+
+        const { emoji, desc } = mapWeatherCode(c.weather_code);
+
+        const updatedAt = new Date(c.time).toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
+
+        // Build compact widget UI
+        weatherWidget.innerHTML = `
+        <span>${emoji}</span>
+        <span>${desc}</span>
+        <span>${Math.round(c.temperature_2m)}°C</span>
+        <span>💧${Math.round(c.relative_humidity_2m)}%</span>
+        <span>💨${Math.round(c.wind_speed_10m)} km/j</span>
+      `;
+        weatherWidget.title = `Medan • Diperbarui ${updatedAt}`;
+      } catch (err) {
+        console.error("Gagal memuat cuaca:", err);
+        weatherWidget.textContent = '🌤️ --°C';
+      } finally {
+        // refresh every 5 minutes
+        setTimeout(loadWeather, 5 * 60 * 1000);
+      }
+    }
+
+    function mapWeatherCode(code) {
+      // Mapping Open-Meteo WMO weather codes ke emoji + deskripsi Bahasa
+      const table = {
+        0: { emoji: '☀️', desc: 'Cerah' },
+        1: { emoji: '🌤️', desc: 'Sebagian cerah' },
+        2: { emoji: '⛅', desc: 'Berawan sebagian' },
+        3: { emoji: '☁️', desc: 'Berawan' },
+        45: { emoji: '🌫️', desc: 'Berkabut' },
+        48: { emoji: '🌫️', desc: 'Kabut membeku' },
+        51: { emoji: '🌦️', desc: 'Gerimis ringan' },
+        53: { emoji: '🌦️', desc: 'Gerimis sedang' },
+        55: { emoji: '🌧️', desc: 'Gerimis lebat' },
+        56: { emoji: '🌧️', desc: 'Gerimis beku ringan' },
+        57: { emoji: '🌧️', desc: 'Gerimis beku lebat' },
+        61: { emoji: '🌦️', desc: 'Hujan ringan' },
+        63: { emoji: '🌧️', desc: 'Hujan sedang' },
+        65: { emoji: '🌧️', desc: 'Hujan lebat' },
+        66: { emoji: '🌧️', desc: 'Hujan beku ringan' },
+        67: { emoji: '🌧️', desc: 'Hujan beku lebat' },
+        71: { emoji: '❄️', desc: 'Salju ringan' },
+        73: { emoji: '❄️', desc: 'Salju sedang' },
+        75: { emoji: '❄️', desc: 'Salju lebat' },
+        77: { emoji: '🌨️', desc: 'Butiran salju' },
+        80: { emoji: '🌦️', desc: 'Hujan lokal ringan' },
+        81: { emoji: '🌧️', desc: 'Hujan lokal sedang' },
+        82: { emoji: '⛈️', desc: 'Hujan lokal lebat' },
+        85: { emoji: '🌨️', desc: 'Hujan salju ringan' },
+        86: { emoji: '🌨️', desc: 'Hujan salju lebat' },
+        95: { emoji: '⛈️', desc: 'Badai petir' },
+        96: { emoji: '⛈️', desc: 'Badai petir + es kecil' },
+        99: { emoji: '⛈️', desc: 'Badai petir + es besar' },
+      };
+      return table[code] || { emoji: '🌤️', desc: 'Cuaca' };
+    }
+
+    // jalankan pas pertama kali load halaman
+    loadWeather();

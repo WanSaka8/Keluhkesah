@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -31,17 +30,9 @@
     }
 
     @keyframes gradientShift {
-      0% {
-        background-position: 0% 50%;
-      }
-
-      50% {
-        background-position: 100% 50%;
-      }
-
-      100% {
-        background-position: 0% 50%;
-      }
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
     }
 
     header h1 {
@@ -147,7 +138,6 @@
         opacity: 0;
         transform: translateY(20px);
       }
-
       to {
         opacity: 1;
         transform: translateY(0);
@@ -180,9 +170,7 @@
       flex: 1;
     }
 
-    input,
-    textarea,
-    select {
+    input, textarea, select {
       padding: 1rem;
       border-radius: 15px;
       border: 2px solid #e1e8ed;
@@ -192,9 +180,7 @@
       width: 100%;
     }
 
-    input:focus,
-    textarea:focus,
-    select:focus {
+    input:focus, textarea:focus, select:focus {
       outline: none;
       border-color: #4ecdc4;
       box-shadow: 0 0 20px rgba(78, 205, 196, 0.2);
@@ -291,17 +277,9 @@
     }
 
     @keyframes pulse {
-      0% {
-        transform: scale(1);
-      }
-
-      50% {
-        transform: scale(1.1);
-      }
-
-      100% {
-        transform: scale(1);
-      }
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
     }
 
     /* Anonymous Toggle */
@@ -533,35 +511,12 @@
       margin-left: 0.5rem;
     }
 
-    .mood-happy {
-      background: #fef3c7;
-      color: #d97706;
-    }
-
-    .mood-sad {
-      background: #dbeafe;
-      color: #2563eb;
-    }
-
-    .mood-angry {
-      background: #fecaca;
-      color: #dc2626;
-    }
-
-    .mood-excited {
-      background: #ecfdf5;
-      color: #059669;
-    }
-
-    .mood-confused {
-      background: #f3e8ff;
-      color: #7c3aed;
-    }
-
-    .mood-grateful {
-      background: #fdf2f8;
-      color: #db2777;
-    }
+    .mood-happy { background: #fef3c7; color: #d97706; }
+    .mood-sad { background: #dbeafe; color: #2563eb; }
+    .mood-angry { background: #fecaca; color: #dc2626; }
+    .mood-excited { background: #ecfdf5; color: #059669; }
+    .mood-confused { background: #f3e8ff; color: #7c3aed; }
+    .mood-grateful { background: #fdf2f8; color: #db2777; }
 
     .note-text {
       color: #4a5568;
@@ -575,7 +530,6 @@
       margin-top: 1rem;
       padding-top: 1rem;
       border-top: 1px solid #e1e8ed;
-      width: 100%;
     }
 
     .comments-toggle {
@@ -623,6 +577,12 @@
     }
 
     .note-footer {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .note-footer-top {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -687,20 +647,9 @@
       font-weight: 600;
     }
 
-    .delete-btn {
-      background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
-      color: white;
-    }
-
-    .edit-btn {
-      background: linear-gradient(45deg, #45b7d1, #64b5f6);
-      color: white;
-    }
-
-    .share-btn {
-      background: linear-gradient(45deg, #96ceb4, #81c784);
-      color: white;
-    }
+    .delete-btn { background: linear-gradient(45deg, #ff6b6b, #ff8e8e); color: white; }
+    .edit-btn { background: linear-gradient(45deg, #45b7d1, #64b5f6); color: white; }
+    .share-btn { background: linear-gradient(45deg, #96ceb4, #81c784); color: white; }
 
     .action-btn:hover {
       transform: translateY(-2px);
@@ -732,7 +681,6 @@
       font-size: 1.2rem;
       cursor: pointer;
       transition: all 0.3s ease;
-      position: relative;
     }
 
     .mood-day:hover {
@@ -818,35 +766,6 @@
       margin-bottom: 1rem;
     }
 
-    .img-card {
-      background: rgba(255, 255, 255, 0.95);
-      border-radius: 15px;
-      padding: 10px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-      text-align: center;
-    }
-
-    .img-card img {
-      max-width: 100%;
-      border-radius: 10px;
-    }
-
-    .img-card a {
-      display: inline-block;
-      margin-top: 8px;
-      padding: 6px 12px;
-      background: #4ecdc4;
-      color: white;
-      border-radius: 8px;
-      text-decoration: none;
-      font-size: 0.9rem;
-    }
-
-    .img-card a:hover {
-      background: #45b7d1;
-    }
-
-
     .close-btn {
       background: none;
       border: none;
@@ -866,48 +785,105 @@
       color: #ff6b6b;
     }
 
-    /* Dark Mode */
+    /* Dark Mode - Much brighter text contrast */
     body.dark-mode {
       background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-      color: #ecf0f1;
+      color: #ffffff;
     }
 
     .dark-mode .form-container,
     .dark-mode .filter-section,
     .dark-mode .mood-map,
     .dark-mode li {
-      background: rgba(52, 73, 94, 0.9);
-      color: #ecf0f1;
+      background: rgba(44, 62, 80, 0.95);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .dark-mode .search-box {
+      background: rgba(44, 62, 80, 0.95);
+      color: #ffffff;
     }
 
     .dark-mode input,
     .dark-mode textarea,
     .dark-mode select {
-      background: rgba(44, 62, 80, 0.8);
-      color: #ecf0f1;
+      background: rgba(52, 73, 94, 0.9);
+      color: #ffffff;
       border-color: #5a6c7d;
     }
 
-    /* Dark Mode Text Improvements */
-    .dark-mode .note-text,
-    .dark-mode .author-name,
-    .dark-mode .mood-badge,
-    .dark-mode .category-badge,
-    .dark-mode .timestamp,
-    .dark-mode .comments-toggle,
-    .dark-mode .comment,
-    .dark-mode .challenge-description,
-    .dark-mode .character-count {
-      color: #ecf0f1 !important;
+    .dark-mode input::placeholder,
+    .dark-mode textarea::placeholder {
+      color: #e0e0e0;
     }
 
-    .dark-mode .mood-badge,
-    .dark-mode .category-badge {
-      background: rgba(255, 255, 255, 0.15) !important;
+    .dark-mode .author-name {
+      color: #ffffff;
+    }
+
+    .dark-mode .note-text {
+      color: #f0f0f0;
+    }
+
+    .dark-mode .timestamp {
+      color: #e0e0e0;
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .dark-mode .comments-toggle {
+      color: #e0e0e0;
     }
 
     .dark-mode .comment {
       background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+    }
+
+    /* Fix untuk tanggal komentar di dark mode */
+    .dark-mode .comment div[style*="color: #666"] {
+      color: #e0e0e0 !important;
+    }
+    
+    .dark-mode .comment > div {
+      color: #e0e0e0 !important;
+    }
+
+    .dark-mode .comment-input {
+      background: rgba(52, 73, 94, 0.9);
+      color: #ffffff;
+      border-color: #5a6c7d;
+    }
+
+    .dark-mode .modal-content {
+      background: #2c3e50;
+      color: #ffffff;
+    }
+
+    .dark-mode .close-btn {
+      color: #e0e0e0;
+    }
+
+    .dark-mode .character-count {
+      color: #e0e0e0;
+    }
+
+    .dark-mode .mood-option,
+    .dark-mode .category-option,
+    .dark-mode .filter-btn,
+    .dark-mode .time-btn,
+    .dark-mode .reaction-btn {
+      background: rgba(52, 73, 94, 0.9);
+      color: #ffffff;
+      border-color: #5a6c7d;
+    }
+
+    .dark-mode .mood-option:hover,
+    .dark-mode .category-option:hover,
+    .dark-mode .filter-btn:hover,
+    .dark-mode .time-btn:hover,
+    .dark-mode .reaction-btn:hover {
+      background: rgba(72, 93, 114, 0.9);
     }
 
     /* Theme Toggle */
@@ -934,79 +910,38 @@
 
     /* Responsive */
     @media (max-width: 768px) {
-      header h1 {
-        font-size: 2rem;
+      header h1 { font-size: 2rem; }
+      .stats { flex-direction: column; gap: 0.5rem; }
+      nav { flex-direction: column; align-items: center; gap: 0.5rem; }
+      nav button { width: 200px; }
+      .page { padding: 1rem; }
+      .form-row { flex-direction: column; }
+      .filter-row { flex-direction: column; align-items: flex-start; }
+      .note-footer { 
+        flex-direction: column; 
+        align-items: flex-start; 
       }
-
-      .stats {
-        flex-direction: column;
-        gap: 0.5rem;
-      }
-
-      nav {
-        flex-direction: column;
-        align-items: center;
-        gap: 0.5rem;
-      }
-
-      nav button {
-        width: 200px;
-      }
-
-      .page {
-        padding: 1rem;
-      }
-
-      .form-row {
-        flex-direction: column;
-      }
-
-      .filter-row {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .note-footer {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .reactions-section {
+      .note-footer-top {
         width: 100%;
-        justify-content: space-between;
+        flex-direction: column;
+        align-items: flex-start;
       }
-
-      .weather-widget {
-        position: static;
-        margin-bottom: 1rem;
-      }
-
-      .theme-toggle {
-        top: 10px;
-        left: 10px;
-      }
-
-      /* Mobile Mood Map Improvements */
+      .reactions-section { width: 100%; justify-content: space-between; }
+      .weather-widget { position: static; margin-bottom: 1rem; }
+      .theme-toggle { top: 10px; left: 10px; }
+      
+      /* Mobile mood map improvements */
       .mood-grid {
-        grid-template-columns: repeat(7, 1fr);
         gap: 0.3rem;
       }
-
+      
       .mood-day {
-        font-size: 0.8rem;
-        padding: 0.2rem;
+        font-size: 0.9rem;
+        min-height: 35px;
       }
-
-      .mood-day::after {
-        content: attr(data-date);
-        position: absolute;
-        bottom: 2px;
-        font-size: 0.5rem;
-        color: rgba(0, 0, 0, 0.6);
-      }
-
-      .dark-mode .mood-day::after {
-        color: rgba(255, 255, 255, 0.7);
+      
+      .mood-map {
+        padding: 1rem;
       }
     }
 
@@ -1014,7 +949,6 @@
       nav {
         gap: 0.5rem;
       }
-
       nav button {
         font-size: 0.8rem;
         padding: 0.8rem 0.3rem;
@@ -1023,19 +957,12 @@
 
     @media (max-width: 480px) {
       .mood-grid {
-        grid-template-columns: repeat(7, 1fr);
         gap: 0.2rem;
       }
-
+      
       .mood-day {
-        font-size: 0.7rem;
-        min-width: 25px;
-        min-height: 25px;
-      }
-
-      .mood-day::after {
-        font-size: 0.4rem;
-        bottom: 1px;
+        font-size: 0.8rem;
+        min-height: 30px;
       }
     }
   </style>
@@ -1051,7 +978,7 @@
       <span>🌤️</span>
       <span>Loading...</span>
     </div>
-
+    
     <h1>💭 Keluh Kesah</h1>
     <p>Tempat berbagi cerita dan keluh kesah</p>
     <div class="stats">
@@ -1068,7 +995,6 @@
     <button id="btn-trending">🔥 Trending</button>
     <button id="btn-analytics">📊 Analytics</button>
     <button id="btn-mood-map">📅 Mood Map</button>
-    <button id="btn-gallery">🖼️ Galeri</button>
   </nav>
 
   <!-- Daily Challenge -->
@@ -1172,7 +1098,7 @@
           <div class="filter-btn" data-filter="grateful">🙏</div>
         </div>
       </div>
-
+      
       <div class="filter-row">
         <span style="font-weight: 600;">Filter waktu:</span>
         <div class="time-filter">
@@ -1241,33 +1167,27 @@
     <div class="trending-section">
       <div class="trending-title">📊 Analytics Dashboard</div>
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-        <div
-          style="background: linear-gradient(45deg, #ff6b6b, #ff8e8e); color: white; padding: 1.5rem; border-radius: 15px; text-align: center;">
+        <div style="background: linear-gradient(45deg, #ff6b6b, #ff8e8e); color: white; padding: 1.5rem; border-radius: 15px; text-align: center;">
           <div style="font-size: 2rem; font-weight: bold;" id="totalPostsAnalytics">0</div>
           <div>Total Cerita</div>
         </div>
-        <div
-          style="background: linear-gradient(45deg, #4ecdc4, #45b7d1); color: white; padding: 1.5rem; border-radius: 15px; text-align: center;">
+        <div style="background: linear-gradient(45deg, #4ecdc4, #45b7d1); color: white; padding: 1.5rem; border-radius: 15px; text-align: center;">
           <div style="font-size: 2rem; font-weight: bold;" id="totalReactionsAnalytics">0</div>
           <div>Total Reaksi</div>
         </div>
-        <div
-          style="background: linear-gradient(45deg, #96ceb4, #81c784); color: white; padding: 1.5rem; border-radius: 15px; text-align: center;">
+        <div style="background: linear-gradient(45deg, #96ceb4, #81c784); color: white; padding: 1.5rem; border-radius: 15px; text-align: center;">
           <div style="font-size: 2rem; font-weight: bold;" id="avgReactionsAnalytics">0</div>
           <div>Rata-rata Reaksi</div>
         </div>
-        <div
-          style="background: linear-gradient(45deg, #ffeaa7, #fdcb6e); color: white; padding: 1.5rem; border-radius: 15px; text-align: center;">
+        <div style="background: linear-gradient(45deg, #ffeaa7, #fdcb6e); color: white; padding: 1.5rem; border-radius: 15px; text-align: center;">
           <div style="font-size: 2rem; font-weight: bold;" id="topMoodAnalytics">😊</div>
           <div>Mood Terpopuler</div>
         </div>
-        <div
-          style="background: linear-gradient(45deg, #a29bfe, #6c5ce7); color: white; padding: 1.5rem; border-radius: 15px; text-align: center;">
+        <div style="background: linear-gradient(45deg, #a29bfe, #6c5ce7); color: white; padding: 1.5rem; border-radius: 15px; text-align: center;">
           <div style="font-size: 2rem; font-weight: bold;" id="activeHoursAnalytics">18:00</div>
           <div>Jam Teraktif</div>
         </div>
-        <div
-          style="background: linear-gradient(45deg, #fd79a8, #e84393); color: white; padding: 1.5rem; border-radius: 15px; text-align: center;">
+        <div style="background: linear-gradient(45deg, #fd79a8, #e84393); color: white; padding: 1.5rem; border-radius: 15px; text-align: center;">
           <div style="font-size: 2rem; font-weight: bold;" id="longestStreakAnalytics">0</div>
           <div>Streak Terpanjang</div>
         </div>
@@ -1281,8 +1201,7 @@
 
     <div class="trending-section">
       <div class="trending-title">📅 Aktivitas Harian</div>
-      <div id="activityChart"
-        style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem; margin-top: 1rem;">
+      <div id="activityChart" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem; margin-top: 1rem;">
         <div style="text-align: center; font-weight: bold; padding: 0.5rem;">Sen</div>
         <div style="text-align: center; font-weight: bold; padding: 0.5rem;">Sel</div>
         <div style="text-align: center; font-weight: bold; padding: 0.5rem;">Rab</div>
@@ -1304,8 +1223,7 @@
 
     <div class="trending-section">
       <div class="trending-title">📊 Mood Statistics</div>
-      <div id="moodStats"
-        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+      <div id="moodStats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
         <div style="text-align: center; padding: 1rem; background: rgba(255, 255, 255, 0.1); border-radius: 10px;">
           <div style="font-size: 2rem;">😊</div>
           <div style="font-weight: bold; margin: 0.5rem 0;">Mood Dominan</div>
@@ -1327,16 +1245,13 @@
     <div class="trending-section">
       <div class="trending-title">💡 Mood Insights</div>
       <div id="moodInsights" style="display: flex; flex-direction: column; gap: 1rem;">
-        <div
-          style="padding: 1rem; background: rgba(78, 205, 196, 0.1); border-left: 4px solid #4ecdc4; border-radius: 0 10px 10px 0;">
+        <div style="padding: 1rem; background: rgba(78, 205, 196, 0.1); border-left: 4px solid #4ecdc4; border-radius: 0 10px 10px 0;">
           <strong>💡 Insight:</strong> Kamu cenderung lebih bahagia di akhir pekan!
         </div>
-        <div
-          style="padding: 1rem; background: rgba(255, 107, 107, 0.1); border-left: 4px solid #ff6b6b; border-radius: 0 10px 10px 0;">
+        <div style="padding: 1rem; background: rgba(255, 107, 107, 0.1); border-left: 4px solid #ff6b6b; border-radius: 0 10px 10px 0;">
           <strong>⚠️ Perhatian:</strong> Mood turun pada hari Senin, mungkin Monday Blues?
         </div>
-        <div
-          style="padding: 1rem; background: rgba(150, 206, 180, 0.1); border-left: 4px solid #96ceb4; border-radius: 0 10px 10px 0;">
+        <div style="padding: 1rem; background: rgba(150, 206, 180, 0.1); border-left: 4px solid #96ceb4; border-radius: 0 10px 10px 0;">
           <strong>🎯 Saran:</strong> Coba aktivitas relaksasi di hari kerja untuk mood yang lebih baik.
         </div>
       </div>
@@ -1362,21 +1277,6 @@
     </div>
   </div>
 
-  <!-- Halaman Galeri -->
-  <div id="page-gallery" class="page">
-    <h2 style="text-align:center; margin-bottom:1rem;">🖼️ Galeri Gambar</h2>
-
-    <div class="form-container" style="margin-bottom:2rem;">
-      <form id="uploadForm">
-        <input type="file" id="fileInput" accept="image/*" required>
-        <button type="submit" class="submit">📤 Upload</button>
-      </form>
-    </div>
-
-    <div id="gallery" style="display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:1rem;"></div>
-  </div>
-
-
   <!-- Notification -->
   <div id="notification" class="notification"></div>
 
@@ -1385,7 +1285,6 @@
     import {
       getFirestore, collection, addDoc, serverTimestamp, onSnapshot, query, orderBy, deleteDoc, doc, updateDoc, arrayUnion, arrayRemove, increment, where, getDocs
     } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-storage.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyD_sEU0Kn1Y15D0bfVw5gEvoJoU6slJUyA",
@@ -1436,9 +1335,6 @@
     };
 
     // DOM elements
-    const galleryEl = document.getElementById('gallery');
-    const uploadForm = document.getElementById('uploadForm');
-    const fileInput = document.getElementById('fileInput');
     const noteForm = document.getElementById('noteForm');
     const editForm = document.getElementById('editForm');
     const notesList = document.getElementById('notesList');
@@ -1460,7 +1356,7 @@
     loadWeather();
     generateDailyChallenge();
     generateMoodCalendar();
-
+    
     const lastPage = localStorage.getItem('lastPage');
     if (lastPage && document.getElementById(lastPage)) {
       switchPage(lastPage);
@@ -1475,8 +1371,6 @@
       document.getElementById('btn-trending').addEventListener('click', () => switchPage('page-trending'));
       document.getElementById('btn-analytics').addEventListener('click', () => switchPage('page-analytics'));
       document.getElementById('btn-mood-map').addEventListener('click', () => switchPage('page-mood-map'));
-      const btnGallery = document.getElementById('btn-gallery');
-      if (btnGallery) btnGallery.addEventListener('click', () => switchPage('page-gallery'));
 
       // Forms
       noteForm.addEventListener('submit', handleSubmitNote);
@@ -1576,7 +1470,7 @@
     function predictMood() {
       const text = catatan.value.toLowerCase();
       let scores = {};
-
+      
       Object.keys(moodWords).forEach(mood => {
         scores[mood] = 0;
         moodWords[mood].forEach(word => {
@@ -1588,7 +1482,7 @@
 
       const predictedMood = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
       const maxScore = Math.max(...Object.values(scores));
-
+      
       if (maxScore > 0) {
         const moodEmojis = {
           happy: '😊',
@@ -1598,7 +1492,7 @@
           confused: '😕',
           grateful: '🙏'
         };
-
+        
         document.getElementById('predictedMood').textContent = moodEmojis[predictedMood];
         document.getElementById('moodPrediction').textContent = `Sepertinya kamu ${predictedMood}...`;
       } else {
@@ -1613,22 +1507,22 @@
           const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
           mediaRecorder = new MediaRecorder(stream);
           recordingChunks = [];
-
+          
           mediaRecorder.ondataavailable = (event) => {
             recordingChunks.push(event.data);
           };
-
+          
           mediaRecorder.onstop = () => {
             const blob = new Blob(recordingChunks, { type: 'audio/wav' });
             // In a real app, you'd upload this to a speech-to-text service
             voiceStatus.textContent = 'Rekaman selesai! (Fitur speech-to-text akan datang)';
           };
-
+          
           mediaRecorder.start();
           voiceRecording = true;
           voiceBtn.classList.add('recording');
           voiceStatus.textContent = 'Merekam... Klik lagi untuk berhenti';
-
+          
         } catch (error) {
           showNotification('Browser tidak mendukung perekaman suara', 'error');
         }
@@ -1651,9 +1545,9 @@
       const today = new Date();
       const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
       const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-
+      
       calendar.innerHTML = '';
-
+      
       // Days of week header
       const daysOfWeek = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
       daysOfWeek.forEach(day => {
@@ -1662,7 +1556,7 @@
         dayHeader.textContent = day;
         calendar.appendChild(dayHeader);
       });
-
+      
       // Empty cells for days before month start
       const startDay = (firstDay.getDay() + 6) % 7; // Convert to Monday = 0
       for (let i = 0; i < startDay; i++) {
@@ -1670,14 +1564,14 @@
         emptyDay.classList.add('mood-day');
         calendar.appendChild(emptyDay);
       }
-
+      
       // Days of the month
       for (let day = 1; day <= lastDay.getDate(); day++) {
         const dayElement = document.createElement('div');
         dayElement.classList.add('mood-day');
         dayElement.style.background = day === today.getDate() ? '#4ecdc4' : '#f0f0f0';
         dayElement.style.color = day === today.getDate() ? 'white' : '#333';
-
+        
         // Simulate random moods for past days
         if (day < today.getDate()) {
           const moods = ['😊', '😢', '😠', '🤩', '😕', '🙏'];
@@ -1688,13 +1582,13 @@
           dayElement.textContent = day;
           dayElement.style.opacity = '0.5';
         }
-
+        
         dayElement.addEventListener('click', () => {
           if (day <= today.getDate()) {
             showNotification(`Mood tanggal ${day}: ${dayElement.textContent}`);
           }
         });
-
+        
         calendar.appendChild(dayElement);
       }
     }
@@ -1828,7 +1722,7 @@
           option.classList.remove('selected');
         });
         updateCharCount();
-
+        
         // Update daily streak
         updateDailyStreak();
 
@@ -1912,20 +1806,20 @@
 
     async function addComment(noteId, comment) {
       if (!comment.trim()) return;
-
+      
       try {
         const noteRef = doc(db, "notes", noteId);
         const commentData = {
           text: comment,
-          author: isAnonymous ? 'Anonim' : document.getElementById('nama').value || 'Anonim',
+          author: isAnonymous ? 'Anonim' : document.getElementById('nama').value || 'Anonymous',
           userId: userId,
           timestamp: new Date().toISOString()
         };
-
+        
         await updateDoc(noteRef, {
           comments: arrayUnion(commentData)
         });
-
+        
         showNotification('Komentar berhasil ditambahkan! 💬');
       } catch (error) {
         console.error("Error adding comment: ", error);
@@ -1965,17 +1859,17 @@
       const today = new Date().toDateString();
       const lastPost = localStorage.getItem('lastPostDate');
       let streak = parseInt(localStorage.getItem('dailyStreak') || '0');
-
+      
       if (lastPost !== today) {
         const yesterday = new Date();
         yesterday.setDate(yesterday.getDate() - 1);
-
+        
         if (lastPost === yesterday.toDateString()) {
           streak++;
         } else if (lastPost !== today) {
           streak = 1;
         }
-
+        
         localStorage.setItem('dailyStreak', streak.toString());
         localStorage.setItem('lastPostDate', today);
         document.getElementById('dailyStreak').textContent = streak;
@@ -2114,7 +2008,7 @@
     function toggleComments(noteId) {
       const commentsList = document.getElementById(`comments-${noteId}`);
       const isVisible = commentsList.style.display !== 'none';
-
+      
       if (isVisible) {
         commentsList.style.display = 'none';
       } else {
@@ -2136,7 +2030,7 @@
     function submitComment(noteId) {
       const input = document.getElementById(`comment-input-${noteId}`);
       const comment = input.value.trim();
-
+      
       if (comment) {
         addComment(noteId, comment);
         input.value = '';
@@ -2190,7 +2084,7 @@
         filteredNotes = filteredNotes.filter(note => {
           if (!note.waktu) return false;
           const noteDate = note.waktu.toDate();
-
+          
           switch (currentTimeFilter) {
             case 'today':
               return noteDate >= today;
@@ -2263,7 +2157,7 @@
     function generateWordCloud() {
       const wordFreq = {};
       const commonWords = ['dan', 'yang', 'di', 'ke', 'dari', 'untuk', 'dengan', 'pada', 'adalah', 'ini', 'itu', 'tidak', 'juga', 'atau', 'tapi', 'karena', 'saya', 'aku', 'kamu', 'dia'];
-
+      
       allNotes.forEach(note => {
         const words = note.catatan.toLowerCase().split(/\s+/);
         words.forEach(word => {
@@ -2275,7 +2169,7 @@
       });
 
       const sortedWords = Object.entries(wordFreq)
-        .sort(([, a], [, b]) => b - a)
+        .sort(([,a], [,b]) => b - a)
         .slice(0, 15);
 
       const wordCloud = document.getElementById('wordCloud');
@@ -2348,7 +2242,7 @@
           hourCounts[hour] = (hourCounts[hour] || 0) + 1;
         }
       });
-
+      
       const mostActiveHour = Object.keys(hourCounts).reduce((a, b) =>
         hourCounts[a] > hourCounts[b] ? a : b, '18');
 
@@ -2385,7 +2279,7 @@
       // Update activity chart
       const activityChart = document.getElementById('activityChart');
       const dayNames = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
-
+      
       // Skip the headers and update activity bars
       const dayCounts = [0, 0, 0, 0, 0, 0, 0];
       allNotes.forEach(note => {
@@ -2396,7 +2290,7 @@
       });
 
       const maxCount = Math.max(...dayCounts) || 1;
-
+      
       dayCounts.forEach((count, index) => {
         const intensity = count / maxCount;
         const activityBar = document.createElement('div');
@@ -2428,10 +2322,9 @@
       else if (pageId === 'page-trending') document.getElementById('btn-trending').classList.add('active');
       else if (pageId === 'page-analytics') document.getElementById('btn-analytics').classList.add('active');
       else if (pageId === 'page-mood-map') document.getElementById('btn-mood-map').classList.add('active');
-      else if (pageId === 'page-gallery') document.getElementById('btn-gallery').classList.add('active');
 
       localStorage.setItem('lastPage', pageId);
-
+      
       // Update mood calendar when switching to mood map page
       if (pageId === 'page-mood-map') {
         generateMoodCalendar();
@@ -2449,51 +2342,6 @@
       }, 3000);
     }
 
-    // ===== Gallery: Firebase Storage + Firestore =====
-    async function loadGalleryImages() {
-      if (!galleryEl) return;
-      galleryEl.innerHTML = "";
-      try {
-        const q = query(collection(db, "images"), orderBy("createdAt", "desc"));
-        const snap = await getDocs(q);
-        snap.forEach(docSnap => {
-          const data = docSnap.data();
-          const card = document.createElement("div");
-          card.className = "img-card";
-          card.innerHTML = `
-            <img src="${data.url}" alt="${data.name || 'gambar'}">
-            <a href="${data.url}" download>⬇️ Download</a>
-          `;
-          galleryEl.appendChild(card);
-        });
-      } catch (e) {
-        console.error("Gagal load galeri:", e);
-      }
-    }
-
-    if (uploadForm) {
-      uploadForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const file = fileInput?.files?.[0];
-        if (!file) return;
-        try {
-          const storageRef = ref(getStorage(), "gallery/" + Date.now() + "_" + file.name);
-          await uploadBytes(storageRef, file);
-          const url = await getDownloadURL(storageRef);
-          await addDoc(collection(db, "images"), {
-            url,
-            name: file.name,
-            createdAt: serverTimestamp()
-          });
-          await loadGalleryImages();
-          showNotification("Gambar berhasil diupload!", 'success');
-        } catch (e) {
-          console.error("Upload gagal:", e);
-          showNotification("Upload gagal: " + (e?.message || e), 'error');
-        }
-      });
-    }
-
     // Make functions global for onclick handlers
     window.toggleReaction = toggleReaction;
     window.deleteNote = deleteNote;
@@ -2506,15 +2354,15 @@
     setInterval(() => {
       // Update relative timestamps
       if (document.getElementById('page-daftar').classList.contains('active') ||
-        document.getElementById('page-trending').classList.contains('active')) {
+          document.getElementById('page-trending').classList.contains('active')) {
         document.querySelectorAll('.timestamp').forEach(timestamp => {
           // Timestamps will be updated on next Firebase update
         });
       }
-
+      
       // Update daily challenge
       generateDailyChallenge();
-
+      
       // Update weather
       loadWeather();
     }, 60000);
@@ -2542,16 +2390,8 @@
 
   <style>
     @keyframes pulse {
-
-      0%,
-      100% {
-        transform: scale(1);
-      }
-
-      50% {
-        transform: scale(1.02);
-        box-shadow: 0 20px 50px rgba(78, 205, 196, 0.3);
-      }
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); box-shadow: 0 20px 50px rgba(78, 205, 196, 0.3); }
     }
   </style>
 </body>
