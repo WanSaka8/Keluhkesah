@@ -1699,7 +1699,7 @@
         const noteRef = doc(db, "notes", noteId);
         const commentData = {
           text: comment,
-          author: isAnonymous ? 'Anonim' : document.getElementById('nama').value || 'Anonymous',
+          author: isAnonymous ? 'Anonim' : document.getElementById('nama').value || 'Anonim',
           userId: userId,
           timestamp: new Date().toISOString()
         };
