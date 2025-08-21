@@ -1391,16 +1391,97 @@
     }
 
     .sakura {
-  position: absolute;
-  top: -10%;
-  width: 20px;
-  height: 20px;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='%23ffb6c1' d='M256 32c24 0 45 11 60 29 15-18 36-29 60-29 44 0 80 36 80 80 0 37-25 68-61 77 10 11 15 26 15 41 0 35-29 64-64 64-15 0-29-5-40-14-11 9-25 14-40 14s-29-5-40-14c-11 9-25 14-40 14-35 0-64-29-64-64 0-15 5-30 15-41-36-9-61-40-61-77 0-44 36-80 80-80 24 0 45 11 60 29 15-18 36-29 60-29z'/></svg>");
-  background-size: contain;
-  background-repeat: no-repeat;
-  animation: fall linear infinite;
-  opacity: 0.85;
-}
+      position: absolute;
+      top: -10%;
+      width: 20px;
+      height: 20px;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='%23ffb6c1' d='M256 32c24 0 45 11 60 29 15-18 36-29 60-29 44 0 80 36 80 80 0 37-25 68-61 77 10 11 15 26 15 41 0 35-29 64-64 64-15 0-29-5-40-14-11 9-25 14-40 14s-29-5-40-14c-11 9-25 14-40 14-35 0-64-29-64-64 0-15 5-30 15-41-36-9-61-40-61-77 0-44 36-80 80-80 24 0 45 11 60 29 15-18 36-29 60-29z'/></svg>");
+      background-size: contain;
+      background-repeat: no-repeat;
+      animation: fall linear infinite;
+      opacity: 0.85;
+    }
+
+    /* 🌈 Rainbow Mode */
+    body.theme-rainbow {
+      background: linear-gradient(270deg, #ff6b6b, #fddb92, #4ecdc4, #45b7d1, #96ceb4, #ffeaa7, #ff9ff3);
+      background-size: 1400% 1400%;
+      animation: rainbowBackground 15s ease infinite;
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    /* Animasi gradasi pelangi bergerak */
+    @keyframes rainbowBackground {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    /* Card & container di mode rainbow */
+    .theme-rainbow .form-container,
+    .theme-rainbow .filter-section,
+    .theme-rainbow .mood-map,
+    .theme-rainbow li,
+    .theme-rainbow .search-box,
+    .theme-rainbow .modal-content {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(12px);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+    }
+
+    /* Tombol di mode rainbow */
+    .theme-rainbow button,
+    .theme-rainbow .action-btn,
+    .theme-rainbow .submit {
+      background: linear-gradient(90deg, #ff6b6b, #fddb92, #4ecdc4, #45b7d1, #96ceb4, #ffeaa7, #ff9ff3);
+      background-size: 500% 500%;
+      animation: rainbowButton 5s linear infinite;
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    @keyframes rainbowButton {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    /* Hover efek tombol di mode rainbow */
+    .theme-rainbow button:hover,
+    .theme-rainbow .submit:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 25px rgba(255, 255, 255, 0.5);
+    }
+
+    /* Efek glow pada teks */
+    .theme-rainbow h1,
+    .theme-rainbow h2,
+    .theme-rainbow .author-name {
+      text-shadow: 0 0 5px #fff, 0 0 10px #ff6b6b, 0 0 15px #4ecdc4, 0 0 20px #ff9ff3;
+    }
+
 
 
     @keyframes fall {
@@ -1421,13 +1502,14 @@
   <div class="sakura-container"></div>
   <!-- Theme Toggle -->
   <div class="theme-switcher">
-  <button id="theme-toggle-main" title="Ganti Mode">🎨</button>
-  <div class="theme-options" id="theme-options">
-    <button id="theme-light" title="Mode Terang">☀️</button>
-    <button id="theme-dark" title="Mode Gelap">🌙</button>
-    <button id="theme-wibu" title="Mode Wibu">🌸</button>
+    <button id="theme-toggle-main" title="Ganti Mode">🎨</button>
+    <div class="theme-options" id="theme-options">
+      <button id="theme-light" title="Mode Terang">☀️</button>
+      <button id="theme-dark" title="Mode Gelap">🌙</button>
+      <button id="theme-wibu" title="Mode Wibu">🌸</button>
+      <button id="theme-rainbow" title="Mode Rainbow">🌈</button>
+    </div>
   </div>
-</div>
 
 
   <header>
@@ -2366,64 +2448,64 @@
     }
 
     // Sakura Falling Animation 🌸
-const sakuraContainer = document.querySelector(".sakura-container");
-const body = document.body;
+    const sakuraContainer = document.querySelector(".sakura-container");
+    const body = document.body;
 
-function createSakura() {
-  const sakura = document.createElement("div");
-  sakura.classList.add("sakura");
+    function createSakura() {
+      const sakura = document.createElement("div");
+      sakura.classList.add("sakura");
 
-  // Posisi random horizontal
-  sakura.style.left = Math.random() * window.innerWidth + "px";
+      // Posisi random horizontal
+      sakura.style.left = Math.random() * window.innerWidth + "px";
 
-  // Ukuran random
-  const size = Math.random() * 12 + 10; // 10px - 22px
-  sakura.style.width = `${size}px`;
-  sakura.style.height = `${size}px`;
+      // Ukuran random
+      const size = Math.random() * 12 + 10; // 10px - 22px
+      sakura.style.width = `${size}px`;
+      sakura.style.height = `${size}px`;
 
-  // Durasi jatuh random
-  sakura.style.animationDuration = Math.random() * 3 + 4 + "s";
+      // Durasi jatuh random
+      sakura.style.animationDuration = Math.random() * 3 + 4 + "s";
 
-  // Delay random biar gak serempak
-  sakura.style.animationDelay = Math.random() * 3 + "s";
+      // Delay random biar gak serempak
+      sakura.style.animationDelay = Math.random() * 3 + "s";
 
-  sakuraContainer.appendChild(sakura);
+      sakuraContainer.appendChild(sakura);
 
-  // Hapus setelah animasi selesai
-  setTimeout(() => {
-    sakura.remove();
-  }, 8000);
-}
+      // Hapus setelah animasi selesai
+      setTimeout(() => {
+        sakura.remove();
+      }, 8000);
+    }
 
-let sakuraInterval = null;
+    let sakuraInterval = null;
 
-function startSakura() {
-  if (!sakuraInterval) {
-    sakuraContainer.style.display = "block";
-    sakuraInterval = setInterval(createSakura, 300); // tiap 300ms munculin kelopak baru
-  }
-}
+    function startSakura() {
+      if (!sakuraInterval) {
+        sakuraContainer.style.display = "block";
+        sakuraInterval = setInterval(createSakura, 300); // tiap 300ms munculin kelopak baru
+      }
+    }
 
-function stopSakura() {
-  sakuraContainer.style.display = "none";
-  sakuraContainer.innerHTML = "";
-  clearInterval(sakuraInterval);
-  sakuraInterval = null;
-}
+    function stopSakura() {
+      sakuraContainer.style.display = "none";
+      sakuraContainer.innerHTML = "";
+      clearInterval(sakuraInterval);
+      sakuraInterval = null;
+    }
 
-// Cek kalau body punya class "theme-wibu"
-const observer = new MutationObserver(() => {
-  if (body.classList.contains("theme-wibu")) {
-    startSakura();
-  } else {
-    stopSakura();
-  }
-});
+    // Cek kalau body punya class "theme-wibu"
+    const observer = new MutationObserver(() => {
+      if (body.classList.contains("theme-wibu")) {
+        startSakura();
+      } else {
+        stopSakura();
+      }
+    });
 
-observer.observe(body, {
-  attributes: true,
-  attributeFilter: ["class"],
-});
+    observer.observe(body, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
 
     document.getElementById('theme-light').addEventListener('click', () => applyTheme(''));
     document.getElementById('theme-dark').addEventListener('click', () => applyTheme('dark-mode'));
@@ -3129,6 +3211,22 @@ observer.observe(body, {
         }
       }, 1000);
     }
+
+    // Tombol theme rainbow
+    const themeRainbowBtn = document.getElementById("theme-rainbow");
+
+    themeRainbowBtn.addEventListener("click", () => {
+      document.body.classList.remove("theme-light", "theme-dark", "theme-wibu");
+      document.body.classList.add("theme-rainbow");
+      localStorage.setItem("theme", "rainbow");
+    });
+
+    // Simpan tema terakhir saat reload
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme) {
+      document.body.classList.add(`theme-${savedTheme}`);
+    }
+
 
     // Initialize streak counter
     const currentStreak = parseInt(localStorage.getItem('dailyStreak') || '0');
