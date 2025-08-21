@@ -1517,6 +1517,9 @@
   <!-- Halaman Galeri -->
   <div id="page-gallery" class="page">
     <h2>🖼️ Galeri</h2>
+    <p id="galleryCount" style="font-weight:bold;margin-bottom:1rem;">
+    📸 Jumlah Gambar: 0
+  </p>
 
     <!-- Form Upload -->
     <form id="uploadForm" style="margin-bottom:1rem;display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;">
@@ -1717,27 +1720,56 @@
 
       // Load galeri dari Supabase
       async function loadGallery() {
-        const { data, error } = await supabase.from("gallery").select("*").order("created_at", { ascending: false });
+        const { data, error } = await supabase
+          .from("gallery")
+          .select("*")
+          .order("created_at", { ascending: false });
+
         if (error) {
           console.error(error);
           return;
         }
 
-        galleryGrid.innerHTML = data.map(item => `
-  <div class="gallery-item">
-    <img src="${item.url}" alt="Gambar" />
-    <div class="gallery-caption">
-      <strong>📂 ${item.category}</strong><br>
-      ${item.caption || ""}
-    </div>
-    <div class="gallery-actions">
-      <button onclick="downloadImage('${item.url}')">⬇️ Download</button>
-      <button onclick="deleteImage('${item.id}','${item.url}')">🗑️ Hapus</button>
-    </div>
-  </div>
-`).join("");
+        // update jumlah gambar
+        const galleryCount = document.getElementById("galleryCount");
+        if (galleryCount) {
+          galleryCount.textContent = `📸 Jumlah Gambar: ${data.length}`;
+        }
 
+        // render gambar
+        galleryGrid.innerHTML = data
+          .map(
+            (item) => `
+      <div class="gallery-item">
+        <img 
+  src="${item.url}" 
+  alt="Gambar" 
+  style="
+    width:100%;
+    height:auto;
+    max-height:320px;      /* batasi tinggi biar grid rapi */
+    object-fit:contain;    /* biar tidak crop */
+    border-radius:10px;
+    background:#fff;
+    display:block;
+    margin:0 auto;
+  "
+/>
+
+        <div class="gallery-caption">
+          <strong>📂 ${item.category}</strong><br>
+          ${item.caption || ""}
+        </div>
+        <div class="gallery-actions">
+          <button onclick="downloadImage('${item.url}')">⬇️ Download</button>
+          <button onclick="deleteImage('${item.id}','${item.url}')">🗑️ Hapus</button>
+        </div>
+      </div>
+    `
+          )
+          .join("");
       }
+
 
       // Download gambar
       window.downloadImage = async (url) => {
