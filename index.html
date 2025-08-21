@@ -1146,9 +1146,20 @@
       }
 
       .weather-widget {
-        position: static;
-        margin-bottom: 1rem;
+        position: absolute;
+        top: 1rem;
+        right: 1.5rem;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 0.5rem 1rem;
+        border-radius: 15px;
+        backdrop-filter: blur(10px);
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
       }
+
 
       .theme-toggle {
         top: 10px;
@@ -1191,12 +1202,233 @@
         min-height: 30px;
       }
     }
+
+
+    /* --- Styling untuk Grup Tombol Tema --- */
+    .theme-switcher {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      z-index: 999;
+    }
+
+    .theme-switcher #theme-toggle-main {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      padding: 0.7rem;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.3rem;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .theme-switcher #theme-toggle-main:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.1);
+    }
+
+    .theme-options {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 8px;
+      border-radius: 12px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .theme-options button {
+      background: none;
+      border: none;
+      color: white;
+      padding: 0.6rem;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: all 0.3s ease;
+    }
+
+    .theme-options button:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: scale(1.1);
+    }
+
+    .theme-switcher.show .theme-options {
+      display: flex;
+    }
+
+
+    .theme-switcher button.active {
+      background: linear-gradient(45deg, #ff6ac1, #00c2cb);
+      box-shadow: 0 0 10px rgba(255, 106, 193, 0.7);
+    }
+
+
+    /* --- CSS untuk Mode Wibu --- */
+    body.theme-wibu {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: #e0e0e0;
+      font-family: 'Fira Code', 'Consolas', monospace;
+      /* Font opsional untuk nuansa techy */
+    }
+
+    /* Tampilkan kelopak sakura hanya di mode wibu */
+    .theme-wibu .sakura-container {
+      display: block;
+    }
+
+    .theme-wibu header {
+      background: rgba(26, 26, 46, 0.8);
+      border-bottom: 2px solid #ff6ac1;
+      box-shadow: 0 4px 20px rgba(255, 106, 193, 0.2);
+    }
+
+    .theme-wibu header h1 {
+      text-shadow: 0 0 5px #ff6ac1, 0 0 10px #ff6ac1;
+    }
+
+    .theme-wibu nav button {
+      background: transparent;
+      color: #e0e0e0;
+      border: 2px solid #00c2cb;
+    }
+
+    .theme-wibu nav button:hover {
+      background: rgba(0, 194, 203, 0.2);
+      box-shadow: 0 8px 25px rgba(0, 194, 203, 0.3);
+    }
+
+    .theme-wibu nav button.active {
+      background: linear-gradient(45deg, #ff6ac1, #00c2cb);
+      color: white;
+      border-color: transparent;
+      text-shadow: 0 0 5px white;
+    }
+
+    .theme-wibu .form-container,
+    .theme-wibu .filter-section,
+    .theme-wibu .mood-map,
+    .theme-wibu li,
+    .theme-wibu .search-box,
+    .theme-wibu .modal-content {
+      background: rgba(22, 33, 62, 0.85);
+      backdrop-filter: blur(10px);
+      color: #e0e0e0;
+      border: 1px solid rgba(255, 106, 193, 0.3);
+    }
+
+    .theme-wibu input,
+    .theme-wibu textarea,
+    .theme-wibu select {
+      background: #1a1a2e;
+      color: #e0e0e0;
+      border-color: #5a6c7d;
+    }
+
+    .theme-wibu input:focus,
+    .theme-wibu textarea:focus,
+    .theme-wibu select:focus {
+      border-color: #ff6ac1;
+      box-shadow: 0 0 15px rgba(255, 106, 193, 0.5);
+    }
+
+    .theme-wibu .mood-option,
+    .theme-wibu .category-option,
+    .theme-wibu .filter-btn,
+    .theme-wibu .time-btn,
+    .theme-wibu .reaction-btn {
+      background: #1a1a2e;
+      color: #e0e0e0;
+      border-color: #5a6c7d;
+    }
+
+    .theme-wibu .mood-option.selected,
+    .theme-wibu .category-option.selected,
+    .theme-wibu .filter-btn.active,
+    .theme-wibu .time-btn.active,
+    .theme-wibu .reaction-btn.active {
+      background: #ff6ac1;
+      border-color: #ff6ac1;
+      color: #1a1a2e;
+      font-weight: bold;
+    }
+
+    .theme-wibu button.submit,
+    .theme-wibu .action-btn {
+      background: linear-gradient(45deg, #ff6ac1, #00c2cb);
+    }
+
+    .theme-wibu li::before {
+      background: linear-gradient(90deg, #ff6ac1, #00c2cb, #8e44ad);
+    }
+
+    .theme-wibu .author-name,
+    .theme-wibu .note-text,
+    .theme-wibu .timestamp {
+      color: #f0f0f0;
+    }
+
+    /* --- CSS Animasi Kelopak Sakura (Sakura) --- */
+    .sakura-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 998;
+      display: none;
+      /* Sembunyikan secara default */
+    }
+
+    .sakura {
+  position: absolute;
+  top: -10%;
+  width: 20px;
+  height: 20px;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='%23ffb6c1' d='M256 32c24 0 45 11 60 29 15-18 36-29 60-29 44 0 80 36 80 80 0 37-25 68-61 77 10 11 15 26 15 41 0 35-29 64-64 64-15 0-29-5-40-14-11 9-25 14-40 14s-29-5-40-14c-11 9-25 14-40 14-35 0-64-29-64-64 0-15 5-30 15-41-36-9-61-40-61-77 0-44 36-80 80-80 24 0 45 11 60 29 15-18 36-29 60-29z'/></svg>");
+  background-size: contain;
+  background-repeat: no-repeat;
+  animation: fall linear infinite;
+  opacity: 0.85;
+}
+
+
+    @keyframes fall {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateY(105vh) rotate(720deg);
+        opacity: 0;
+      }
+    }
   </style>
 </head>
 
 <body>
+  <div class="sakura-container"></div>
   <!-- Theme Toggle -->
-  <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+  <div class="theme-switcher">
+  <button id="theme-toggle-main" title="Ganti Mode">🎨</button>
+  <div class="theme-options" id="theme-options">
+    <button id="theme-light" title="Mode Terang">☀️</button>
+    <button id="theme-dark" title="Mode Gelap">🌙</button>
+    <button id="theme-wibu" title="Mode Wibu">🌸</button>
+  </div>
+</div>
+
 
   <header>
     <!-- Weather Widget -->
@@ -1633,6 +1865,13 @@
     const fileInput = document.getElementById("fileInput");
     const captionInput = document.getElementById("captionInput");
     const galleryGrid = document.getElementById("galleryGrid");
+    const themeToggleMain = document.getElementById("theme-toggle-main");
+    const themeSwitcher = document.querySelector(".theme-switcher");
+
+    themeToggleMain.addEventListener("click", () => {
+      themeSwitcher.classList.toggle("show");
+    });
+
 
     // Initialize
     initializeEventListeners();
@@ -1689,7 +1928,7 @@
             if (uploadError) {
               console.error("Upload error:", uploadError);
               showNotification(`Upload gagal untuk ${file.name}: ${uploadError.message}`, "error");
-              continue; 
+              continue;
             }
 
             // Ambil public URL
@@ -1703,7 +1942,7 @@
             if (insertError) {
               console.error("Insert error:", insertError);
               showNotification(`Gagal simpan metadata ${file.name}`, "error");
-              continue; 
+              continue;
             }
           }
 
@@ -2108,20 +2347,87 @@
     // jalankan pas pertama kali load halaman
     loadWeather();
 
-    function toggleTheme() {
-      document.body.classList.toggle('dark-mode');
-      const isDark = document.body.classList.contains('dark-mode');
-      localStorage.setItem('darkMode', isDark);
-      document.querySelector('.theme-toggle').textContent = isDark ? '☀️' : '🌙';
+    function applyTheme(theme) {
+      document.body.classList.remove('dark-mode', 'theme-wibu');
+      if (theme) {
+        document.body.classList.add(theme);
+      }
+      localStorage.setItem('activeTheme', theme || '');
+
+      document.querySelectorAll('.theme-switcher button').forEach(btn => {
+        btn.classList.remove('active');
+      });
+
+      const activeBtnId = theme ? theme.replace('.', '') : 'theme-light';
+      const activeBtn = document.getElementById(activeBtnId);
+      if (activeBtn) {
+        activeBtn.classList.add('active');
+      }
     }
 
-    // Load saved theme
-    if (localStorage.getItem('darkMode') === 'true') {
-      toggleTheme();
-    }
+    // Sakura Falling Animation 🌸
+const sakuraContainer = document.querySelector(".sakura-container");
+const body = document.body;
 
-    // Make toggleTheme global
-    window.toggleTheme = toggleTheme;
+function createSakura() {
+  const sakura = document.createElement("div");
+  sakura.classList.add("sakura");
+
+  // Posisi random horizontal
+  sakura.style.left = Math.random() * window.innerWidth + "px";
+
+  // Ukuran random
+  const size = Math.random() * 12 + 10; // 10px - 22px
+  sakura.style.width = `${size}px`;
+  sakura.style.height = `${size}px`;
+
+  // Durasi jatuh random
+  sakura.style.animationDuration = Math.random() * 3 + 4 + "s";
+
+  // Delay random biar gak serempak
+  sakura.style.animationDelay = Math.random() * 3 + "s";
+
+  sakuraContainer.appendChild(sakura);
+
+  // Hapus setelah animasi selesai
+  setTimeout(() => {
+    sakura.remove();
+  }, 8000);
+}
+
+let sakuraInterval = null;
+
+function startSakura() {
+  if (!sakuraInterval) {
+    sakuraContainer.style.display = "block";
+    sakuraInterval = setInterval(createSakura, 300); // tiap 300ms munculin kelopak baru
+  }
+}
+
+function stopSakura() {
+  sakuraContainer.style.display = "none";
+  sakuraContainer.innerHTML = "";
+  clearInterval(sakuraInterval);
+  sakuraInterval = null;
+}
+
+// Cek kalau body punya class "theme-wibu"
+const observer = new MutationObserver(() => {
+  if (body.classList.contains("theme-wibu")) {
+    startSakura();
+  } else {
+    stopSakura();
+  }
+});
+
+observer.observe(body, {
+  attributes: true,
+  attributeFilter: ["class"],
+});
+
+    document.getElementById('theme-light').addEventListener('click', () => applyTheme(''));
+    document.getElementById('theme-dark').addEventListener('click', () => applyTheme('dark-mode'));
+    document.getElementById('theme-wibu').addEventListener('click', () => applyTheme('theme-wibu'));
 
     async function handleSubmitNote(e) {
       e.preventDefault();
