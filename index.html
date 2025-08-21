@@ -79,18 +79,30 @@
 
     /* Weather Widget */
     .weather-widget {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      background: rgba(255, 255, 255, 0.2);
-      padding: 0.5rem 1rem;
-      border-radius: 15px;
-      backdrop-filter: blur(10px);
-      font-size: 0.8rem;
+      position: fixed;
+      top: 10px;
+      right: 15px;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 4px 10px;
+      border-radius: 12px;
+      backdrop-filter: blur(12px);
+      font-size: 13px;
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      z-index: 999;
+      /* Selalu di atas tapi gak nutup konten */
+      max-width: 200px;
     }
+
+    .weather-widget img {
+      width: 18px;
+      height: 18px;
+    }
+
+
 
     nav {
       display: flex;
@@ -1482,6 +1494,13 @@
       text-shadow: 0 0 5px #fff, 0 0 10px #ff6b6b, 0 0 15px #4ecdc4, 0 0 20px #ff9ff3;
     }
 
+    .theme-rainbow input:focus,
+    .theme-rainbow textarea:focus,
+    .theme-rainbow select:focus {
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.9), 0 0 18px rgba(255, 0, 255, 0.7);
+    }
+
+
 
 
     @keyframes fall {
@@ -1494,6 +1513,54 @@
         transform: translateY(105vh) rotate(720deg);
         opacity: 0;
       }
+    }
+
+    button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      color: white;
+    }
+
+    /* Warna default tombol Download & Hapus */
+    button.download {
+      background-color: #3b82f6;
+      /* biru */
+    }
+
+    button.download:hover {
+      background-color: #2563eb;
+    }
+
+    button.hapus {
+      background-color: #ef4444;
+      /* merah */
+    }
+
+    button.hapus:hover {
+      background-color: #dc2626;
+    }
+
+    /* Mode Light */
+    .theme-light button {
+      background-color: #3b82f6;
+      color: white;
+    }
+
+    /* Mode Dark */
+    .theme-dark button {
+      background-color: #1e40af;
+      color: white;
+    }
+
+    /* Mode Wibu */
+    .theme-wibu button {
+      background-color: #ec4899;
+      color: white;
     }
   </style>
 </head>
@@ -2430,22 +2497,30 @@
     loadWeather();
 
     function applyTheme(theme) {
-      document.body.classList.remove('dark-mode', 'theme-wibu');
+      // Hapus semua tema lama
+      document.body.classList.remove('theme-light', 'dark-mode', 'theme-wibu', 'theme-rainbow');
+
+      // Tambahkan tema baru
       if (theme) {
         document.body.classList.add(theme);
       }
+
+      // Simpan tema aktif di localStorage
       localStorage.setItem('activeTheme', theme || '');
 
+      // Update tombol aktif
       document.querySelectorAll('.theme-switcher button').forEach(btn => {
         btn.classList.remove('active');
       });
 
+      // Cari tombol sesuai tema
       const activeBtnId = theme ? theme.replace('.', '') : 'theme-light';
       const activeBtn = document.getElementById(activeBtnId);
       if (activeBtn) {
         activeBtn.classList.add('active');
       }
     }
+
 
     // Sakura Falling Animation 🌸
     const sakuraContainer = document.querySelector(".sakura-container");
@@ -3234,6 +3309,19 @@
     if (currentStreak > longestStreak) {
       localStorage.setItem('longestStreak', currentStreak.toString());
     }
+
+    // Event listener tombol tema
+    document.getElementById("theme-light").addEventListener("click", () => applyTheme("theme-light"));
+    document.getElementById("theme-dark").addEventListener("click", () => applyTheme("dark-mode"));
+    document.getElementById("theme-wibu").addEventListener("click", () => applyTheme("theme-wibu"));
+    document.getElementById("theme-rainbow").addEventListener("click", () => applyTheme("theme-rainbow"));
+
+    // Terapkan tema terakhir saat reload
+
+    applyTheme(savedTheme);
+
+
+
   </script>
 
   <style>
