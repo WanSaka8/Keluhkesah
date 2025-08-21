@@ -1518,14 +1518,14 @@
   <div id="page-gallery" class="page">
     <h2>🖼️ Galeri</h2>
     <p id="galleryCount" style="font-weight:bold;margin-bottom:1rem;">
-    📸 Jumlah Gambar: 0
-  </p>
+      📸 Jumlah Gambar: 0
+    </p>
 
     <!-- Form Upload -->
     <form id="uploadForm" style="margin-bottom:1rem;display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;">
 
       <!-- Input file -->
-      <input type="file" id="fileInput" accept="image/*" required />
+      <input type="file" id="fileInput" accept="image/*" multiple required />
 
       <!-- Caption -->
       <input type="text" id="captionInput" placeholder="Tulis caption..." style="flex:1;padding:0.5rem;" />
@@ -1662,49 +1662,49 @@
       if (uploadForm) {
         uploadForm.addEventListener("submit", async (e) => {
           e.preventDefault();
-          const file = fileInput.files[0];
-          if (!file) return showNotification("Pilih gambar dulu!", "error");
+          const files = fileInput.files;
+          if (!files.length) return showNotification("Pilih gambar dulu!", "error");
 
-          const maxSize = 1.5 * 1024 * 1024; // 1.5 MB
-          if (file.size > maxSize) {
-            return showNotification("Ukuran file terlalu besar! Maksimal 1.5 MB ⚠️", "error");
-          }
-
-          const fileName = `${Date.now()}_${file.name}`;
-          console.log("Uploading file:", fileName);
-
-          // Upload ke bucket
-          const { data: uploadedFile, error: uploadError } = await supabase
-            .storage.from("keluhkesah")
-            .upload(fileName, file);
-
-          if (uploadError) {
-            console.error("Upload error:", uploadError);
-            showNotification("Upload gagal: " + uploadError.message, "error");
-            return;
-          }
-
-          // Ambil public URL
-          const { data: publicUrl } = supabase.storage
-            .from("keluhkesah")
-            .getPublicUrl(fileName);
-
-          console.log("Public URL:", publicUrl.publicUrl);
-
-          // Ambil input caption & kategori
           const caption = captionInput.value;
           const categoryInput = document.getElementById("categoryInput");
           const category = categoryInput ? categoryInput.value : "Umum";
 
-          // Simpan metadata ke tabel (cukup sekali insert)
-          const { error: insertError } = await supabase
-            .from("gallery")
-            .insert([{ url: publicUrl.publicUrl, caption, category }]);
+          // Proses setiap file
+          for (const file of files) {
+            // Cek ukuran file
+            const maxSize = 1.5 * 1024 * 1024; // 1.5 MB
+            if (file.size > maxSize) {
+              showNotification(`Ukuran ${file.name} terlalu besar (>1.5MB)`, "error");
+              continue; // Skip file ini dan lanjutkan ke file berikutnya
+            }
 
-          if (insertError) {
-            console.error("Insert error:", insertError);
-            showNotification("Gagal simpan metadata!", "error");
-            return;
+            const fileName = `${Date.now()}_${file.name}`;
+            console.log("Uploading file:", fileName);
+
+            // Upload ke Supabase Storage
+            const { error: uploadError } = await supabase
+              .storage.from("keluhkesah")
+              .upload(fileName, file);
+
+            if (uploadError) {
+              console.error("Upload error:", uploadError);
+              showNotification(`Upload gagal untuk ${file.name}: ${uploadError.message}`, "error");
+              continue; 
+            }
+
+            // Ambil public URL
+            const { data: publicUrl } = supabase.storage.from("keluhkesah").getPublicUrl(fileName);
+
+            // Simpan metadata ke tabel gallery
+            const { error: insertError } = await supabase.from("gallery").insert([
+              { url: publicUrl.publicUrl, caption, category }
+            ]);
+
+            if (insertError) {
+              console.error("Insert error:", insertError);
+              showNotification(`Gagal simpan metadata ${file.name}`, "error");
+              continue; 
+            }
           }
 
           // Reset form
@@ -1712,10 +1712,11 @@
           fileInput.value = "";
           if (categoryInput) categoryInput.value = "Umum";
 
-          showNotification("Gambar berhasil diupload! 🎉");
+          showNotification("✅ Semua gambar berhasil diupload!", "success");
           loadGallery();
         });
       }
+
 
 
       // Load galeri dari Supabase
