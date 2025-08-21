@@ -1517,15 +1517,36 @@
   <!-- Halaman Galeri -->
   <div id="page-gallery" class="page">
     <h2>🖼️ Galeri</h2>
+
+    <!-- Form Upload -->
     <form id="uploadForm" style="margin-bottom:1rem;display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;">
+
+      <!-- Input file -->
       <input type="file" id="fileInput" accept="image/*" required />
+
+      <!-- Caption -->
       <input type="text" id="captionInput" placeholder="Tulis caption..." style="flex:1;padding:0.5rem;" />
+
+      <!-- Dropdown kategori -->
+      <select id="categoryInput" style="padding:0.5rem;border-radius:8px;">
+        <option value="Umum">Umum</option>
+        <option value="Liburan">Liburan</option>
+        <option value="Keluarga">Keluarga</option>
+        <option value="Meme">Meme</option>
+      </select>
+
+      <!-- Tombol Upload -->
       <button type="submit"
-        style="padding:0.6rem 1rem;border:none;border-radius:10px;background:#4ecdc4;color:white;cursor:pointer;">📤
-        Upload</button>
+        style="padding:0.6rem 1rem;border:none;border-radius:10px;background:#4ecdc4;color:white;cursor:pointer;">
+        📤 Upload
+      </button>
     </form>
-    <div id="galleryGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;"></div>
+
+    <!-- Grid Galeri -->
+    <div id="galleryGrid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;">
+    </div>
   </div>
+
 
   <!-- Notification -->
   <div id="notification" class="notification"></div>
@@ -1636,11 +1657,12 @@
 
       // Upload gambar ke Supabase
       if (uploadForm) {
-        uploadForm?.addEventListener("submit", async (e) => {
+        uploadForm.addEventListener("submit", async (e) => {
           e.preventDefault();
           const file = fileInput.files[0];
           if (!file) return showNotification("Pilih gambar dulu!", "error");
-          const maxSize = 1.5 * 1024 * 1024; // 1.5 MB (bytes)
+
+          const maxSize = 1.5 * 1024 * 1024; // 1.5 MB
           if (file.size > maxSize) {
             return showNotification("Ukuran file terlalu besar! Maksimal 1.5 MB ⚠️", "error");
           }
@@ -1648,7 +1670,7 @@
           const fileName = `${Date.now()}_${file.name}`;
           console.log("Uploading file:", fileName);
 
-          // Upload ke bucket 'keluhkesah'
+          // Upload ke bucket
           const { data: uploadedFile, error: uploadError } = await supabase
             .storage.from("keluhkesah")
             .upload(fileName, file);
@@ -1658,16 +1680,23 @@
             showNotification("Upload gagal: " + uploadError.message, "error");
             return;
           }
-          console.log("File uploaded:", uploadedFile);
 
           // Ambil public URL
-          const { data: publicUrl } = supabase.storage.from("keluhkesah").getPublicUrl(fileName);
+          const { data: publicUrl } = supabase.storage
+            .from("keluhkesah")
+            .getPublicUrl(fileName);
+
           console.log("Public URL:", publicUrl.publicUrl);
 
-          // Simpan ke tabel metadata
+          // Ambil input caption & kategori
+          const caption = captionInput.value;
+          const categoryInput = document.getElementById("categoryInput");
+          const category = categoryInput ? categoryInput.value : "Umum";
+
+          // Simpan metadata ke tabel (cukup sekali insert)
           const { error: insertError } = await supabase
             .from("gallery")
-            .insert([{ url: publicUrl.publicUrl, caption: captionInput.value }]);
+            .insert([{ url: publicUrl.publicUrl, caption, category }]);
 
           if (insertError) {
             console.error("Insert error:", insertError);
@@ -1675,13 +1704,16 @@
             return;
           }
 
+          // Reset form
           captionInput.value = "";
           fileInput.value = "";
+          if (categoryInput) categoryInput.value = "Umum";
+
           showNotification("Gambar berhasil diupload! 🎉");
           loadGallery();
         });
-
       }
+
 
       // Load galeri dari Supabase
       async function loadGallery() {
@@ -1692,18 +1724,19 @@
         }
 
         galleryGrid.innerHTML = data.map(item => `
-    <div style="background:#fff;padding:10px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.1);">
-      <img src="${item.url}" style="width:100%;border-radius:10px;object-fit:cover;" />
-      <p style="margin:0.5rem 0;">${item.caption || ""}</p>
-      <div style="display:flex;gap:0.5rem;">
-<button onclick="downloadImage('${item.url}')"
-  style="flex:1;padding:0.4rem;border:none;border-radius:8px;background:#45b7d1;color:white;cursor:pointer;">
-  ⬇️ Download
-</button>
-        <button onclick="deleteImage('${item.id}','${item.url}')" style="flex:1;padding:0.4rem;border:none;border-radius:8px;background:#ff6b6b;color:white;cursor:pointer;">🗑️ Hapus</button>
-      </div>
+  <div class="gallery-item">
+    <img src="${item.url}" alt="Gambar" />
+    <div class="gallery-caption">
+      <strong>📂 ${item.category}</strong><br>
+      ${item.caption || ""}
     </div>
-  `).join("");
+    <div class="gallery-actions">
+      <button onclick="downloadImage('${item.url}')">⬇️ Download</button>
+      <button onclick="deleteImage('${item.id}','${item.url}')">🗑️ Hapus</button>
+    </div>
+  </div>
+`).join("");
+
       }
 
       // Download gambar
@@ -2699,6 +2732,7 @@
       else if (pageId === 'page-trending') document.getElementById('btn-trending').classList.add('active');
       else if (pageId === 'page-analytics') document.getElementById('btn-analytics').classList.add('active');
       else if (pageId === 'page-mood-map') document.getElementById('btn-mood-map').classList.add('active');
+      else if (pageId === 'page-gallery') document.getElementById('btn-gallery').classList.add('active');
 
       localStorage.setItem('lastPage', pageId);
 
