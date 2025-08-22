@@ -989,26 +989,28 @@
 
       nav {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 4 kolom */
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 0.8rem;
-  margin: 1.5rem 0;
+  margin: 1.5rem auto;
   padding: 0 1rem;
+  max-width: 800px;
 }
 
-nav button {
-  padding: 1rem 0.5rem;
-  border: none;
-  border-radius: 25px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 0.9rem;
-  transition: all 0.3s ease;
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-  backdrop-filter: blur(10px);
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  text-align: center;
-}
+
+      nav button {
+        padding: 1rem 0.5rem;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        text-align: center;
+      }
 
 
       .page {
@@ -1602,46 +1604,52 @@ nav button {
       color: white;
     }
 
-      .calendar-header {
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-top:1rem;
-    margin-bottom:0.5rem;
-  }
-  .calendar-header h3 {
-    margin:0;
-    font-weight:600;
-    font-size:1.2rem;
-  }
-  .calendar-grid {
-    display:grid;
-    grid-template-columns:repeat(7,1fr);
-    gap:8px;
-    margin-top:1rem;
-  }
-  .calendar-day {
-    background:#fff;
-    border:1px solid #ddd;
-    border-radius:8px;
-    min-height:80px;
-    padding:4px;
-    cursor:pointer;
-    position:relative;
-    transition:background 0.2s;
-  }
-  .calendar-day:hover {
-    background:#f1f5f9;
-  }
-  .note-count {
-    position:absolute;
-    bottom:4px;right:4px;
-    background:#4ecdc4;
-    color:white;
-    font-size:0.7rem;
-    padding:2px 6px;
-    border-radius:10px;
-  }
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .calendar-header h3 {
+      margin: 0;
+      font-weight: 600;
+      font-size: 1.2rem;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      margin-top: 1rem;
+    }
+
+    .calendar-day {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      min-height: 80px;
+      padding: 4px;
+      cursor: pointer;
+      position: relative;
+      transition: background 0.2s;
+    }
+
+    .calendar-day:hover {
+      background: #f1f5f9;
+    }
+
+    .note-count {
+      position: absolute;
+      bottom: 4px;
+      right: 4px;
+      background: #4ecdc4;
+      color: white;
+      font-size: 0.7rem;
+      padding: 2px 6px;
+      border-radius: 10px;
+    }
   </style>
 </head>
 
@@ -1978,35 +1986,36 @@ nav button {
   </div>
 
   <!-- Halaman Kalender Catatan -->
-<div id="page-daily-notes" class="page">
-  <div class="note-calendar">
-    <div class="trending-title">📅 Kalender Catatan</div>
-    <p style="color:#666;margin-bottom:1rem;">Klik tanggal untuk melihat / menambah catatan</p>
-    
-    <!-- Header kalender -->
-    <div class="calendar-header">
-      <button id="prevMonth">⟨</button>
-      <h3 id="currentMonth"></h3>
-      <button id="nextMonth">⟩</button>
-    </div>
+  <div id="page-daily-notes" class="page">
+    <div class="note-calendar">
+      <div class="trending-title">📅 Kalender Catatan</div>
+      <p style="color:#666;margin-bottom:1rem;">Klik tanggal untuk melihat / menambah catatan</p>
 
-    <!-- Grid kalender -->
-    <div id="calendarGrid" class="calendar-grid"></div>
-  </div>
-</div>
+      <!-- Header kalender -->
+      <div class="calendar-header">
+        <button id="prevMonth">⟨</button>
+        <h3 id="currentMonth"></h3>
+        <button id="nextMonth">⟩</button>
+      </div>
 
-<!-- Modal Catatan -->
-<div id="notesModal" class="modal">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h3>📝 Catatan Tanggal <span id="modalDate"></span></h3>
-      <button class="close-btn" onclick="closeNotesModal()">&times;</button>
+      <!-- Grid kalender -->
+      <div id="calendarGrid" class="calendar-grid"></div>
     </div>
-    <div id="notesListByDate" style="margin-bottom:1rem;"></div>
-    <textarea id="newNoteInput" placeholder="Tambah catatan..." style="width:100%;border-radius:8px;padding:0.5rem;"></textarea>
-    <button onclick="saveNote()" class="submit" style="margin-top:1rem;">💾 Simpan</button>
   </div>
-</div>
+
+  <!-- Modal Catatan -->
+  <div id="notesModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>📝 Catatan Tanggal <span id="modalDate"></span></h3>
+        <button class="close-btn" onclick="closeNotesModal()">&times;</button>
+      </div>
+      <div id="notesListByDate" style="margin-bottom:1rem;"></div>
+      <textarea id="newNoteInput" placeholder="Tambah catatan..."
+        style="width:100%;border-radius:8px;padding:0.5rem;"></textarea>
+      <button onclick="saveNote()" class="submit" style="margin-top:1rem;">💾 Simpan</button>
+    </div>
+  </div>
   <!-- Halaman Galeri -->
   <div id="page-gallery" class="page">
     <h2>🖼️ Galeri</h2>
@@ -2898,24 +2907,24 @@ nav button {
     }
 
     function formatTime(ts) {
-  if (!ts) return "Menunggu waktu...";
+      if (!ts) return "Menunggu waktu...";
 
-  const date = ts.toDate ? ts.toDate() : new Date(ts); // Firestore Timestamp atau JS Date
-  const diff = Math.floor((Date.now() - date.getTime()) / 1000);
+      const date = ts.toDate ? ts.toDate() : new Date(ts); // Firestore Timestamp atau JS Date
+      const diff = Math.floor((Date.now() - date.getTime()) / 1000);
 
-  if (diff < 60) return "Baru saja";
-  if (diff < 3600) return `${Math.floor(diff / 60)} menit yang lalu`;
-  if (diff < 86400) return `${Math.floor(diff / 3600)} jam yang lalu`;
-  if (diff < 604800) return `${Math.floor(diff / 86400)} hari yang lalu`;
+      if (diff < 60) return "Baru saja";
+      if (diff < 3600) return `${Math.floor(diff / 60)} menit yang lalu`;
+      if (diff < 86400) return `${Math.floor(diff / 3600)} jam yang lalu`;
+      if (diff < 604800) return `${Math.floor(diff / 86400)} hari yang lalu`;
 
-  return date.toLocaleString("id-ID", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit"
-  });
-}
+      return date.toLocaleString("id-ID", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    }
 
 
     function getMoodBadgeClass(mood) {
@@ -3426,150 +3435,150 @@ nav button {
 
     applyTheme(savedTheme);
 
-   // === FITUR KALENDER CATATAN ===
-const calendarGrid = document.getElementById("calendarGrid");
-const notesModal = document.getElementById("notesModal");
-const notesListByDate = document.getElementById("notesListByDate");
-const modalDateEl = document.getElementById("modalDate");
-let selectedDate = null;
+    // === FITUR KALENDER CATATAN ===
+    const calendarGrid = document.getElementById("calendarGrid");
+    const notesModal = document.getElementById("notesModal");
+    const notesListByDate = document.getElementById("notesListByDate");
+    const modalDateEl = document.getElementById("modalDate");
+    let selectedDate = null;
 
-let currentYear = new Date().getFullYear();
-let currentMonth = new Date().getMonth();
-let unsubscribeNotes = null;
+    let currentYear = new Date().getFullYear();
+    let currentMonth = new Date().getMonth();
+    let unsubscribeNotes = null;
 
-// Render kalender sesuai bulan & tahun
-function loadCalendar(year=currentYear, month=currentMonth) {
-  currentYear = year;
-  currentMonth = month;
+    // Render kalender sesuai bulan & tahun
+    function loadCalendar(year = currentYear, month = currentMonth) {
+      currentYear = year;
+      currentMonth = month;
 
-  const monthNames = [
-    "Januari","Februari","Maret","April","Mei","Juni",
-    "Juli","Agustus","September","Oktober","November","Desember"
-  ];
-  document.getElementById("currentMonth").innerText = 
-    `${monthNames[month]} ${year}`;
+      const monthNames = [
+        "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+        "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+      ];
+      document.getElementById("currentMonth").innerText =
+        `${monthNames[month]} ${year}`;
 
-  calendarGrid.innerHTML = "";
+      calendarGrid.innerHTML = "";
 
-  const firstDay = new Date(year, month, 1).getDay();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const firstDay = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-  // padding kosong sebelum tanggal 1
-  for (let i = 0; i < (firstDay === 0 ? 6 : firstDay - 1); i++) {
-    const emptyCell = document.createElement("div");
-    calendarGrid.appendChild(emptyCell);
-  }
+      // padding kosong sebelum tanggal 1
+      for (let i = 0; i < (firstDay === 0 ? 6 : firstDay - 1); i++) {
+        const emptyCell = document.createElement("div");
+        calendarGrid.appendChild(emptyCell);
+      }
 
-  // isi tanggal
-  for (let d = 1; d <= daysInMonth; d++) {
-    const cell = document.createElement("div");
-    cell.classList.add("calendar-day");
-    const dateStr = `${year}-${String(month+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
-    cell.innerHTML = `<strong>${d}</strong>`;
-    cell.onclick = () => openNotesModal(dateStr);
-    cell.dataset.date = dateStr;
-    calendarGrid.appendChild(cell);
-  }
+      // isi tanggal
+      for (let d = 1; d <= daysInMonth; d++) {
+        const cell = document.createElement("div");
+        cell.classList.add("calendar-day");
+        const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+        cell.innerHTML = `<strong>${d}</strong>`;
+        cell.onclick = () => openNotesModal(dateStr);
+        cell.dataset.date = dateStr;
+        calendarGrid.appendChild(cell);
+      }
 
-  // 🔹 pasang listener realtime Firestore untuk bulan ini
-  if (unsubscribeNotes) unsubscribeNotes(); // matikan listener lama
-  const start = `${year}-${String(month+1).padStart(2,"0")}-01`;
-  const end = `${year}-${String(month+1).padStart(2,"0")}-${String(daysInMonth).padStart(2,"0")}`;
-  const qNotes = query(
-    collection(db,"dailyNotes"),
-    where("date", ">=", start),
-    where("date", "<=", end)
-  );
+      // 🔹 pasang listener realtime Firestore untuk bulan ini
+      if (unsubscribeNotes) unsubscribeNotes(); // matikan listener lama
+      const start = `${year}-${String(month + 1).padStart(2, "0")}-01`;
+      const end = `${year}-${String(month + 1).padStart(2, "0")}-${String(daysInMonth).padStart(2, "0")}`;
+      const qNotes = query(
+        collection(db, "dailyNotes"),
+        where("date", ">=", start),
+        where("date", "<=", end)
+      );
 
-  unsubscribeNotes = onSnapshot(qNotes, (snap) => {
-    // reset semua badge
-    document.querySelectorAll(".note-count").forEach(b=>b.remove());
-    snap.forEach(docSnap => {
-      const data = docSnap.data();
-      if (data.notes && data.notes.length > 0) {
-        const cell = document.querySelector(`[data-date='${data.date}']`);
-        if (cell) {
-          const badge = document.createElement("div");
-          badge.className="note-count";
-          badge.innerText = data.notes.length;
-          cell.appendChild(badge);
+      unsubscribeNotes = onSnapshot(qNotes, (snap) => {
+        // reset semua badge
+        document.querySelectorAll(".note-count").forEach(b => b.remove());
+        snap.forEach(docSnap => {
+          const data = docSnap.data();
+          if (data.notes && data.notes.length > 0) {
+            const cell = document.querySelector(`[data-date='${data.date}']`);
+            if (cell) {
+              const badge = document.createElement("div");
+              badge.className = "note-count";
+              badge.innerText = data.notes.length;
+              cell.appendChild(badge);
+            }
+          }
+        });
+      });
+    }
+
+    // buka modal untuk tanggal tertentu
+    function openNotesModal(dateStr) {
+      selectedDate = dateStr;
+      modalDateEl.innerText = dateStr;
+      notesListByDate.innerHTML = "Loading...";
+
+      const q = query(collection(db, "dailyNotes"), where("date", "==", dateStr));
+      onSnapshot(q, (snap) => {
+        let notes = [];
+        if (!snap.empty) {
+          notes = snap.docs[0].data().notes || [];
         }
+        if (notes.length === 0) {
+          notesListByDate.innerHTML = "<p>Belum ada catatan.</p>";
+        } else {
+          notesListByDate.innerHTML = "<ul>" + notes.map(n => `<li>${n}</li>`).join("") + "</ul>";
+        }
+      });
+
+      notesModal.classList.add("active");
+    }
+
+    // simpan catatan baru
+    async function saveNote() {
+      const noteText = document.getElementById("newNoteInput").value.trim();
+      if (!noteText) return;
+
+      const q = query(collection(db, "dailyNotes"), where("date", "==", selectedDate));
+      const snap = await getDocs(q);
+
+      if (snap.empty) {
+        await addDoc(collection(db, "dailyNotes"), {
+          date: selectedDate,
+          notes: [noteText],
+          createdAt: serverTimestamp()
+        });
+      } else {
+        const docRef = snap.docs[0].ref;
+        await updateDoc(docRef, { notes: arrayUnion(noteText) });
+      }
+
+      document.getElementById("newNoteInput").value = "";
+    }
+
+    function closeNotesModal() {
+      notesModal.classList.remove("active");
+    }
+
+    // 🔹 supaya bisa dipanggil dari HTML
+    window.saveNote = saveNote;
+    window.closeNotesModal = closeNotesModal;
+
+    // Navigasi bulan
+    document.getElementById("prevMonth").addEventListener("click", () => {
+      if (currentMonth === 0) {
+        loadCalendar(currentYear - 1, 11);
+      } else {
+        loadCalendar(currentYear, currentMonth - 1);
       }
     });
-  });
-}
 
-// buka modal untuk tanggal tertentu
-function openNotesModal(dateStr){
-  selectedDate = dateStr;
-  modalDateEl.innerText = dateStr;
-  notesListByDate.innerHTML = "Loading...";
-
-  const q = query(collection(db,"dailyNotes"), where("date","==",dateStr));
-  onSnapshot(q, (snap) => {
-    let notes = [];
-    if(!snap.empty){
-      notes = snap.docs[0].data().notes || [];
-    }
-    if(notes.length===0){
-      notesListByDate.innerHTML = "<p>Belum ada catatan.</p>";
-    }else{
-      notesListByDate.innerHTML = "<ul>"+notes.map(n=>`<li>${n}</li>`).join("")+"</ul>";
-    }
-  });
-
-  notesModal.classList.add("active");
-}
-
-// simpan catatan baru
-async function saveNote(){
-  const noteText = document.getElementById("newNoteInput").value.trim();
-  if(!noteText) return;
-
-  const q = query(collection(db,"dailyNotes"), where("date","==",selectedDate));
-  const snap = await getDocs(q);
-
-  if(snap.empty){
-    await addDoc(collection(db,"dailyNotes"), {
-      date: selectedDate,
-      notes: [noteText],
-      createdAt: serverTimestamp()
+    document.getElementById("nextMonth").addEventListener("click", () => {
+      if (currentMonth === 11) {
+        loadCalendar(currentYear + 1, 0);
+      } else {
+        loadCalendar(currentYear, currentMonth + 1);
+      }
     });
-  }else{
-    const docRef = snap.docs[0].ref;
-    await updateDoc(docRef, { notes: arrayUnion(noteText) });
-  }
 
-  document.getElementById("newNoteInput").value="";
-}
-
-function closeNotesModal(){
-  notesModal.classList.remove("active");
-}
-
-// 🔹 supaya bisa dipanggil dari HTML
-window.saveNote = saveNote;
-window.closeNotesModal = closeNotesModal;
-
-// Navigasi bulan
-document.getElementById("prevMonth").addEventListener("click", () => {
-  if (currentMonth === 0) {
-    loadCalendar(currentYear-1, 11);
-  } else {
-    loadCalendar(currentYear, currentMonth-1);
-  }
-});
-
-document.getElementById("nextMonth").addEventListener("click", () => {
-  if (currentMonth === 11) {
-    loadCalendar(currentYear+1, 0);
-  } else {
-    loadCalendar(currentYear, currentMonth+1);
-  }
-});
-
-// jalankan pertama kali
-loadCalendar();
+    // jalankan pertama kali
+    loadCalendar();
   </script>
 
   <style>
