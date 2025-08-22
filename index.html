@@ -988,13 +988,13 @@
       }
 
       nav {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 0.8rem;
-  margin: 1.5rem auto;
-  padding: 0 1rem;
-  max-width: 800px;
-}
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 0.8rem;
+        margin: 1.5rem auto;
+        padding: 0 1rem;
+        max-width: 800px;
+      }
 
 
       nav button {
@@ -2733,6 +2733,7 @@
           category: selectedCategory,
           createdAt: serverTimestamp(),   // waktu dibuat
           updatedAt: serverTimestamp(),
+          waktu: serverTimestamp(),
           likes: [],
           hearts: [],
           supports: [],
@@ -2957,7 +2958,8 @@
 
     function createNoteElement(docSnap) {
       const data = docSnap.data();
-      const waktuFormatted = formatTime(data.waktu);
+      const waktuTs = data.createdAt || data.waktu;
+      const waktuFormatted = formatTime(waktuTs);
       const li = document.createElement("li");
       li.id = `note-${docSnap.id}`;
 
@@ -3059,16 +3061,9 @@
     }
 
     function loadNotes() {
-      const q = query(collection(db, "notes"), orderBy("waktu", "desc"));
+      const q = query(collection(db, "notes"), orderBy("createdAt", "desc"));
       onSnapshot(q, (snapshot) => {
-        allNotes = [];
-        snapshot.forEach((docSnap) => {
-          allNotes.push({
-            id: docSnap.id,
-            ...docSnap.data()
-          });
-        });
-
+        allNotes = snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }));
         updateStats();
         filterNotes();
         updatePopularNotes();
@@ -3077,8 +3072,44 @@
       });
     }
 
+
     function filterNotes() {
-      let filteredNotes = [...allNotes];
+      let filteredNotes = [...allNotes]; // <- sebelumnya [.allNotes]
+
+      const getDate = (n) =>
+        n.createdAt ? (n.createdAt.toDate ? n.createdAt.toDate() : new Date(n.createdAt))
+          : (n.waktu ? (n.waktu.toDate ? n.waktu.toDate() : new Date(n.waktu)) : null);
+
+
+      if (currentTimeFilter !== 'all') {
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+        const monthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+        filteredNotes = filteredNotes.filter(note => {
+          const noteDate = getDate(note);
+          if (!noteDate) return false;
+          switch (currentTimeFilter) {
+            case 'today': return noteDate >= today;
+            case 'week': return noteDate >= weekAgo;
+            case 'month': return noteDate >= monthAgo;
+            default: return true;
+          }
+        });
+      }
+
+      filteredNotes.sort((a, b) => {
+        const da = getDate(a)?.getTime() || 0;
+        const db = getDate(b)?.getTime() || 0;
+        switch (currentSort) {
+          case 'oldest': return da - db;
+          case 'popular': return (b.totalReactions || 0) - (a.totalReactions || 0);
+          case 'random': return Math.random() - 0.5;
+          default: return db - da; // newest
+        }
+      });
+
 
       // Filter by search
       const searchTerm = searchInput.value.toLowerCase().trim();
