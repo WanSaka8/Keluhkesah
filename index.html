@@ -2045,10 +2045,10 @@
 
       <!-- Dropdown kategori -->
       <select id="categoryInput" style="padding:0.5rem;border-radius:8px;">
-        <option value="Umum">Sava</option>
-        <option value="Liburan">Narafa</option>
-        <option value="Keluarga">Nurul</option>
-        <option value="Meme">Azizah</option>
+        <option value="sava">Sava</option>
+        <option value="Narafa">Narafa</option>
+        <option value="Nurul">Nurul</option>
+        <option value="Azizah">Azizah</option>
       </select>
 
       <!-- Tombol Upload -->
@@ -2189,7 +2189,7 @@
 
           const caption = captionInput.value;
           const categoryInput = document.getElementById("categoryInput");
-          const category = categoryInput ? categoryInput.value : "Umum";
+          const category = categoryInput ? categoryInput.value : "sava";
 
           // Proses setiap file
           for (const file of files) {
@@ -2232,7 +2232,7 @@
           // Reset form
           captionInput.value = "";
           fileInput.value = "";
-          if (categoryInput) categoryInput.value = "Umum";
+          if (categoryInput) categoryInput.value = "sava";
 
           showNotification("✅ Semua gambar berhasil diupload!", "success");
           loadGallery();
