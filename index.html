@@ -1703,6 +1703,8 @@
     <button id="btn-mood-map">📅 Mood Map</button>
     <button id="btn-gallery">🖼️ Galeri</button>
     <button id="btn-daily-notes">📅 Kalender Catatan</button>
+    <button id="btn-private-notes">📝 Catatan Pribadi</button>
+
   </nav>
 
   <!-- Daily Challenge -->
@@ -2063,6 +2065,48 @@
     </div>
   </div>
 
+  <div id="pn-page" class="page">
+    <div
+      style="display:flex;justify-content:space-between;align-items:center;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem">
+      <h2 style="color:#fff;font-weight:800;font-size:22px;margin:0">Catatan Pribadi</h2>
+      <div>
+        <button id="pn-export-btn"
+          style="background:#4da3ff;color:#fff;padding:8px 12px;border:none;border-radius:8px;cursor:pointer;margin-right:8px">Export
+          JSON</button>
+        <label for="pn-import-input"
+          style="background:#2d3748;color:#fff;padding:8px 12px;border-radius:8px;cursor:pointer">Import JSON</label>
+        <input type="file" id="pn-import-input" accept="application/json" hidden>
+      </div>
+    </div>
+
+    <!-- Composer -->
+    <div style="background:#151a21;border:1px solid #2d3748;border-radius:12px;padding:16px;margin-bottom:16px">
+      <input id="pn-title" placeholder="Judul (opsional)"
+        style="width:100%;padding:10px;margin-bottom:10px;border-radius:8px;border:1px solid #2d3748;background:#1e2329;color:#fff;">
+      <textarea id="pn-content" placeholder="Tulis catatan..."
+        style="width:100%;min-height:120px;padding:10px;border-radius:8px;border:1px solid #2d3748;background:#1e2329;color:#fff;"></textarea>
+      <input id="pn-tags" placeholder="Tag (pisahkan dengan koma)"
+        style="width:100%;padding:10px;margin-top:10px;border-radius:8px;border:1px solid #2d3748;background:#1e2329;color:#fff;">
+      <div style="margin-top:12px;display:flex;justify-content:space-between;align-items:center;">
+        <label style="color:#fff;display:flex;align-items:center;gap:6px;"><input type="checkbox" id="pn-pin"> Pin
+          catatan</label>
+        <div style="display:flex;gap:8px">
+          <button id="pn-cancel-edit"
+            style="display:none;background:#6b7280;color:#fff;padding:8px 12px;border:none;border-radius:8px;cursor:pointer">Batal
+            Edit</button>
+          <button id="pn-save-btn"
+            style="background:#4da3ff;color:#fff;padding:8px 12px;border:none;border-radius:8px;cursor:pointer">Simpan</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search + List -->
+    <input id="pn-search" placeholder="Cari catatan..."
+      style="width:100%;padding:10px;border-radius:8px;border:1px solid #2d3748;background:#1e2329;color:#fff;margin-bottom:12px;">
+    <div id="pn-container" style="display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))">
+    </div>
+    <p id="pn-empty" style="display:none;text-align:center;color:#aaa;margin-top:20px;">Belum ada catatan.</p>
+  </div>
 
   <!-- Notification -->
   <div id="notification" class="notification"></div>
@@ -2177,6 +2221,8 @@
       document.getElementById('btn-mood-map').addEventListener('click', () => switchPage('page-mood-map'));
       document.getElementById("btn-gallery").addEventListener("click", () => switchPage("page-gallery"));
       document.getElementById('btn-daily-notes').addEventListener('click', () => switchPage('page-daily-notes'));
+      document.getElementById('btn-private-notes').addEventListener('click', () => switchPage('pn-page'));
+
 
 
 
@@ -3387,6 +3433,8 @@
       else if (pageId === 'page-mood-map') document.getElementById('btn-mood-map').classList.add('active');
       else if (pageId === 'page-gallery') document.getElementById('btn-gallery').classList.add('active');
       else if (pageId === 'page-daily-notes') document.getElementById('btn-daily-notes').classList.add('active');
+      else if (pageId === 'pn-page') document.getElementById('btn-private-notes').classList.add('active');
+
 
       localStorage.setItem('lastPage', pageId);
 
@@ -3658,6 +3706,206 @@
     passwordInput.addEventListener("keypress", (e) => {
       if (e.key === "Enter") submitPassword.click();
     });
+
+
+    // ===== Catatan Pribadi (Firestore, no-login) =====
+const pn_colRef = collection(db, "privateNotes");
+
+const pn_title = document.getElementById("pn-title");
+const pn_content = document.getElementById("pn-content");
+const pn_tags = document.getElementById("pn-tags");
+const pn_pin = document.getElementById("pn-pin");
+const pn_container = document.getElementById("pn-container");
+const pn_empty = document.getElementById("pn-empty");
+const pn_search = document.getElementById("pn-search");
+const pn_saveBtn = document.getElementById("pn-save-btn");
+const pn_cancelBtn = document.getElementById("pn-cancel-edit");
+const pn_exportBtn = document.getElementById("pn-export-btn");
+const pn_importInput = document.getElementById("pn-import-input");
+
+let pn_notes = [];
+let pn_editingId = null;
+
+// Load notes (orderBy createdAt saja; pin di-sort di client biar gak butuh index)
+async function pnLoadNotes() {
+  const q = query(pn_colRef, orderBy("createdAt", "desc"));
+  const snap = await getDocs(q);
+  pn_notes = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+  // sort pinned dulu
+  pn_notes.sort((a, b) => {
+    const pinDiff = (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
+    if (pinDiff) return pinDiff;
+    const ta = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
+    const tb = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
+    return tb - ta;
+  });
+
+  pnRenderNotes(pn_notes);
+}
+
+// Render
+function pnRenderNotes(list) {
+  pn_container.innerHTML = "";
+  if (!list.length) {
+    pn_empty.style.display = "block";
+    return;
+  }
+  pn_empty.style.display = "none";
+
+  list.forEach(note => {
+    const card = document.createElement("div");
+    card.style.cssText = `
+      background:#151a21;border:1px solid #2d3748;color:#fff;border-radius:12px;
+      padding:12px;display:flex;flex-direction:column;gap:8px;box-shadow:0 4px 10px rgba(0,0,0,.3)
+    `;
+
+    card.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <h3 style="margin:0;font-size:16px;font-weight:700">${note.title || "(Tanpa Judul)"}</h3>
+        <span style="font-size:12px;color:${note.pinned ? "#7cf5d2" : "#aaa"}">${note.pinned ? "📌 Pinned" : ""}</span>
+      </div>
+      <p style="margin:0;color:#ccc;font-size:14px;white-space:pre-wrap">${note.content || ""}</p>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        ${(note.tags || []).map(t => `<span style="background:#1e2329;color:#4da3ff;padding:2px 8px;border-radius:6px;font-size:12px">#${t}</span>`).join("")}
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:4px">
+        <button data-id="${note.id}" class="pn-edit"   style="background:#4da3ff;color:#fff;border:none;border-radius:6px;padding:4px 8px;cursor:pointer;font-size:12px">Edit</button>
+        <button data-id="${note.id}" class="pn-pin"    style="background:#10b981;color:#fff;border:none;border-radius:6px;padding:4px 8px;cursor:pointer;font-size:12px">${note.pinned ? "Unpin" : "Pin"}</button>
+        <button data-id="${note.id}" class="pn-delete" style="background:#e11d48;color:#fff;border:none;border-radius:6px;padding:4px 8px;cursor:pointer;font-size:12px">Hapus</button>
+      </div>
+    `;
+    pn_container.appendChild(card);
+  });
+}
+
+// Save / Update
+pn_saveBtn.addEventListener("click", async () => {
+  const title = pn_title.value.trim();
+  const content = pn_content.value.trim();
+  const tags = pn_tags.value.split(",").map(t => t.trim()).filter(Boolean);
+  const pinned = pn_pin.checked;
+
+  if (!content) {
+    showNotification ? showNotification("Isi catatan tidak boleh kosong!", "error") : alert("Isi kosong");
+    return;
+  }
+
+  try {
+    if (pn_editingId) {
+      await updateDoc(doc(db, "privateNotes", pn_editingId), {
+        title, content, tags, pinned, updatedAt: serverTimestamp()
+      });
+      pn_editingId = null;
+      pn_cancelBtn.style.display = "none";
+      pn_saveBtn.textContent = "Simpan";
+      showNotification && showNotification("Catatan diperbarui ✔️");
+    } else {
+      await addDoc(pn_colRef, {
+        title, content, tags, pinned, createdAt: serverTimestamp(), updatedAt: serverTimestamp()
+      });
+      showNotification && showNotification("Catatan disimpan ✔️");
+    }
+    pn_title.value = "";
+    pn_content.value = "";
+    pn_tags.value = "";
+    pn_pin.checked = false;
+
+    await pnLoadNotes();
+  } catch (e) {
+    console.error(e);
+    showNotification ? showNotification("Gagal menyimpan catatan", "error") : alert("Gagal menyimpan");
+  }
+});
+
+// Cancel edit
+pn_cancelBtn.addEventListener("click", () => {
+  pn_editingId = null;
+  pn_title.value = "";
+  pn_content.value = "";
+  pn_tags.value = "";
+  pn_pin.checked = false;
+  pn_cancelBtn.style.display = "none";
+  pn_saveBtn.textContent = "Simpan";
+});
+
+// Search
+pn_search.addEventListener("input", (e) => {
+  const q = e.target.value.toLowerCase();
+  const filtered = pn_notes.filter(n =>
+    (n.title || "").toLowerCase().includes(q) ||
+    (n.content || "").toLowerCase().includes(q) ||
+    (n.tags || []).some(t => (t || "").toLowerCase().includes(q))
+  );
+  pnRenderNotes(filtered);
+});
+
+// Card actions (edit / pin / delete)
+pn_container.addEventListener("click", async (e) => {
+  const id = e.target.dataset.id;
+  if (!id) return;
+
+  if (e.target.classList.contains("pn-delete")) {
+    if (confirm("Hapus catatan ini?")) {
+      await deleteDoc(doc(db, "privateNotes", id));
+      showNotification && showNotification("Catatan dihapus 🗑️");
+      await pnLoadNotes();
+    }
+  } else if (e.target.classList.contains("pn-pin")) {
+    const note = pn_notes.find(n => n.id === id);
+    await updateDoc(doc(db, "privateNotes", id), { pinned: !note?.pinned });
+    await pnLoadNotes();
+  } else if (e.target.classList.contains("pn-edit")) {
+    const note = pn_notes.find(n => n.id === id);
+    if (!note) return;
+    pn_editingId = id;
+    pn_title.value = note.title || "";
+    pn_content.value = note.content || "";
+    pn_tags.value = (note.tags || []).join(", ");
+    pn_pin.checked = !!note.pinned;
+    pn_cancelBtn.style.display = "inline-block";
+    pn_saveBtn.textContent = "Update";
+    // pindah ke composer (opsional)
+    window.scrollTo({ top: document.getElementById("pn-page").offsetTop, behavior: "smooth" });
+  }
+});
+
+// Export / Import
+pn_exportBtn.addEventListener("click", () => {
+  const blob = new Blob([JSON.stringify(pn_notes, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "catatan-pribadi.json";
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+pn_importInput.addEventListener("change", async (e) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
+  try {
+    const text = await file.text();
+    const data = JSON.parse(text);
+    for (const n of data) {
+      await addDoc(pn_colRef, {
+        title: n.title || "", content: n.content || "", tags: n.tags || [],
+        pinned: !!n.pinned, createdAt: serverTimestamp(), updatedAt: serverTimestamp()
+      });
+    }
+    showNotification && showNotification("Import selesai ✔️");
+    await pnLoadNotes();
+  } catch (err) {
+    console.error(err);
+    showNotification ? showNotification("Gagal import", "error") : alert("Gagal import");
+  } finally {
+    e.target.value = "";
+  }
+});
+
+// load awal
+pnLoadNotes();
+
 
 
   </script>
