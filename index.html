@@ -1704,6 +1704,7 @@
     <button id="btn-gallery">🖼️ Galeri</button>
     <button id="btn-daily-notes">📅 Kalender Catatan</button>
     <button id="btn-private-notes">📝 Catatan Pribadi</button>
+    <button id="btn-translator">🌐 Translator</button>
 
   </nav>
 
@@ -2065,12 +2066,17 @@
     </div>
   </div>
 
-  <div id="pn-page" class="page" style="width: 100%; max-width: 100vw; margin: 0; background: linear-gradient(135deg, #0f1419 0%, #1a1f2e 100%); height: 100vh; display: flex; flex-direction: column; font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif; overflow: hidden;">
+  <div id="pn-page" class="page"
+    style="width: 100%; max-width: 100vw; margin: 0; background: linear-gradient(135deg, #0f1419 0%, #1a1f2e 100%); height: 100vh; display: flex; flex-direction: column; font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif; overflow: hidden;">
     <!-- Header Modern Style -->
-    <div style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); backdrop-filter: blur(20px); padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(148, 163, 184, 0.1); box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+    <div
+      style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); backdrop-filter: blur(20px); padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(148, 163, 184, 0.1); box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
       <div style="display: flex; align-items: center; gap: 16px;">
-        <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #06d6a0 0%, #00a884 100%); border-radius: 16px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 22px; box-shadow: 0 4px 16px rgba(6, 214, 160, 0.3); position: relative; overflow: hidden;">
-          <div style="position: absolute; inset: 0; background: linear-gradient(45deg, rgba(255,255,255,0.2) 0%, transparent 100%);"></div>
+        <div
+          style="width: 48px; height: 48px; background: linear-gradient(135deg, #06d6a0 0%, #00a884 100%); border-radius: 16px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 22px; box-shadow: 0 4px 16px rgba(6, 214, 160, 0.3); position: relative; overflow: hidden;">
+          <div
+            style="position: absolute; inset: 0; background: linear-gradient(45deg, rgba(255,255,255,0.2) 0%, transparent 100%);">
+          </div>
           ✨
         </div>
         <div>
@@ -2079,75 +2085,294 @@
         </div>
       </div>
       <div style="display: flex; gap: 4px;">
-        <button id="pn-export-btn" style="background: rgba(100, 116, 139, 0.1); color: #64748b; border: none; cursor: pointer; padding: 12px; border-radius: 12px; font-size: 18px; transition: all 0.3s ease; backdrop-filter: blur(10px);" onmouseover="this.style.background='rgba(100, 116, 139, 0.2)'; this.style.color='#94a3b8'" onmouseout="this.style.background='rgba(100, 116, 139, 0.1)'; this.style.color='#64748b'">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/></svg>
+        <button id="pn-export-btn"
+          style="background: rgba(100, 116, 139, 0.1); color: #64748b; border: none; cursor: pointer; padding: 12px; border-radius: 12px; font-size: 18px; transition: all 0.3s ease; backdrop-filter: blur(10px);"
+          onmouseover="this.style.background='rgba(100, 116, 139, 0.2)'; this.style.color='#94a3b8'"
+          onmouseout="this.style.background='rgba(100, 116, 139, 0.1)'; this.style.color='#64748b'">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+          </svg>
         </button>
-        <label for="pn-import-input" style="background: rgba(100, 116, 139, 0.1); color: #64748b; cursor: pointer; padding: 12px; border-radius: 12px; font-size: 18px; transition: all 0.3s ease; backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center;" onmouseover="this.style.background='rgba(100, 116, 139, 0.2)'; this.style.color='#94a3b8'" onmouseout="this.style.background='rgba(100, 116, 139, 0.1)'; this.style.color='#64748b'">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/></svg>
+        <label for="pn-import-input"
+          style="background: rgba(100, 116, 139, 0.1); color: #64748b; cursor: pointer; padding: 12px; border-radius: 12px; font-size: 18px; transition: all 0.3s ease; backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center;"
+          onmouseover="this.style.background='rgba(100, 116, 139, 0.2)'; this.style.color='#94a3b8'"
+          onmouseout="this.style.background='rgba(100, 116, 139, 0.1)'; this.style.color='#64748b'">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
+          </svg>
         </label>
         <input type="file" id="pn-import-input" accept="application/json" style="display: none;">
       </div>
     </div>
 
     <!-- Search Bar (Top) -->
-    <div style="padding: 16px 24px; background: rgba(15, 20, 25, 0.8); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(148, 163, 184, 0.05);">
+    <div
+      style="padding: 16px 24px; background: rgba(15, 20, 25, 0.8); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(148, 163, 184, 0.05);">
       <div style="position: relative; max-width: 600px; margin: 0 auto;">
-        <input id="pn-search" placeholder="Search your notes..." style="width: 100%; padding: 14px 20px 14px 48px; border-radius: 24px; border: 1px solid rgba(148, 163, 184, 0.1); background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(20px); color: #f1f5f9; font-size: 15px; outline: none; box-sizing: border-box; transition: all 0.3s ease; font-weight: 400;" onfocus="this.style.background='rgba(30, 41, 59, 0.6)'; this.style.borderColor='rgba(6, 214, 160, 0.3)'; this.style.boxShadow='0 0 0 3px rgba(6, 214, 160, 0.1)'" onblur="this.style.background='rgba(30, 41, 59, 0.4)'; this.style.borderColor='rgba(148, 163, 184, 0.1)'; this.style.boxShadow='none'">
-        <svg style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #64748b;" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"/></svg>
+        <input id="pn-search" placeholder="Search your notes..."
+          style="width: 100%; padding: 14px 20px 14px 48px; border-radius: 24px; border: 1px solid rgba(148, 163, 184, 0.1); background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(20px); color: #f1f5f9; font-size: 15px; outline: none; box-sizing: border-box; transition: all 0.3s ease; font-weight: 400;"
+          onfocus="this.style.background='rgba(30, 41, 59, 0.6)'; this.style.borderColor='rgba(6, 214, 160, 0.3)'; this.style.boxShadow='0 0 0 3px rgba(6, 214, 160, 0.1)'"
+          onblur="this.style.background='rgba(30, 41, 59, 0.4)'; this.style.borderColor='rgba(148, 163, 184, 0.1)'; this.style.boxShadow='none'">
+        <svg style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #64748b;" width="20"
+          height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z" />
+        </svg>
       </div>
     </div>
 
     <!-- Chat Area -->
-    <div style="flex: 1; overflow-y: auto; padding: 20px 24px; background: linear-gradient(135deg, #0f1419 0%, #1a1f2e 100%); position: relative;">
-      <div style="position: absolute; inset: 0; background: radial-gradient(circle at 30% 20%, rgba(6, 214, 160, 0.05) 0%, transparent 40%), radial-gradient(circle at 70% 80%, rgba(99, 102, 241, 0.05) 0%, transparent 40%);"></div>
-      <div id="pn-container" style="display: flex; flex-direction: column; gap: 16px; max-width: 800px; margin: 0 auto; position: relative; z-index: 1;">
+    <div
+      style="flex: 1; overflow-y: auto; padding: 20px 24px; background: linear-gradient(135deg, #0f1419 0%, #1a1f2e 100%); position: relative;">
+      <div
+        style="position: absolute; inset: 0; background: radial-gradient(circle at 30% 20%, rgba(6, 214, 160, 0.05) 0%, transparent 40%), radial-gradient(circle at 70% 80%, rgba(99, 102, 241, 0.05) 0%, transparent 40%);">
       </div>
-      <p id="pn-empty" style="display: none; text-align: center; color: #64748b; margin-top: 80px; font-size: 18px; opacity: 0.8; font-weight: 400; max-width: 400px; margin-left: auto; margin-right: auto; line-height: 1.6;">
+      <div id="pn-container"
+        style="display: flex; flex-direction: column; gap: 16px; max-width: 800px; margin: 0 auto; position: relative; z-index: 1;">
+      </div>
+      <p id="pn-empty"
+        style="display: none; text-align: center; color: #64748b; margin-top: 80px; font-size: 18px; opacity: 0.8; font-weight: 400; max-width: 400px; margin-left: auto; margin-right: auto; line-height: 1.6;">
         Belum ada catatan<br>
         <span style="font-size: 14px; opacity: 0.6;">Mulai tulis catatan pertama kamu</span>
       </p>
     </div>
 
     <!-- Modern Input Area -->
-    <div style="background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%); backdrop-filter: blur(30px); padding: 24px; border-top: 1px solid rgba(148, 163, 184, 0.1); box-shadow: 0 -4px 20px rgba(0,0,0,0.1);">
+    <div
+      style="background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%); backdrop-filter: blur(30px); padding: 24px; border-top: 1px solid rgba(148, 163, 184, 0.1); box-shadow: 0 -4px 20px rgba(0,0,0,0.1);">
       <div style="max-width: 800px; margin: 0 auto;">
-        
+
         <!-- Title and Tags Row -->
         <div style="display: flex; gap: 12px; margin-bottom: 12px;">
           <div style="position: relative; flex: 1;">
-            <input id="pn-title" placeholder="Title" style="width: 100%; padding: 14px 20px 14px 44px; border-radius: 20px; border: 1px solid rgba(148, 163, 184, 0.1); background: rgba(51, 65, 85, 0.3); backdrop-filter: blur(10px); color: #f1f5f9; font-size: 15px; outline: none; box-sizing: border-box; transition: all 0.3s ease; font-weight: 400;" onfocus="this.style.background='rgba(51, 65, 85, 0.5)'; this.style.borderColor='rgba(6, 214, 160, 0.3)'; this.style.boxShadow='0 0 0 3px rgba(6, 214, 160, 0.1)'" onblur="this.style.background='rgba(51, 65, 85, 0.3)'; this.style.borderColor='rgba(148, 163, 184, 0.1)'; this.style.boxShadow='none'">
-            <svg style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #64748b;" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3,3H21V5H3V3M3,7H15V9H3V7M3,11H21V13H3V11M3,15H15V17H3V15M3,19H21V21H3V19Z"/></svg>
+            <input id="pn-title" placeholder="Title"
+              style="width: 100%; padding: 14px 20px 14px 44px; border-radius: 20px; border: 1px solid rgba(148, 163, 184, 0.1); background: rgba(51, 65, 85, 0.3); backdrop-filter: blur(10px); color: #f1f5f9; font-size: 15px; outline: none; box-sizing: border-box; transition: all 0.3s ease; font-weight: 400;"
+              onfocus="this.style.background='rgba(51, 65, 85, 0.5)'; this.style.borderColor='rgba(6, 214, 160, 0.3)'; this.style.boxShadow='0 0 0 3px rgba(6, 214, 160, 0.1)'"
+              onblur="this.style.background='rgba(51, 65, 85, 0.3)'; this.style.borderColor='rgba(148, 163, 184, 0.1)'; this.style.boxShadow='none'">
+            <svg style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #64748b;"
+              width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M3,3H21V5H3V3M3,7H15V9H3V7M3,11H21V13H3V11M3,15H15V17H3V15M3,19H21V21H3V19Z" />
+            </svg>
           </div>
           <div style="position: relative; flex: 1;">
-            <input id="pn-tags" placeholder="Tags (comma separated)" style="width: 100%; padding: 14px 20px 14px 44px; border-radius: 20px; border: 1px solid rgba(148, 163, 184, 0.1); background: rgba(51, 65, 85, 0.3); backdrop-filter: blur(10px); color: #f1f5f9; font-size: 15px; outline: none; box-sizing: border-box; transition: all 0.3s ease; font-weight: 400;" onfocus="this.style.background='rgba(51, 65, 85, 0.5)'; this.style.borderColor='rgba(6, 214, 160, 0.3)'; this.style.boxShadow='0 0 0 3px rgba(6, 214, 160, 0.1)'" onblur="this.style.background='rgba(51, 65, 85, 0.3)'; this.style.borderColor='rgba(148, 163, 184, 0.1)'; this.style.boxShadow='none'">
-            <svg style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #64748b;" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M5.5,7A1.5,1.5 0 0,1 4,5.5A1.5,1.5 0 0,1 5.5,4A1.5,1.5 0 0,1 7,5.5A1.5,1.5 0 0,1 5.5,7M21.41,11.58L12.41,2.58C12.05,2.22 11.55,2 11,2H4C2.89,2 2,2.89 2,4V11C2,11.55 2.22,12.05 2.59,12.42L11.58,21.41C11.95,21.78 12.45,22 13,22C13.55,22 14.05,21.78 14.41,21.41L21.41,14.41C21.78,14.05 22,13.55 22,13C22,12.45 21.78,11.95 21.41,11.58Z"/></svg>
+            <input id="pn-tags" placeholder="Tags (comma separated)"
+              style="width: 100%; padding: 14px 20px 14px 44px; border-radius: 20px; border: 1px solid rgba(148, 163, 184, 0.1); background: rgba(51, 65, 85, 0.3); backdrop-filter: blur(10px); color: #f1f5f9; font-size: 15px; outline: none; box-sizing: border-box; transition: all 0.3s ease; font-weight: 400;"
+              onfocus="this.style.background='rgba(51, 65, 85, 0.5)'; this.style.borderColor='rgba(6, 214, 160, 0.3)'; this.style.boxShadow='0 0 0 3px rgba(6, 214, 160, 0.1)'"
+              onblur="this.style.background='rgba(51, 65, 85, 0.3)'; this.style.borderColor='rgba(148, 163, 184, 0.1)'; this.style.boxShadow='none'">
+            <svg style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #64748b;"
+              width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M5.5,7A1.5,1.5 0 0,1 4,5.5A1.5,1.5 0 0,1 5.5,4A1.5,1.5 0 0,1 7,5.5A1.5,1.5 0 0,1 5.5,7M21.41,11.58L12.41,2.58C12.05,2.22 11.55,2 11,2H4C2.89,2 2,2.89 2,4V11C2,11.55 2.22,12.05 2.59,12.42L11.58,21.41C11.95,21.78 12.45,22 13,22C13.55,22 14.05,21.78 14.41,21.41L21.41,14.41C21.78,14.05 22,13.55 22,13C22,12.45 21.78,11.95 21.41,11.58Z" />
+            </svg>
           </div>
         </div>
-        
+
         <!-- Main Input Area -->
         <div style="display: flex; align-items: end; gap: 12px;">
-          <div style="flex: 1; background: rgba(51, 65, 85, 0.3); backdrop-filter: blur(10px); border: 1px solid rgba(148, 163, 184, 0.1); border-radius: 24px; padding: 16px 20px; display: flex; align-items: center; gap: 16px; transition: all 0.3s ease; position: relative;" onfocus="this.style.background='rgba(51, 65, 85, 0.5)'; this.style.borderColor='rgba(6, 214, 160, 0.3)'">
-            <textarea id="pn-content" placeholder="Write your note here..." style="flex: 1; border: none; background: transparent; color: #f1f5f9; font-size: 16px; outline: none; resize: none; min-height: 28px; max-height: 140px; font-family: inherit; line-height: 1.5; font-weight: 400;"></textarea>
-            <label style="color: #06d6a0; display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; white-space: nowrap; font-weight: 500; transition: all 0.2s ease;" onmouseover="this.style.color='#00a884'" onmouseout="this.style.color='#06d6a0'">
+          <div
+            style="flex: 1; background: rgba(51, 65, 85, 0.3); backdrop-filter: blur(10px); border: 1px solid rgba(148, 163, 184, 0.1); border-radius: 24px; padding: 16px 20px; display: flex; align-items: center; gap: 16px; transition: all 0.3s ease; position: relative;"
+            onfocus="this.style.background='rgba(51, 65, 85, 0.5)'; this.style.borderColor='rgba(6, 214, 160, 0.3)'">
+            <textarea id="pn-content" placeholder="Write your note here..."
+              style="flex: 1; border: none; background: transparent; color: #f1f5f9; font-size: 16px; outline: none; resize: none; min-height: 28px; max-height: 140px; font-family: inherit; line-height: 1.5; font-weight: 400;"></textarea>
+            <label
+              style="color: #06d6a0; display: flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; white-space: nowrap; font-weight: 500; transition: all 0.2s ease;"
+              onmouseover="this.style.color='#00a884'" onmouseout="this.style.color='#06d6a0'">
               <input type="checkbox" id="pn-pin" style="margin: 0; accent-color: #06d6a0; width: 16px; height: 16px;">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16,12V4H17V2H7V4H8V12L6,14V16H11.2V22H12.8V16H18V14L16,12Z"/></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M16,12V4H17V2H7V4H8V12L6,14V16H11.2V22H12.8V16H18V14L16,12Z" />
+              </svg>
             </label>
           </div>
-          
+
           <!-- Send Button -->
-          <button id="pn-save-btn" style="width: 56px; height: 56px; background: linear-gradient(135deg, #06d6a0 0%, #00a884 100%); border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; color: white; font-size: 22px; flex-shrink: 0; box-shadow: 0 4px 20px rgba(6, 214, 160, 0.3); transition: all 0.3s ease; position: relative; overflow: hidden;" onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 6px 25px rgba(6, 214, 160, 0.4)'" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 20px rgba(6, 214, 160, 0.3)'">
-            <div style="position: absolute; inset: 0; background: linear-gradient(45deg, rgba(255,255,255,0.2) 0%, transparent 100%);"></div>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M2,21L23,12L2,3V10L17,12L2,14V21Z"/></svg>
+          <button id="pn-save-btn"
+            style="width: 56px; height: 56px; background: linear-gradient(135deg, #06d6a0 0%, #00a884 100%); border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; color: white; font-size: 22px; flex-shrink: 0; box-shadow: 0 4px 20px rgba(6, 214, 160, 0.3); transition: all 0.3s ease; position: relative; overflow: hidden;"
+            onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 6px 25px rgba(6, 214, 160, 0.4)'"
+            onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 20px rgba(6, 214, 160, 0.3)'">
+            <div
+              style="position: absolute; inset: 0; background: linear-gradient(45deg, rgba(255,255,255,0.2) 0%, transparent 100%);">
+            </div>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M2,21L23,12L2,3V10L17,12L2,14V21Z" />
+            </svg>
           </button>
-          
+
           <!-- Cancel Edit Button -->
-          <button id="pn-cancel-edit" style="display: none; width: 56px; height: 56px; background: linear-gradient(135deg, #64748b 0%, #475569 100%); border: none; border-radius: 50%; cursor: pointer; color: white; font-size: 20px; flex-shrink: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.2); transition: all 0.3s ease;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"/></svg>
+          <button id="pn-cancel-edit"
+            style="display: none; width: 56px; height: 56px; background: linear-gradient(135deg, #64748b 0%, #475569 100%); border: none; border-radius: 50%; cursor: pointer; color: white; font-size: 20px; flex-shrink: 0; box-shadow: 0 4px 16px rgba(0,0,0,0.2); transition: all 0.3s ease;"
+            onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
+            </svg>
           </button>
         </div>
       </div>
     </div>
-</div>
+  </div>
+
+  <!-- 🌐 Halaman Translator -->
+  <div id="page-translator" class="page" style="padding:20px; display:flex; justify-content:center;">
+    <style>
+      /* Scoped style cuma buat translator */
+      .translator-card {
+        max-width: 760px;
+        width: 100%;
+        background: #ffffff;
+        border-radius: 18px;
+        padding: 22px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, .12);
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+
+      .translator-header h2 {
+        margin: 0;
+        font-size: 1.5rem;
+        color: #222;
+      }
+
+      .translator-header p {
+        margin: 2px 0 0;
+        color: #666;
+        font-size: .95rem;
+      }
+
+      .translator-input textarea,
+      .translator-output textarea {
+        width: 100%;
+        min-height: 130px;
+        resize: vertical;
+        border: 1px solid #e1e1e1;
+        border-radius: 12px;
+        padding: 12px;
+        background: #fafafa;
+        font-size: 15px;
+        transition: .2s;
+      }
+
+      .translator-input textarea:focus,
+      .translator-output textarea:focus {
+        outline: none;
+        background: #fff;
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 3px rgba(13, 110, 253, .15);
+      }
+
+      .translator-controls {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .translator-controls select {
+        flex: 1;
+        min-width: 200px;
+        padding: 8px 10px;
+        border-radius: 10px;
+        border: 1px solid #ccc;
+        background: #f7f7f7;
+      }
+
+      .auto-toggle {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 14px;
+        color: #333;
+      }
+
+      .translator-status {
+        font-size: 12.5px;
+        color: #555;
+      }
+
+      .translator-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .btn-primary,
+      .btn-secondary {
+        border: 0;
+        border-radius: 10px;
+        padding: 9px 14px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: .2s;
+      }
+
+      .btn-primary {
+        background: #0d6efd;
+        color: #fff;
+      }
+
+      .btn-primary:hover {
+        background: #0b5ed7;
+      }
+
+      .btn-secondary {
+        background: #444;
+        color: #fff;
+      }
+
+      .btn-secondary:hover {
+        background: #222;
+      }
+
+      .btn-anime {
+        background: #e83e8c;
+        color: #fff;
+      }
+
+      .btn-anime:hover {
+        background: #c61f72;
+      }
+    </style>
+
+    <div class="translator-card">
+      <!-- Header -->
+      <div class="translator-header">
+        <h2>🌐 Smart Translator + Anime Voice</h2>
+        <p>Tulis teks, pilih bahasa, hasil muncul otomatis. Bisa diputar dengan suara anime.</p>
+      </div>
+
+      <!-- Input -->
+      <div class="translator-input">
+        <textarea id="catatanText" placeholder="Ketik teks yang mau diterjemahkan..."></textarea>
+      </div>
+
+      <!-- Controls -->
+      <div class="translator-controls">
+        <select id="tr-target"></select>
+        <label class="auto-toggle">
+          <input type="checkbox" id="tr-auto" checked>
+          <span>Auto</span>
+        </label>
+        <button id="tr-btn" class="btn-primary">Translate</button>
+      </div>
+
+      <!-- Status -->
+      <div id="tr-status" class="translator-status">✨ Siap.</div>
+
+      <!-- Output -->
+      <div class="translator-output">
+        <textarea id="tr-output" readonly placeholder="Hasil terjemahan akan muncul di sini..."></textarea>
+      </div>
+
+      <!-- Actions -->
+      <div class="translator-actions">
+        <button id="tr-copy" class="btn-secondary">📄 Copy</button>
+        <button id="tr-replace" class="btn-primary">🔄 Ganti Catatan</button>
+        <button id="tr-speak" class="btn-anime">🎧 Putar Suara Anime</button>
+      </div>
+    </div>
+  </div>
+
 
   <!-- Notification -->
   <div id="notification" class="notification"></div>
@@ -2263,9 +2488,7 @@
       document.getElementById("btn-gallery").addEventListener("click", () => switchPage("page-gallery"));
       document.getElementById('btn-daily-notes').addEventListener('click', () => switchPage('page-daily-notes'));
       document.getElementById('btn-private-notes').addEventListener('click', () => switchPage('pn-page'));
-
-
-
+      document.getElementById('btn-translator').addEventListener('click', () => switchPage('page-translator'));
 
       // Upload gambar ke Supabase
       if (uploadForm) {
@@ -3477,6 +3700,7 @@
       else if (pageId === 'pn-page') document.getElementById('btn-private-notes').classList.add('active');
 
 
+
       localStorage.setItem('lastPage', pageId);
 
       // Update mood calendar when switching to mood map page
@@ -3750,58 +3974,58 @@
 
 
     // ===== Catatan Pribadi (Firestore, no-login) =====
-const pn_colRef = collection(db, "privateNotes");
+    const pn_colRef = collection(db, "privateNotes");
 
-const pn_title = document.getElementById("pn-title");
-const pn_content = document.getElementById("pn-content");
-const pn_tags = document.getElementById("pn-tags");
-const pn_pin = document.getElementById("pn-pin");
-const pn_container = document.getElementById("pn-container");
-const pn_empty = document.getElementById("pn-empty");
-const pn_search = document.getElementById("pn-search");
-const pn_saveBtn = document.getElementById("pn-save-btn");
-const pn_cancelBtn = document.getElementById("pn-cancel-edit");
-const pn_exportBtn = document.getElementById("pn-export-btn");
-const pn_importInput = document.getElementById("pn-import-input");
+    const pn_title = document.getElementById("pn-title");
+    const pn_content = document.getElementById("pn-content");
+    const pn_tags = document.getElementById("pn-tags");
+    const pn_pin = document.getElementById("pn-pin");
+    const pn_container = document.getElementById("pn-container");
+    const pn_empty = document.getElementById("pn-empty");
+    const pn_search = document.getElementById("pn-search");
+    const pn_saveBtn = document.getElementById("pn-save-btn");
+    const pn_cancelBtn = document.getElementById("pn-cancel-edit");
+    const pn_exportBtn = document.getElementById("pn-export-btn");
+    const pn_importInput = document.getElementById("pn-import-input");
 
-let pn_notes = [];
-let pn_editingId = null;
+    let pn_notes = [];
+    let pn_editingId = null;
 
-// Load notes (orderBy createdAt saja; pin di-sort di client biar gak butuh index)
-async function pnLoadNotes() {
-  const q = query(pn_colRef, orderBy("createdAt", "desc"));
-  const snap = await getDocs(q);
-  pn_notes = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    // Load notes (orderBy createdAt saja; pin di-sort di client biar gak butuh index)
+    async function pnLoadNotes() {
+      const q = query(pn_colRef, orderBy("createdAt", "desc"));
+      const snap = await getDocs(q);
+      pn_notes = snap.docs.map(d => ({ id: d.id, ...d.data() }));
 
-  // sort pinned dulu
-  pn_notes.sort((a, b) => {
-    const pinDiff = (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
-    if (pinDiff) return pinDiff;
-    const ta = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
-    const tb = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
-    return tb - ta;
-  });
+      // sort pinned dulu
+      pn_notes.sort((a, b) => {
+        const pinDiff = (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
+        if (pinDiff) return pinDiff;
+        const ta = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
+        const tb = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
+        return tb - ta;
+      });
 
-  pnRenderNotes(pn_notes);
-}
+      pnRenderNotes(pn_notes);
+    }
 
-// Render
-function pnRenderNotes(list) {
-  pn_container.innerHTML = "";
-  if (!list.length) {
-    pn_empty.style.display = "block";
-    return;
-  }
-  pn_empty.style.display = "none";
+    // Render
+    function pnRenderNotes(list) {
+      pn_container.innerHTML = "";
+      if (!list.length) {
+        pn_empty.style.display = "block";
+        return;
+      }
+      pn_empty.style.display = "none";
 
-  list.forEach(note => {
-    const card = document.createElement("div");
-    card.style.cssText = `
+      list.forEach(note => {
+        const card = document.createElement("div");
+        card.style.cssText = `
       background:#151a21;border:1px solid #2d3748;color:#fff;border-radius:12px;
       padding:12px;display:flex;flex-direction:column;gap:8px;box-shadow:0 4px 10px rgba(0,0,0,.3)
     `;
 
-    card.innerHTML = `
+        card.innerHTML = `
       <div style="display:flex;justify-content:space-between;align-items:center">
         <h3 style="margin:0;font-size:16px;font-weight:700">${note.title || "(Tanpa Judul)"}</h3>
         <span style="font-size:12px;color:${note.pinned ? "#7cf5d2" : "#aaa"}">${note.pinned ? "📌 Pinned" : ""}</span>
@@ -3816,139 +4040,383 @@ function pnRenderNotes(list) {
         <button data-id="${note.id}" class="pn-delete" style="background:#e11d48;color:#fff;border:none;border-radius:6px;padding:4px 8px;cursor:pointer;font-size:12px">Hapus</button>
       </div>
     `;
-    pn_container.appendChild(card);
-  });
-}
-
-// Save / Update
-pn_saveBtn.addEventListener("click", async () => {
-  const title = pn_title.value.trim();
-  const content = pn_content.value.trim();
-  const tags = pn_tags.value.split(",").map(t => t.trim()).filter(Boolean);
-  const pinned = pn_pin.checked;
-
-  if (!content) {
-    showNotification ? showNotification("Isi catatan tidak boleh kosong!", "error") : alert("Isi kosong");
-    return;
-  }
-
-  try {
-    if (pn_editingId) {
-      await updateDoc(doc(db, "privateNotes", pn_editingId), {
-        title, content, tags, pinned, updatedAt: serverTimestamp()
+        pn_container.appendChild(card);
       });
+    }
+
+    // Save / Update
+    pn_saveBtn.addEventListener("click", async () => {
+      const title = pn_title.value.trim();
+      const content = pn_content.value.trim();
+      const tags = pn_tags.value.split(",").map(t => t.trim()).filter(Boolean);
+      const pinned = pn_pin.checked;
+
+      if (!content) {
+        showNotification ? showNotification("Isi catatan tidak boleh kosong!", "error") : alert("Isi kosong");
+        return;
+      }
+
+      try {
+        if (pn_editingId) {
+          await updateDoc(doc(db, "privateNotes", pn_editingId), {
+            title, content, tags, pinned, updatedAt: serverTimestamp()
+          });
+          pn_editingId = null;
+          pn_cancelBtn.style.display = "none";
+          pn_saveBtn.textContent = "Simpan";
+          showNotification && showNotification("Catatan diperbarui ✔️");
+        } else {
+          await addDoc(pn_colRef, {
+            title, content, tags, pinned, createdAt: serverTimestamp(), updatedAt: serverTimestamp()
+          });
+          showNotification && showNotification("Catatan disimpan ✔️");
+        }
+        pn_title.value = "";
+        pn_content.value = "";
+        pn_tags.value = "";
+        pn_pin.checked = false;
+
+        await pnLoadNotes();
+      } catch (e) {
+        console.error(e);
+        showNotification ? showNotification("Gagal menyimpan catatan", "error") : alert("Gagal menyimpan");
+      }
+    });
+
+    // Cancel edit
+    pn_cancelBtn.addEventListener("click", () => {
       pn_editingId = null;
+      pn_title.value = "";
+      pn_content.value = "";
+      pn_tags.value = "";
+      pn_pin.checked = false;
       pn_cancelBtn.style.display = "none";
       pn_saveBtn.textContent = "Simpan";
-      showNotification && showNotification("Catatan diperbarui ✔️");
-    } else {
-      await addDoc(pn_colRef, {
-        title, content, tags, pinned, createdAt: serverTimestamp(), updatedAt: serverTimestamp()
-      });
-      showNotification && showNotification("Catatan disimpan ✔️");
+    });
+
+    // Search
+    pn_search.addEventListener("input", (e) => {
+      const q = e.target.value.toLowerCase();
+      const filtered = pn_notes.filter(n =>
+        (n.title || "").toLowerCase().includes(q) ||
+        (n.content || "").toLowerCase().includes(q) ||
+        (n.tags || []).some(t => (t || "").toLowerCase().includes(q))
+      );
+      pnRenderNotes(filtered);
+    });
+
+    // Card actions (edit / pin / delete)
+    pn_container.addEventListener("click", async (e) => {
+      const id = e.target.dataset.id;
+      if (!id) return;
+
+      if (e.target.classList.contains("pn-delete")) {
+        if (confirm("Hapus catatan ini?")) {
+          await deleteDoc(doc(db, "privateNotes", id));
+          showNotification && showNotification("Catatan dihapus 🗑️");
+          await pnLoadNotes();
+        }
+      } else if (e.target.classList.contains("pn-pin")) {
+        const note = pn_notes.find(n => n.id === id);
+        await updateDoc(doc(db, "privateNotes", id), { pinned: !note?.pinned });
+        await pnLoadNotes();
+      } else if (e.target.classList.contains("pn-edit")) {
+        const note = pn_notes.find(n => n.id === id);
+        if (!note) return;
+        pn_editingId = id;
+        pn_title.value = note.title || "";
+        pn_content.value = note.content || "";
+        pn_tags.value = (note.tags || []).join(", ");
+        pn_pin.checked = !!note.pinned;
+        pn_cancelBtn.style.display = "inline-block";
+        pn_saveBtn.textContent = "Update";
+        // pindah ke composer (opsional)
+        window.scrollTo({ top: document.getElementById("pn-page").offsetTop, behavior: "smooth" });
+      }
+    });
+
+    // Export / Import
+    pn_exportBtn.addEventListener("click", () => {
+      const blob = new Blob([JSON.stringify(pn_notes, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "catatan-pribadi.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    pn_importInput.addEventListener("change", async (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      try {
+        const text = await file.text();
+        const data = JSON.parse(text);
+        for (const n of data) {
+          await addDoc(pn_colRef, {
+            title: n.title || "", content: n.content || "", tags: n.tags || [],
+            pinned: !!n.pinned, createdAt: serverTimestamp(), updatedAt: serverTimestamp()
+          });
+        }
+        showNotification && showNotification("Import selesai ✔️");
+        await pnLoadNotes();
+      } catch (err) {
+        console.error(err);
+        showNotification ? showNotification("Gagal import", "error") : alert("Gagal import");
+      } finally {
+        e.target.value = "";
+      }
+    });
+
+    // load awal
+    pnLoadNotes();
+
+    // ================== KONFIGURASI ==================
+   const H56_BASE = "https://h56-translator-api.netlify.app";
+const COEIROINK_TTS = "https://api.tts.quest/v3/voicevox/synthesis";
+const TR_LANGS = [
+    { code: "auto", label: "Auto Detect" },
+    { code: "en", label: "English" },
+    { code: "id", label: "Indonesia" },
+    { code: "ja", label: "日本語 (Japanese)" },
+    { code: "ko", label: "한국어 (Korean)" },
+    { code: "fr", label: "Français (French)" },
+    { code: "de", label: "Deutsch (German)" },
+    { code: "es", label: "Español (Spanish)" },
+    { code: "pt", label: "Português (Portuguese)" },
+    { code: "ru", label: "Русский (Russian)" },
+    { code: "ar", label: "العربية (Arabic)" },
+    { code: "zh", label: "中文 (Chinese Simplified)" },
+    { code: "zh-TW", label: "繁體中文 (Chinese Traditional)" },
+    { code: "hi", label: "हिन्दी (Hindi)" },
+    { code: "th", label: "ไทย (Thai)" },
+    { code: "tr", label: "Türkçe (Turkish)" },
+    { code: "vi", label: "Tiếng Việt (Vietnamese)" },
+    { code: "ms", label: "Bahasa Melayu (Malay)" },
+    { code: "fil", label: "Filipino" }
+];
+
+// ================== ELEMENTS ==================
+const noteInput = document.getElementById("catatanText");
+const targetSel = document.getElementById("tr-target");
+const autoChk = document.getElementById("tr-auto");
+const goBtn = document.getElementById("tr-btn");
+const outArea = document.getElementById("tr-output");
+const statusEl = document.getElementById("tr-status");
+const copyBtn = document.getElementById("tr-copy");
+const replaceBtn = document.getElementById("tr-replace");
+const speakBtn = document.getElementById("tr-speak");
+
+// ================== DROPDOWN BAHASA ==================
+(function initLangs() {
+    TR_LANGS.forEach(({ code, label }) => {
+        const opt = document.createElement("option");
+        opt.value = code;
+        opt.textContent = `${label} — ${code}`;
+        targetSel.appendChild(opt);
+    });
+    targetSel.value = "en";
+})();
+
+// ================== UTILS ==================
+function debounce(fn, ms = 500) {
+    let t;
+    return (...args) => {
+        clearTimeout(t);
+        t = setTimeout(() => fn(...args), ms);
+    };
+}
+
+function chunkText(s, size = 4500) {
+    if (!s || s.length <= size) return [s];
+    const chunks = [];
+    for (let i = 0; i < s.length; i += size) chunks.push(s.slice(i, i + size));
+    return chunks;
+}
+
+// ================== TRANSLATE ==================
+async function h56TranslateOnce(text, targetLang, signal) {
+  const resp = await fetch(`${H56_BASE}/api/translate`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      text,
+      sourceLang: "auto",   // ✅ wajib untuk akurasi maksimal
+      targetLang
+    }),
+    signal
+  });
+
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const data = await resp.json();
+
+    if (data.serviceStatus !== "ok") {
+        throw new Error("Service error");
     }
-    pn_title.value = "";
-    pn_content.value = "";
-    pn_tags.value = "";
-    pn_pin.checked = false;
 
-    await pnLoadNotes();
-  } catch (e) {
-    console.error(e);
-    showNotification ? showNotification("Gagal menyimpan catatan", "error") : alert("Gagal menyimpan");
-  }
-});
+    return {
+        text: data.translatedText || "",
+        source: data.sourceLang || "auto"
+    };
+}
 
-// Cancel edit
-pn_cancelBtn.addEventListener("click", () => {
-  pn_editingId = null;
-  pn_title.value = "";
-  pn_content.value = "";
-  pn_tags.value = "";
-  pn_pin.checked = false;
-  pn_cancelBtn.style.display = "none";
-  pn_saveBtn.textContent = "Simpan";
-});
-
-// Search
-pn_search.addEventListener("input", (e) => {
-  const q = e.target.value.toLowerCase();
-  const filtered = pn_notes.filter(n =>
-    (n.title || "").toLowerCase().includes(q) ||
-    (n.content || "").toLowerCase().includes(q) ||
-    (n.tags || []).some(t => (t || "").toLowerCase().includes(q))
-  );
-  pnRenderNotes(filtered);
-});
-
-// Card actions (edit / pin / delete)
-pn_container.addEventListener("click", async (e) => {
-  const id = e.target.dataset.id;
-  if (!id) return;
-
-  if (e.target.classList.contains("pn-delete")) {
-    if (confirm("Hapus catatan ini?")) {
-      await deleteDoc(doc(db, "privateNotes", id));
-      showNotification && showNotification("Catatan dihapus 🗑️");
-      await pnLoadNotes();
+async function translateAll(text, targetLang, signal) {
+    const parts = chunkText(text);
+    const results = [];
+    for (const p of parts) {
+        if (signal?.aborted) throw new Error("abort");
+        const t = p.trim()
+            ? await h56TranslateOnce(p, targetLang, signal)
+            : { text: "" };
+        results.push(t.text);
     }
-  } else if (e.target.classList.contains("pn-pin")) {
-    const note = pn_notes.find(n => n.id === id);
-    await updateDoc(doc(db, "privateNotes", id), { pinned: !note?.pinned });
-    await pnLoadNotes();
-  } else if (e.target.classList.contains("pn-edit")) {
-    const note = pn_notes.find(n => n.id === id);
-    if (!note) return;
-    pn_editingId = id;
-    pn_title.value = note.title || "";
-    pn_content.value = note.content || "";
-    pn_tags.value = (note.tags || []).join(", ");
-    pn_pin.checked = !!note.pinned;
-    pn_cancelBtn.style.display = "inline-block";
-    pn_saveBtn.textContent = "Update";
-    // pindah ke composer (opsional)
-    window.scrollTo({ top: document.getElementById("pn-page").offsetTop, behavior: "smooth" });
-  }
-});
+    return results.join("");
+}
 
-// Export / Import
-pn_exportBtn.addEventListener("click", () => {
-  const blob = new Blob([JSON.stringify(pn_notes, null, 2)], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "catatan-pribadi.json";
-  a.click();
-  URL.revokeObjectURL(url);
-});
+let lastCtrl = null;
+async function runTranslate() {
+    const src = (noteInput?.value || "").trim();
+    const lang = targetSel.value;
 
-pn_importInput.addEventListener("change", async (e) => {
-  const file = e.target.files?.[0];
-  if (!file) return;
-  try {
-    const text = await file.text();
-    const data = JSON.parse(text);
-    for (const n of data) {
-      await addDoc(pn_colRef, {
-        title: n.title || "", content: n.content || "", tags: n.tags || [],
-        pinned: !!n.pinned, createdAt: serverTimestamp(), updatedAt: serverTimestamp()
-      });
+    if (!src) {
+        outArea.value = "";
+        statusEl.textContent = "⚠️ Teks kosong.";
+        return;
     }
-    showNotification && showNotification("Import selesai ✔️");
-    await pnLoadNotes();
-  } catch (err) {
-    console.error(err);
-    showNotification ? showNotification("Gagal import", "error") : alert("Gagal import");
-  } finally {
-    e.target.value = "";
-  }
+
+    if (lastCtrl) lastCtrl.abort();
+    lastCtrl = new AbortController();
+
+    statusEl.textContent = "⏳ Menerjemahkan...";
+    outArea.value = "";
+
+    try {
+        const translated = await translateAll(src, lang, lastCtrl.signal);
+        outArea.value = translated || "(kosong)";
+        statusEl.textContent = "✅ Selesai.";
+    } catch (e) {
+        if (e.name === "AbortError" || e.message === "abort") {
+            statusEl.textContent = "⏹️ Dibatalkan.";
+            return;
+        }
+        console.error(e);
+        statusEl.textContent = "🚨 Gagal menerjemahkan.";
+    }
+}
+
+// ================== AUTO TRANSLATE ==================
+const autoTranslateHandler = debounce(() => {
+    if (autoChk.checked) runTranslate();
+}, 600);
+
+if (noteInput) {
+    noteInput.addEventListener("input", autoTranslateHandler);
+}
+
+goBtn.addEventListener("click", runTranslate);
+
+replaceBtn.addEventListener("click", () => {
+    const t = outArea.value.trim();
+    if (!t) return;
+    if (noteInput) noteInput.value = t;
+    statusEl.textContent = "✍️ Catatan diganti dengan hasil terjemahan.";
 });
 
-// load awal
-pnLoadNotes();
+copyBtn.addEventListener("click", async () => {
+    try {
+        await navigator.clipboard.writeText(outArea.value || "");
+        statusEl.textContent = "📄 Disalin ke clipboard.";
+    } catch {
+        statusEl.textContent = "❌ Gagal menyalin.";
+    }
+});
 
+// ================== TTS ANIME (KODE YANG DIPERBAIKI) ==================
+const audioCache = new Map();
+let currentAudio = null;
+const TTS_MAX_CHARS = 200; // PERBAIKAN: Tentukan batas maksimal karakter (sesuaikan jika perlu)
 
+speakBtn.addEventListener("click", async () => {
+    const text = outArea.value.trim();
 
+    if (!text) {
+        statusEl.textContent = "⚠️ Tidak ada teks untuk dibacakan.";
+        return;
+    }
+
+    // PERBAIKAN: Pengecekan batas karakter sebelum mengirim ke API
+    if (text.length > TTS_MAX_CHARS) {
+        statusEl.textContent = `❌ Teks terlalu panjang (maks ${TTS_MAX_CHARS} karakter).`;
+        return;
+    }
+
+    if (audioCache.has(text)) {
+        playAnimeVoice(audioCache.get(text));
+        return;
+    }
+    
+    // PERBAIKAN: Nonaktifkan tombol selama proses untuk mencegah klik ganda
+    speakBtn.disabled = true;
+    speakBtn.textContent = "Memproses...";
+    statusEl.textContent = "⏳ Menyiapkan suara anime...";
+
+    try {
+        const response = await fetch(
+            `${COEIROINK_TTS}?speaker=3&text=${encodeURIComponent(text)}`
+        );
+        const result = await response.json();
+
+        // PERBAIKAN: Penanganan error yang lebih baik dari API
+        if (!result.success || !result.mp3DownloadUrl) {
+            const errorMessage = result.errorReason || "Gagal generate suara dari API.";
+            throw new Error(errorMessage);
+        }
+
+        const audioUrl = result.mp3DownloadUrl;
+        audioCache.set(text, audioUrl);
+        playAnimeVoice(audioUrl);
+
+    } catch (e) {
+        console.error(e);
+        statusEl.textContent = `❌ Gagal memutar suara: ${e.message}`;
+        // PERBAIKAN: Aktifkan kembali tombol jika terjadi error
+        speakBtn.disabled = false;
+        speakBtn.textContent = "Putar Suara Anime";
+    }
+});
+
+function playAnimeVoice(audioUrl) {
+    if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+    }
+
+    currentAudio = new Audio(audioUrl);
+    currentAudio.preload = "auto";
+
+    currentAudio.addEventListener("canplay", () => {
+        statusEl.textContent = "🔊 Memutar suara anime...";
+        currentAudio.play();
+    });
+
+    currentAudio.addEventListener("waiting", () => {
+        statusEl.textContent = "⏳ Buffering suara anime...";
+    });
+
+    currentAudio.addEventListener("ended", () => {
+        statusEl.textContent = "✅ Selesai memutar suara.";
+        // PERBAIKAN: Aktifkan kembali tombol setelah audio selesai
+        speakBtn.disabled = false;
+        speakBtn.textContent = "Putar Suara Anime";
+    });
+
+    currentAudio.addEventListener("error", () => {
+        statusEl.textContent = "❌ Gagal memuat atau memutar file audio.";
+        // PERBAIKAN: Aktifkan kembali tombol jika ada error pemutaran
+        speakBtn.disabled = false;
+        speakBtn.textContent = "Putar Suara Anime";
+    });
+}
   </script>
 
   <style>
