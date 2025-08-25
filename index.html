@@ -4812,31 +4812,43 @@
 
     // Convert AudioBuffer → WAV
     function encodeMp3(renderedBuffer) {
-      const numChannels = renderedBuffer.numberOfChannels;
-      const sampleRate = renderedBuffer.sampleRate;
-      const mp3encoder = new lamejs.Mp3Encoder(numChannels, sampleRate, 320); // 320 kbps
-      const mp3Data = [];
-      const samplesLeft = renderedBuffer.getChannelData(0);
-      const samplesRight = numChannels > 1 ? renderedBuffer.getChannelData(1) : null;
+  const numChannels = renderedBuffer.numberOfChannels;
+  const sampleRate = renderedBuffer.sampleRate;
+  const mp3encoder = new lamejs.Mp3Encoder(numChannels, sampleRate, 320); // 320 kbps
+  const mp3Data = [];
 
-      const blockSize = 1152;
-      for (let i = 0; i < samplesLeft.length; i += blockSize) {
-        const leftChunk = samplesLeft.subarray(i, i + blockSize);
-        let mp3buf;
-        if (samplesRight) {
-          const rightChunk = samplesRight.subarray(i, i + blockSize);
-          mp3buf = mp3encoder.encodeBuffer(leftChunk, rightChunk);
-        } else {
-          mp3buf = mp3encoder.encodeBuffer(leftChunk);
-        }
-        if (mp3buf.length > 0) mp3Data.push(mp3buf);
-      }
+  const samplesLeft = floatTo16BitPCM(renderedBuffer.getChannelData(0));
+  const samplesRight = numChannels > 1 ? floatTo16BitPCM(renderedBuffer.getChannelData(1)) : null;
 
-      const end = mp3encoder.flush();
-      if (end.length > 0) mp3Data.push(end);
-
-      return new Blob(mp3Data, { type: "audio/mp3" });
+  const blockSize = 1152;
+  for (let i = 0; i < samplesLeft.length; i += blockSize) {
+    const leftChunk = samplesLeft.subarray(i, i + blockSize);
+    let mp3buf;
+    if (samplesRight) {
+      const rightChunk = samplesRight.subarray(i, i + blockSize);
+      mp3buf = mp3encoder.encodeBuffer(leftChunk, rightChunk);
+    } else {
+      mp3buf = mp3encoder.encodeBuffer(leftChunk);
     }
+    if (mp3buf.length > 0) mp3Data.push(mp3buf);
+  }
+
+  const end = mp3encoder.flush();
+  if (end.length > 0) mp3Data.push(end);
+
+  return new Blob(mp3Data, { type: "audio/mp3" });
+}
+
+// Konversi Float32 → Int16
+function floatTo16BitPCM(float32Array) {
+  const buffer = new Int16Array(float32Array.length);
+  for (let i = 0; i < float32Array.length; i++) {
+    let s = Math.max(-1, Math.min(1, float32Array[i]));
+    buffer[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+  }
+  return buffer;
+}
+
   </script>
 
 
