@@ -101,9 +101,6 @@
       }
     }
 
-
-
-
     nav {
       display: flex;
       justify-content: center;
@@ -154,7 +151,7 @@
       animation: fadeIn 0.5s ease;
     }
 
-    
+
 
     @keyframes fadeIn {
       from {
@@ -2214,7 +2211,7 @@
   </div>
 
   <!-- 🌐 Halaman Translator -->
-<div id="page-translator" class="page">
+  <div id="page-translator" class="page">
     <style>
       /* Scoped style cuma buat translator */
       .translator-card {
@@ -2392,239 +2389,336 @@
         <button id="tr-speak" class="btn-anime">🎧 Putar Suara Anime</button>
       </div>
     </div>
-</div>
+  </div>
 
-      <div id="page-nightcore" class="page">
-        <h2>🎵 Nightcore Converter</h2>
-        <form id="nightcoreForm" style="display:flex;flex-direction:column;gap:1rem;">
+  <div id="page-nightcore" class="page">
+    <h2>🎵 Nightcore Converter</h2>
 
-          <!-- Input file -->
-          <label for="audioInput" style="padding:0.6rem 1rem;background:#4ecdc4;color:white;
-                  border-radius:10px;cursor:pointer;text-align:center;
-                  font-weight:bold;max-width:200px;">
-            📂 Pilih Lagu
-          </label>
-          <span id="fileName" style="margin-left:1rem;color:#333;font-weight:bold;"></span>
-          <input type="file" id="audioInput" accept="audio/*" required style="display:none;">
+    <form id="nightcoreForm">
+      <!-- Input file -->
+      <label for="audioInput" class="file-label">
+        📂 Pilih Lagu
+      </label>
+      <span id="fileName" class="file-name"></span>
+      <input type="file" id="audioInput" accept="audio/*" required hidden>
 
-          <!-- Tombol convert -->
-          <button type="submit" class="submit">🚀 Convert to Nightcore</button>
-        </form>
+      <!-- Tombol convert -->
+      <button type="submit" class="submit">🚀 Convert to Nightcore</button>
+    </form>
 
-        <!-- Hasil -->
-        <div id="nightcoreResult" style="margin-top:1rem; display:none;">
-          <h3>✅ Hasil Nightcore:</h3>
-          <audio id="nightcorePlayer" controls></audio>
-          <br>
-          <a id="downloadNightcore" download="nightcore.wav" style="display:inline-block;margin-top:0.5rem;padding:0.6rem 1rem;
-              background:#3b82f6;color:white;border-radius:8px;text-decoration:none;">
-            ⬇️ Download
-          </a>
-        </div>
-      </div>
+    <!-- Hasil -->
+    <div id="nightcoreResult">
+      <h3>✅ Hasil Nightcore:</h3>
+      <audio id="nightcorePlayer" controls></audio>
+      <br>
+      <a id="downloadNightcore" download="nightcore.wav">
+        ⬇️ Download
+      </a>
+    </div>
+  </div>
+
+  <style>
+    /* Container utama */
+    #page-nightcore {
+      max-width: 500px;
+      margin: 2rem auto;
+      padding: 1.5rem;
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+      text-align: center;
+      font-family: 'Poppins', sans-serif;
+      transition: all 0.3s ease;
+    }
+
+    /* Judul */
+    #page-nightcore h2 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #222;
+      margin-bottom: 1rem;
+    }
+
+    /* Form */
+    #nightcoreForm {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    /* Tombol pilih file */
+    .file-label {
+      padding: 0.7rem 1.5rem;
+      background: #4ecdc4;
+      color: white;
+      font-weight: bold;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(78, 205, 196, 0.4);
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    .file-label:hover {
+      background: #3bbdb3;
+      transform: scale(1.05);
+    }
+
+    /* Nama file */
+    .file-name {
+      color: #555;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    /* Tombol convert */
+    #nightcoreForm .submit {
+      padding: 0.8rem 1.5rem;
+      background: #3b82f6;
+      color: white;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    #nightcoreForm .submit:hover {
+      background: #2563eb;
+      transform: scale(1.05);
+    }
+
+    /* Bagian hasil */
+    #nightcoreResult {
+      margin-top: 1.5rem;
+      display: none;
+      text-align: center;
+    }
+
+    /* Tombol download */
+    #downloadNightcore {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.7rem 1.5rem;
+      background: #10b981;
+      color: white;
+      font-weight: bold;
+      border-radius: 10px;
+      text-decoration: none;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+      transition: background 0.3s ease, transform 0.2s ease;
+    }
+
+    #downloadNightcore:hover {
+      background: #059669;
+      transform: scale(1.05);
+    }
+  </style>
 
 
 
-      <!-- Notification -->
-      <div id="notification" class="notification"></div>
 
-      <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
-        import {
-          getFirestore, collection, addDoc, serverTimestamp, onSnapshot, query, orderBy, deleteDoc, doc, updateDoc, arrayUnion, arrayRemove, increment, where, getDocs
-        } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
-        import { createClient } from "https://esm.sh/@supabase/supabase-js";
+  <!-- Notification -->
+  <div id="notification" class="notification"></div>
 
-        const supabaseUrl = "https://hnyingatwqsemhyhbwqb.supabase.co";
-        const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhueWluZ2F0d3FzZW1oeWhid3FiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2NzU3NjIsImV4cCI6MjA3MTI1MTc2Mn0.sInRWG5g8APMXbi1nu6cLwDd4_g4TlsXAujQs_4biyk";
-        const supabase = createClient(supabaseUrl, supabaseKey);
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+    import {
+      getFirestore, collection, addDoc, serverTimestamp, onSnapshot, query, orderBy, deleteDoc, doc, updateDoc, arrayUnion, arrayRemove, increment, where, getDocs
+    } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+    import { createClient } from "https://esm.sh/@supabase/supabase-js";
 
-
-        const firebaseConfig = {
-          apiKey: "AIzaSyD_sEU0Kn1Y15D0bfVw5gEvoJoU6slJUyA",
-          authDomain: "keluhkesah-ec444.firebaseapp.com",
-          projectId: "keluhkesah-ec444",
-          storageBucket: "keluhkesah-ec444.firebasestorage.app",
-          messagingSenderId: "96252446492",
-          appId: "1:96252446492:web:1d1465382023793a189cd9",
-          measurementId: "G-0N1ENCKMTN"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        let allNotes = [];
-        let currentEditId = null;
-        let currentFilter = 'all';
-        let currentTimeFilter = 'all';
-        let currentCategoryFilter = 'all';
-        let currentSort = 'newest';
-        let selectedMood = null;
-        let selectedCategory = null;
-        let isAnonymous = false;
-        let userId = 'user_' + Math.random().toString(36).substr(2, 9);
-        let voiceRecording = false;
-        let mediaRecorder = null;
-        let recordingChunks = [];
-
-        // Challenges array
-        const dailyChallenges = [
-          "Ceritakan satu hal kecil yang membuat kamu tersenyum hari ini!",
-          "Apa yang paling kamu syukuri minggu ini?",
-          "Bagikan pengalaman belajar terbaru kamu!",
-          "Ceritakan tentang seseorang yang menginspirasi kamu!",
-          "Apa rencana kamu untuk menjadi versi terbaik dari diri kamu?",
-          "Bagikan momen kebahagiaan sederhana yang kamu alami!",
-          "Ceritakan tentang pencapaian kecil yang membuatmu bangga!"
-        ];
-
-        // Mood prediction words
-        const moodWords = {
-          happy: ['senang', 'bahagia', 'gembira', 'excited', 'amazing', 'bagus', 'mantap', 'keren', 'suka', 'cinta'],
-          sad: ['sedih', 'down', 'kecewa', 'galau', 'hancur', 'putus', 'gagal', 'susah', 'sulit'],
-          angry: ['kesel', 'marah', 'benci', 'jengkel', 'sebel', 'dongkol', 'emosi', 'geram'],
-          excited: ['excited', 'antusias', 'semangat', 'energik', 'bersemangat', 'wow', 'keren', 'luar biasa'],
-          confused: ['bingung', 'confused', 'pusing', 'ragu', 'tidak tahu', 'gimana', 'kayak gimana'],
-          grateful: ['syukur', 'terima kasih', 'grateful', 'berkat', 'alhamdulillah', 'thanks']
-        };
-
-        // DOM elements
-        const noteForm = document.getElementById('noteForm');
-        const editForm = document.getElementById('editForm');
-        const notesList = document.getElementById('notesList');
-        const popularNotes = document.getElementById('popularNotes');
-        const emptyState = document.getElementById('emptyState');
-        const searchInput = document.getElementById('searchInput');
-        const sortSelect = document.getElementById('sortSelect');
-        const anonymousSwitch = document.getElementById('anonymousSwitch');
-        const catatan = document.getElementById('catatan');
-        const charCount = document.getElementById('charCount');
-        const editCatatan = document.getElementById('editCatatan');
-        const editCharCount = document.getElementById('editCharCount');
-        const voiceBtn = document.getElementById('voiceBtn');
-        const voiceStatus = document.getElementById('voiceStatus');
-        const uploadForm = document.getElementById("uploadForm");
-        const fileInput = document.getElementById("fileInput");
-        const captionInput = document.getElementById("captionInput");
-        const galleryGrid = document.getElementById("galleryGrid");
-        const themeToggleMain = document.getElementById("theme-toggle-main");
-        const themeSwitcher = document.querySelector(".theme-switcher");
-
-        themeToggleMain.addEventListener("click", () => {
-          themeSwitcher.classList.toggle("show");
-        });
+    const supabaseUrl = "https://hnyingatwqsemhyhbwqb.supabase.co";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhueWluZ2F0d3FzZW1oeWhid3FiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTU2NzU3NjIsImV4cCI6MjA3MTI1MTc2Mn0.sInRWG5g8APMXbi1nu6cLwDd4_g4TlsXAujQs_4biyk";
+    const supabase = createClient(supabaseUrl, supabaseKey);
 
 
-        // Initialize
-        initializeEventListeners();
-        loadNotes();
-        loadWeather();
-        generateDailyChallenge();
-        generateMoodCalendar();
+    const firebaseConfig = {
+      apiKey: "AIzaSyD_sEU0Kn1Y15D0bfVw5gEvoJoU6slJUyA",
+      authDomain: "keluhkesah-ec444.firebaseapp.com",
+      projectId: "keluhkesah-ec444",
+      storageBucket: "keluhkesah-ec444.firebasestorage.app",
+      messagingSenderId: "96252446492",
+      appId: "1:96252446492:web:1d1465382023793a189cd9",
+      measurementId: "G-0N1ENCKMTN"
+    };
 
-        const lastPage = localStorage.getItem('lastPage');
-        if (lastPage && document.getElementById(lastPage)) {
-          switchPage(lastPage);
-        } else {
-          switchPage('page-tulis');
-        }
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-        function initializeEventListeners() {
-          // Navigation
-          document.getElementById('btn-tulis').addEventListener('click', () => switchPage('page-tulis'));
-          document.getElementById('btn-daftar').addEventListener('click', () => switchPage('page-daftar'));
-          document.getElementById('btn-trending').addEventListener('click', () => switchPage('page-trending'));
-          document.getElementById('btn-analytics').addEventListener('click', () => switchPage('page-analytics'));
-          document.getElementById('btn-mood-map').addEventListener('click', () => switchPage('page-mood-map'));
-          document.getElementById("btn-gallery").addEventListener("click", () => switchPage("page-gallery"));
-          document.getElementById('btn-daily-notes').addEventListener('click', () => switchPage('page-daily-notes'));
-          document.getElementById('btn-translator').addEventListener('click', () => switchPage('page-translator'));
-          document.getElementById('btn-nightcore').addEventListener('click', () => switchPage('page-nightcore'));
-           document.getElementById('btn-private-notes').addEventListener('click', () => switchPage('pn-page'));
+    let allNotes = [];
+    let currentEditId = null;
+    let currentFilter = 'all';
+    let currentTimeFilter = 'all';
+    let currentCategoryFilter = 'all';
+    let currentSort = 'newest';
+    let selectedMood = null;
+    let selectedCategory = null;
+    let isAnonymous = false;
+    let userId = 'user_' + Math.random().toString(36).substr(2, 9);
+    let voiceRecording = false;
+    let mediaRecorder = null;
+    let recordingChunks = [];
 
-          // Upload gambar ke Supabase
-          if (uploadForm) {
-            uploadForm.addEventListener("submit", async (e) => {
-              e.preventDefault();
-              const files = fileInput.files;
-              if (!files.length) return showNotification("Pilih gambar dulu!", "error");
+    // Challenges array
+    const dailyChallenges = [
+      "Ceritakan satu hal kecil yang membuat kamu tersenyum hari ini!",
+      "Apa yang paling kamu syukuri minggu ini?",
+      "Bagikan pengalaman belajar terbaru kamu!",
+      "Ceritakan tentang seseorang yang menginspirasi kamu!",
+      "Apa rencana kamu untuk menjadi versi terbaik dari diri kamu?",
+      "Bagikan momen kebahagiaan sederhana yang kamu alami!",
+      "Ceritakan tentang pencapaian kecil yang membuatmu bangga!"
+    ];
 
-              const caption = captionInput.value;
-              const categoryInput = document.getElementById("categoryInput");
-              const category = categoryInput ? categoryInput.value : "sava";
+    // Mood prediction words
+    const moodWords = {
+      happy: ['senang', 'bahagia', 'gembira', 'excited', 'amazing', 'bagus', 'mantap', 'keren', 'suka', 'cinta'],
+      sad: ['sedih', 'down', 'kecewa', 'galau', 'hancur', 'putus', 'gagal', 'susah', 'sulit'],
+      angry: ['kesel', 'marah', 'benci', 'jengkel', 'sebel', 'dongkol', 'emosi', 'geram'],
+      excited: ['excited', 'antusias', 'semangat', 'energik', 'bersemangat', 'wow', 'keren', 'luar biasa'],
+      confused: ['bingung', 'confused', 'pusing', 'ragu', 'tidak tahu', 'gimana', 'kayak gimana'],
+      grateful: ['syukur', 'terima kasih', 'grateful', 'berkat', 'alhamdulillah', 'thanks']
+    };
 
-              // Proses setiap file
-              for (const file of files) {
-                // Cek ukuran file
-                const maxSize = 1.5 * 1024 * 1024; // 1.5 MB
-                if (file.size > maxSize) {
-                  showNotification(`Ukuran ${file.name} terlalu besar (>1.5MB)`, "error");
-                  continue; // Skip file ini dan lanjutkan ke file berikutnya
-                }
+    // DOM elements
+    const noteForm = document.getElementById('noteForm');
+    const editForm = document.getElementById('editForm');
+    const notesList = document.getElementById('notesList');
+    const popularNotes = document.getElementById('popularNotes');
+    const emptyState = document.getElementById('emptyState');
+    const searchInput = document.getElementById('searchInput');
+    const sortSelect = document.getElementById('sortSelect');
+    const anonymousSwitch = document.getElementById('anonymousSwitch');
+    const catatan = document.getElementById('catatan');
+    const charCount = document.getElementById('charCount');
+    const editCatatan = document.getElementById('editCatatan');
+    const editCharCount = document.getElementById('editCharCount');
+    const voiceBtn = document.getElementById('voiceBtn');
+    const voiceStatus = document.getElementById('voiceStatus');
+    const uploadForm = document.getElementById("uploadForm");
+    const fileInput = document.getElementById("fileInput");
+    const captionInput = document.getElementById("captionInput");
+    const galleryGrid = document.getElementById("galleryGrid");
+    const themeToggleMain = document.getElementById("theme-toggle-main");
+    const themeSwitcher = document.querySelector(".theme-switcher");
 
-                const fileName = `${Date.now()}_${file.name}`;
-                console.log("Uploading file:", fileName);
+    themeToggleMain.addEventListener("click", () => {
+      themeSwitcher.classList.toggle("show");
+    });
 
-                // Upload ke Supabase Storage
-                const { error: uploadError } = await supabase
-                  .storage.from("keluhkesah")
-                  .upload(fileName, file);
 
-                if (uploadError) {
-                  console.error("Upload error:", uploadError);
-                  showNotification(`Upload gagal untuk ${file.name}: ${uploadError.message}`, "error");
-                  continue;
-                }
+    // Initialize
+    initializeEventListeners();
+    loadNotes();
+    loadWeather();
+    generateDailyChallenge();
+    generateMoodCalendar();
 
-                // Ambil public URL
-                const { data: publicUrl } = supabase.storage.from("keluhkesah").getPublicUrl(fileName);
+    const lastPage = localStorage.getItem('lastPage');
+    if (lastPage && document.getElementById(lastPage)) {
+      switchPage(lastPage);
+    } else {
+      switchPage('page-tulis');
+    }
 
-                // Simpan metadata ke tabel gallery
-                const { error: insertError } = await supabase.from("gallery").insert([
-                  { url: publicUrl.publicUrl, caption, category }
-                ]);
+    function initializeEventListeners() {
+      // Navigation
+      document.getElementById('btn-tulis').addEventListener('click', () => switchPage('page-tulis'));
+      document.getElementById('btn-daftar').addEventListener('click', () => switchPage('page-daftar'));
+      document.getElementById('btn-trending').addEventListener('click', () => switchPage('page-trending'));
+      document.getElementById('btn-analytics').addEventListener('click', () => switchPage('page-analytics'));
+      document.getElementById('btn-mood-map').addEventListener('click', () => switchPage('page-mood-map'));
+      document.getElementById("btn-gallery").addEventListener("click", () => switchPage("page-gallery"));
+      document.getElementById('btn-daily-notes').addEventListener('click', () => switchPage('page-daily-notes'));
+      document.getElementById('btn-translator').addEventListener('click', () => switchPage('page-translator'));
+      document.getElementById('btn-nightcore').addEventListener('click', () => switchPage('page-nightcore'));
+      document.getElementById('btn-private-notes').addEventListener('click', () => switchPage('pn-page'));
 
-                if (insertError) {
-                  console.error("Insert error:", insertError);
-                  showNotification(`Gagal simpan metadata ${file.name}`, "error");
-                  continue;
-                }
-              }
+      // Upload gambar ke Supabase
+      if (uploadForm) {
+        uploadForm.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const files = fileInput.files;
+          if (!files.length) return showNotification("Pilih gambar dulu!", "error");
 
-              // Reset form
-              captionInput.value = "";
-              fileInput.value = "";
-              if (categoryInput) categoryInput.value = "sava";
+          const caption = captionInput.value;
+          const categoryInput = document.getElementById("categoryInput");
+          const category = categoryInput ? categoryInput.value : "sava";
 
-              showNotification("✅ Semua gambar berhasil diupload!", "success");
-              loadGallery();
-            });
+          // Proses setiap file
+          for (const file of files) {
+            // Cek ukuran file
+            const maxSize = 1.5 * 1024 * 1024; // 1.5 MB
+            if (file.size > maxSize) {
+              showNotification(`Ukuran ${file.name} terlalu besar (>1.5MB)`, "error");
+              continue; // Skip file ini dan lanjutkan ke file berikutnya
+            }
+
+            const fileName = `${Date.now()}_${file.name}`;
+            console.log("Uploading file:", fileName);
+
+            // Upload ke Supabase Storage
+            const { error: uploadError } = await supabase
+              .storage.from("keluhkesah")
+              .upload(fileName, file);
+
+            if (uploadError) {
+              console.error("Upload error:", uploadError);
+              showNotification(`Upload gagal untuk ${file.name}: ${uploadError.message}`, "error");
+              continue;
+            }
+
+            // Ambil public URL
+            const { data: publicUrl } = supabase.storage.from("keluhkesah").getPublicUrl(fileName);
+
+            // Simpan metadata ke tabel gallery
+            const { error: insertError } = await supabase.from("gallery").insert([
+              { url: publicUrl.publicUrl, caption, category }
+            ]);
+
+            if (insertError) {
+              console.error("Insert error:", insertError);
+              showNotification(`Gagal simpan metadata ${file.name}`, "error");
+              continue;
+            }
           }
 
+          // Reset form
+          captionInput.value = "";
+          fileInput.value = "";
+          if (categoryInput) categoryInput.value = "sava";
+
+          showNotification("✅ Semua gambar berhasil diupload!", "success");
+          loadGallery();
+        });
+      }
 
 
-          // Load galeri dari Supabase
-          async function loadGallery() {
-            const { data, error } = await supabase
-              .from("gallery")
-              .select("*")
-              .order("created_at", { ascending: false });
 
-            if (error) {
-              console.error(error);
-              return;
-            }
+      // Load galeri dari Supabase
+      async function loadGallery() {
+        const { data, error } = await supabase
+          .from("gallery")
+          .select("*")
+          .order("created_at", { ascending: false });
 
-            // update jumlah gambar
-            const galleryCount = document.getElementById("galleryCount");
-            if (galleryCount) {
-              galleryCount.textContent = `📸 Jumlah Gambar: ${data.length}`;
-            }
+        if (error) {
+          console.error(error);
+          return;
+        }
 
-            // render gambar
-            galleryGrid.innerHTML = data
-              .map(
-                (item) => `
+        // update jumlah gambar
+        const galleryCount = document.getElementById("galleryCount");
+        if (galleryCount) {
+          galleryCount.textContent = `📸 Jumlah Gambar: ${data.length}`;
+        }
+
+        // render gambar
+        galleryGrid.innerHTML = data
+          .map(
+            (item) => `
       <div class="gallery-item">
         <img 
   src="${item.url}" 
@@ -2651,704 +2745,704 @@
         </div>
       </div>
     `
-              )
-              .join("");
+          )
+          .join("");
+      }
+
+
+      // Download gambar
+      window.downloadImage = async (url) => {
+        try {
+          const response = await fetch(url);
+          const blob = await response.blob();
+          const blobUrl = window.URL.createObjectURL(blob);
+
+          // Ambil nama file asli dari url
+          const fileName = url.split("/").pop();
+
+          const a = document.createElement("a");
+          a.href = blobUrl;
+          a.download = fileName; // nama asli dari Supabase
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+
+          window.URL.revokeObjectURL(blobUrl);
+        } catch (err) {
+          console.error("Download gagal:", err);
+          alert("Gagal download gambar!");
+        }
+      };
+
+
+      // Hapus gambar
+      window.deleteImage = async (id, url) => {
+        if (!confirm("Yakin ingin menghapus gambar ini?")) return;
+
+        // Hapus metadata dari tabel
+        await supabase.from("gallery").delete().eq("id", id);
+
+        // Hapus file dari storage
+        const filePath = url.split("/").pop();
+        await supabase.storage.from("gallery").remove([filePath]);
+
+        showNotification("Gambar berhasil dihapus 🗑️");
+        loadGallery();
+      };
+      // load awal
+      loadGallery();
+
+
+      // Forms
+      noteForm.addEventListener('submit', handleSubmitNote);
+      editForm.addEventListener('submit', handleEditNote);
+
+      // Selectors
+      document.querySelectorAll('.mood-option').forEach(option => {
+        option.addEventListener('click', () => selectMood(option.dataset.mood));
+      });
+
+      document.querySelectorAll('.category-option').forEach(option => {
+        option.addEventListener('click', () => selectCategory(option.dataset.category));
+      });
+
+      // Toggles and inputs
+      anonymousSwitch.addEventListener('click', toggleAnonymous);
+      catatan.addEventListener('input', () => {
+        updateCharCount();
+        predictMood();
+      });
+      editCatatan.addEventListener('input', updateEditCharCount);
+
+      // Voice recording
+      voiceBtn.addEventListener('click', toggleVoiceRecording);
+
+      // Search and filters
+      searchInput.addEventListener('input', filterNotes);
+      sortSelect.addEventListener('change', (e) => {
+        currentSort = e.target.value;
+        filterNotes();
+      });
+
+      // Filter buttons
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => setFilter(btn.dataset.filter));
+      });
+
+      document.querySelectorAll('.time-btn').forEach(btn => {
+        if (btn.dataset.time) {
+          btn.addEventListener('click', () => setTimeFilter(btn.dataset.time));
+        }
+        if (btn.dataset.categoryFilter) {
+          btn.addEventListener('click', () => setCategoryFilter(btn.dataset.categoryFilter));
+        }
+      });
+
+      // Modal
+      document.addEventListener('click', (e) => {
+        if (e.target === document.getElementById('editModal')) {
+          closeEditModal();
+        }
+      });
+    }
+
+    function selectMood(mood) {
+      document.querySelectorAll('.mood-option').forEach(option => {
+        option.classList.remove('selected');
+      });
+      document.querySelector(`[data-mood="${mood}"]`).classList.add('selected');
+      selectedMood = mood;
+    }
+
+    function selectCategory(category) {
+      document.querySelectorAll('.category-option').forEach(option => {
+        option.classList.remove('selected');
+      });
+      document.querySelector(`[data-category="${category}"]`).classList.add('selected');
+      selectedCategory = category;
+    }
+
+    function toggleAnonymous() {
+      isAnonymous = !isAnonymous;
+      anonymousSwitch.classList.toggle('active', isAnonymous);
+      const namaInput = document.getElementById('nama');
+      namaInput.disabled = isAnonymous;
+      if (isAnonymous) {
+        namaInput.value = 'Anonim';
+        namaInput.style.background = '#f5f5f5';
+      } else {
+        namaInput.value = '';
+        namaInput.style.background = 'rgba(255,255,255,0.9)';
+      }
+    }
+
+    function updateCharCount() {
+      const count = catatan.value.length;
+      charCount.textContent = count;
+      charCount.parentElement.classList.toggle('warning', count > 450);
+    }
+
+    function updateEditCharCount() {
+      const count = editCatatan.value.length;
+      editCharCount.textContent = count;
+      editCharCount.parentElement.classList.toggle('warning', count > 450);
+    }
+
+    function predictMood() {
+      const text = catatan.value.toLowerCase();
+      let scores = {};
+
+      Object.keys(moodWords).forEach(mood => {
+        scores[mood] = 0;
+        moodWords[mood].forEach(word => {
+          if (text.includes(word)) {
+            scores[mood]++;
           }
+        });
+      });
 
+      const predictedMood = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
+      const maxScore = Math.max(...Object.values(scores));
 
-          // Download gambar
-          window.downloadImage = async (url) => {
-            try {
-              const response = await fetch(url);
-              const blob = await response.blob();
-              const blobUrl = window.URL.createObjectURL(blob);
+      if (maxScore > 0) {
+        const moodEmojis = {
+          happy: '😊',
+          sad: '😢',
+          angry: '😠',
+          excited: '🤩',
+          confused: '😕',
+          grateful: '🙏'
+        };
 
-              // Ambil nama file asli dari url
-              const fileName = url.split("/").pop();
+        document.getElementById('predictedMood').textContent = moodEmojis[predictedMood];
+        document.getElementById('moodPrediction').textContent = `Sepertinya kamu ${predictedMood}...`;
+      } else {
+        document.getElementById('predictedMood').textContent = '🤔';
+        document.getElementById('moodPrediction').textContent = 'Tulis lebih banyak untuk prediksi yang akurat...';
+      }
+    }
 
-              const a = document.createElement("a");
-              a.href = blobUrl;
-              a.download = fileName; // nama asli dari Supabase
-              document.body.appendChild(a);
-              a.click();
-              a.remove();
+    async function toggleVoiceRecording() {
+      if (!voiceRecording) {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          mediaRecorder = new MediaRecorder(stream);
+          recordingChunks = [];
 
-              window.URL.revokeObjectURL(blobUrl);
-            } catch (err) {
-              console.error("Download gagal:", err);
-              alert("Gagal download gambar!");
-            }
+          mediaRecorder.ondataavailable = (event) => {
+            recordingChunks.push(event.data);
           };
 
-
-          // Hapus gambar
-          window.deleteImage = async (id, url) => {
-            if (!confirm("Yakin ingin menghapus gambar ini?")) return;
-
-            // Hapus metadata dari tabel
-            await supabase.from("gallery").delete().eq("id", id);
-
-            // Hapus file dari storage
-            const filePath = url.split("/").pop();
-            await supabase.storage.from("gallery").remove([filePath]);
-
-            showNotification("Gambar berhasil dihapus 🗑️");
-            loadGallery();
+          mediaRecorder.onstop = () => {
+            const blob = new Blob(recordingChunks, { type: 'audio/wav' });
+            // In a real app, you'd upload this to a speech-to-text service
+            voiceStatus.textContent = 'Rekaman selesai! (Fitur speech-to-text akan datang)';
           };
-          // load awal
-          loadGallery();
 
+          mediaRecorder.start();
+          voiceRecording = true;
+          voiceBtn.classList.add('recording');
+          voiceStatus.textContent = 'Merekam... Klik lagi untuk berhenti';
 
-          // Forms
-          noteForm.addEventListener('submit', handleSubmitNote);
-          editForm.addEventListener('submit', handleEditNote);
+        } catch (error) {
+          showNotification('Browser tidak mendukung perekaman suara', 'error');
+        }
+      } else {
+        mediaRecorder.stop();
+        voiceRecording = false;
+        voiceBtn.classList.remove('recording');
+        voiceStatus.textContent = 'Klik untuk mulai merekam suara (opsional)';
+      }
+    }
 
-          // Selectors
-          document.querySelectorAll('.mood-option').forEach(option => {
-            option.addEventListener('click', () => selectMood(option.dataset.mood));
-          });
+    function generateDailyChallenge() {
+      const today = new Date();
+      const challengeIndex = today.getDate() % dailyChallenges.length;
+      document.getElementById('dailyChallenge').textContent = dailyChallenges[challengeIndex];
+    }
 
-          document.querySelectorAll('.category-option').forEach(option => {
-            option.addEventListener('click', () => selectCategory(option.dataset.category));
-          });
+    function generateMoodCalendar() {
+      const calendar = document.getElementById('moodCalendar');
+      const today = new Date();
+      const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+      const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
 
-          // Toggles and inputs
-          anonymousSwitch.addEventListener('click', toggleAnonymous);
-          catatan.addEventListener('input', () => {
-            updateCharCount();
-            predictMood();
-          });
-          editCatatan.addEventListener('input', updateEditCharCount);
+      calendar.innerHTML = '';
 
-          // Voice recording
-          voiceBtn.addEventListener('click', toggleVoiceRecording);
+      // Days of week header
+      const daysOfWeek = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
+      daysOfWeek.forEach(day => {
+        const dayHeader = document.createElement('div');
+        dayHeader.style.cssText = 'text-align: center; font-weight: bold; padding: 0.5rem;';
+        dayHeader.textContent = day;
+        calendar.appendChild(dayHeader);
+      });
 
-          // Search and filters
-          searchInput.addEventListener('input', filterNotes);
-          sortSelect.addEventListener('change', (e) => {
-            currentSort = e.target.value;
-            filterNotes();
-          });
+      // Empty cells for days before month start
+      const startDay = (firstDay.getDay() + 6) % 7; // Convert to Monday = 0
+      for (let i = 0; i < startDay; i++) {
+        const emptyDay = document.createElement('div');
+        emptyDay.classList.add('mood-day');
+        calendar.appendChild(emptyDay);
+      }
 
-          // Filter buttons
-          document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.addEventListener('click', () => setFilter(btn.dataset.filter));
-          });
+      // Days of the month
+      for (let day = 1; day <= lastDay.getDate(); day++) {
+        const dayElement = document.createElement('div');
+        dayElement.classList.add('mood-day');
+        dayElement.style.background = day === today.getDate() ? '#4ecdc4' : '#f0f0f0';
+        dayElement.style.color = day === today.getDate() ? 'white' : '#333';
 
-          document.querySelectorAll('.time-btn').forEach(btn => {
-            if (btn.dataset.time) {
-              btn.addEventListener('click', () => setTimeFilter(btn.dataset.time));
-            }
-            if (btn.dataset.categoryFilter) {
-              btn.addEventListener('click', () => setCategoryFilter(btn.dataset.categoryFilter));
-            }
-          });
-
-          // Modal
-          document.addEventListener('click', (e) => {
-            if (e.target === document.getElementById('editModal')) {
-              closeEditModal();
-            }
-          });
+        // Simulate random moods for past days
+        if (day < today.getDate()) {
+          const moods = ['😊', '😢', '😠', '🤩', '😕', '🙏'];
+          dayElement.textContent = moods[day % moods.length];
+        } else if (day === today.getDate()) {
+          dayElement.textContent = selectedMood ? getMoodEmoji(selectedMood) : day;
+        } else {
+          dayElement.textContent = day;
+          dayElement.style.opacity = '0.5';
         }
 
-        function selectMood(mood) {
-          document.querySelectorAll('.mood-option').forEach(option => {
-            option.classList.remove('selected');
-          });
-          document.querySelector(`[data-mood="${mood}"]`).classList.add('selected');
-          selectedMood = mood;
-        }
-
-        function selectCategory(category) {
-          document.querySelectorAll('.category-option').forEach(option => {
-            option.classList.remove('selected');
-          });
-          document.querySelector(`[data-category="${category}"]`).classList.add('selected');
-          selectedCategory = category;
-        }
-
-        function toggleAnonymous() {
-          isAnonymous = !isAnonymous;
-          anonymousSwitch.classList.toggle('active', isAnonymous);
-          const namaInput = document.getElementById('nama');
-          namaInput.disabled = isAnonymous;
-          if (isAnonymous) {
-            namaInput.value = 'Anonim';
-            namaInput.style.background = '#f5f5f5';
-          } else {
-            namaInput.value = '';
-            namaInput.style.background = 'rgba(255,255,255,0.9)';
+        dayElement.addEventListener('click', () => {
+          if (day <= today.getDate()) {
+            showNotification(`Mood tanggal ${day}: ${dayElement.textContent}`);
           }
-        }
+        });
 
-        function updateCharCount() {
-          const count = catatan.value.length;
-          charCount.textContent = count;
-          charCount.parentElement.classList.toggle('warning', count > 450);
-        }
+        calendar.appendChild(dayElement);
+      }
+    }
 
-        function updateEditCharCount() {
-          const count = editCatatan.value.length;
-          editCharCount.textContent = count;
-          editCharCount.parentElement.classList.toggle('warning', count > 450);
-        }
+    async function loadWeather() {
+      const weatherWidget = document.getElementById('weatherWidget');
+      const lat = 3.5952;   // Medan latitude
+      const lon = 98.6722;  // Medan longitude
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,weather_code,wind_speed_10m&timezone=Asia%2FJakarta`;
 
-        function predictMood() {
-          const text = catatan.value.toLowerCase();
-          let scores = {};
+      try {
+        const res = await fetch(url, { cache: "no-store" });
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        const data = await res.json();
+        const c = data.current;
 
-          Object.keys(moodWords).forEach(mood => {
-            scores[mood] = 0;
-            moodWords[mood].forEach(word => {
-              if (text.includes(word)) {
-                scores[mood]++;
-              }
-            });
-          });
+        const { emoji, desc } = mapWeatherCode(c.weather_code);
 
-          const predictedMood = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
-          const maxScore = Math.max(...Object.values(scores));
+        const updatedAt = new Date(c.time).toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
 
-          if (maxScore > 0) {
-            const moodEmojis = {
-              happy: '😊',
-              sad: '😢',
-              angry: '😠',
-              excited: '🤩',
-              confused: '😕',
-              grateful: '🙏'
-            };
-
-            document.getElementById('predictedMood').textContent = moodEmojis[predictedMood];
-            document.getElementById('moodPrediction').textContent = `Sepertinya kamu ${predictedMood}...`;
-          } else {
-            document.getElementById('predictedMood').textContent = '🤔';
-            document.getElementById('moodPrediction').textContent = 'Tulis lebih banyak untuk prediksi yang akurat...';
-          }
-        }
-
-        async function toggleVoiceRecording() {
-          if (!voiceRecording) {
-            try {
-              const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-              mediaRecorder = new MediaRecorder(stream);
-              recordingChunks = [];
-
-              mediaRecorder.ondataavailable = (event) => {
-                recordingChunks.push(event.data);
-              };
-
-              mediaRecorder.onstop = () => {
-                const blob = new Blob(recordingChunks, { type: 'audio/wav' });
-                // In a real app, you'd upload this to a speech-to-text service
-                voiceStatus.textContent = 'Rekaman selesai! (Fitur speech-to-text akan datang)';
-              };
-
-              mediaRecorder.start();
-              voiceRecording = true;
-              voiceBtn.classList.add('recording');
-              voiceStatus.textContent = 'Merekam... Klik lagi untuk berhenti';
-
-            } catch (error) {
-              showNotification('Browser tidak mendukung perekaman suara', 'error');
-            }
-          } else {
-            mediaRecorder.stop();
-            voiceRecording = false;
-            voiceBtn.classList.remove('recording');
-            voiceStatus.textContent = 'Klik untuk mulai merekam suara (opsional)';
-          }
-        }
-
-        function generateDailyChallenge() {
-          const today = new Date();
-          const challengeIndex = today.getDate() % dailyChallenges.length;
-          document.getElementById('dailyChallenge').textContent = dailyChallenges[challengeIndex];
-        }
-
-        function generateMoodCalendar() {
-          const calendar = document.getElementById('moodCalendar');
-          const today = new Date();
-          const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
-          const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-
-          calendar.innerHTML = '';
-
-          // Days of week header
-          const daysOfWeek = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
-          daysOfWeek.forEach(day => {
-            const dayHeader = document.createElement('div');
-            dayHeader.style.cssText = 'text-align: center; font-weight: bold; padding: 0.5rem;';
-            dayHeader.textContent = day;
-            calendar.appendChild(dayHeader);
-          });
-
-          // Empty cells for days before month start
-          const startDay = (firstDay.getDay() + 6) % 7; // Convert to Monday = 0
-          for (let i = 0; i < startDay; i++) {
-            const emptyDay = document.createElement('div');
-            emptyDay.classList.add('mood-day');
-            calendar.appendChild(emptyDay);
-          }
-
-          // Days of the month
-          for (let day = 1; day <= lastDay.getDate(); day++) {
-            const dayElement = document.createElement('div');
-            dayElement.classList.add('mood-day');
-            dayElement.style.background = day === today.getDate() ? '#4ecdc4' : '#f0f0f0';
-            dayElement.style.color = day === today.getDate() ? 'white' : '#333';
-
-            // Simulate random moods for past days
-            if (day < today.getDate()) {
-              const moods = ['😊', '😢', '😠', '🤩', '😕', '🙏'];
-              dayElement.textContent = moods[day % moods.length];
-            } else if (day === today.getDate()) {
-              dayElement.textContent = selectedMood ? getMoodEmoji(selectedMood) : day;
-            } else {
-              dayElement.textContent = day;
-              dayElement.style.opacity = '0.5';
-            }
-
-            dayElement.addEventListener('click', () => {
-              if (day <= today.getDate()) {
-                showNotification(`Mood tanggal ${day}: ${dayElement.textContent}`);
-              }
-            });
-
-            calendar.appendChild(dayElement);
-          }
-        }
-
-        async function loadWeather() {
-          const weatherWidget = document.getElementById('weatherWidget');
-          const lat = 3.5952;   // Medan latitude
-          const lon = 98.6722;  // Medan longitude
-          const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,weather_code,wind_speed_10m&timezone=Asia%2FJakarta`;
-
-          try {
-            const res = await fetch(url, { cache: "no-store" });
-            if (!res.ok) throw new Error("HTTP " + res.status);
-            const data = await res.json();
-            const c = data.current;
-
-            const { emoji, desc } = mapWeatherCode(c.weather_code);
-
-            const updatedAt = new Date(c.time).toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
-
-            // Build compact widget UI
-            weatherWidget.innerHTML = `
+        // Build compact widget UI
+        weatherWidget.innerHTML = `
         <span>${emoji}</span>
         <span>${desc}</span>
         <span>${Math.round(c.temperature_2m)}°C</span>
         <span>💧${Math.round(c.relative_humidity_2m)}%</span>
         <span>💨${Math.round(c.wind_speed_10m)} km/j</span>
       `;
-            weatherWidget.title = `Medan • Diperbarui ${updatedAt}`;
-          } catch (err) {
-            console.error("Gagal memuat cuaca:", err);
-            weatherWidget.textContent = '🌤️ --°C';
-          } finally {
-            // refresh every 5 minutes
-            setTimeout(loadWeather, 5 * 60 * 1000);
-          }
-        }
+        weatherWidget.title = `Medan • Diperbarui ${updatedAt}`;
+      } catch (err) {
+        console.error("Gagal memuat cuaca:", err);
+        weatherWidget.textContent = '🌤️ --°C';
+      } finally {
+        // refresh every 5 minutes
+        setTimeout(loadWeather, 5 * 60 * 1000);
+      }
+    }
 
-        function mapWeatherCode(code) {
-          // Mapping Open-Meteo WMO weather codes ke emoji + deskripsi Bahasa
-          const table = {
-            0: { emoji: '☀️', desc: 'Cerah' },
-            1: { emoji: '🌤️', desc: 'Sebagian cerah' },
-            2: { emoji: '⛅', desc: 'Berawan sebagian' },
-            3: { emoji: '☁️', desc: 'Berawan' },
-            45: { emoji: '🌫️', desc: 'Berkabut' },
-            48: { emoji: '🌫️', desc: 'Kabut membeku' },
-            51: { emoji: '🌦️', desc: 'Gerimis ringan' },
-            53: { emoji: '🌦️', desc: 'Gerimis sedang' },
-            55: { emoji: '🌧️', desc: 'Gerimis lebat' },
-            56: { emoji: '🌧️', desc: 'Gerimis beku ringan' },
-            57: { emoji: '🌧️', desc: 'Gerimis beku lebat' },
-            61: { emoji: '🌦️', desc: 'Hujan ringan' },
-            63: { emoji: '🌧️', desc: 'Hujan sedang' },
-            65: { emoji: '🌧️', desc: 'Hujan lebat' },
-            66: { emoji: '🌧️', desc: 'Hujan beku ringan' },
-            67: { emoji: '🌧️', desc: 'Hujan beku lebat' },
-            71: { emoji: '❄️', desc: 'Salju ringan' },
-            73: { emoji: '❄️', desc: 'Salju sedang' },
-            75: { emoji: '❄️', desc: 'Salju lebat' },
-            77: { emoji: '🌨️', desc: 'Butiran salju' },
-            80: { emoji: '🌦️', desc: 'Hujan lokal ringan' },
-            81: { emoji: '🌧️', desc: 'Hujan lokal sedang' },
-            82: { emoji: '⛈️', desc: 'Hujan lokal lebat' },
-            85: { emoji: '🌨️', desc: 'Hujan salju ringan' },
-            86: { emoji: '🌨️', desc: 'Hujan salju lebat' },
-            95: { emoji: '⛈️', desc: 'Badai petir' },
-            96: { emoji: '⛈️', desc: 'Badai petir + es kecil' },
-            99: { emoji: '⛈️', desc: 'Badai petir + es besar' },
-          };
-          return table[code] || { emoji: '🌤️', desc: 'Cuaca' };
-        }
+    function mapWeatherCode(code) {
+      // Mapping Open-Meteo WMO weather codes ke emoji + deskripsi Bahasa
+      const table = {
+        0: { emoji: '☀️', desc: 'Cerah' },
+        1: { emoji: '🌤️', desc: 'Sebagian cerah' },
+        2: { emoji: '⛅', desc: 'Berawan sebagian' },
+        3: { emoji: '☁️', desc: 'Berawan' },
+        45: { emoji: '🌫️', desc: 'Berkabut' },
+        48: { emoji: '🌫️', desc: 'Kabut membeku' },
+        51: { emoji: '🌦️', desc: 'Gerimis ringan' },
+        53: { emoji: '🌦️', desc: 'Gerimis sedang' },
+        55: { emoji: '🌧️', desc: 'Gerimis lebat' },
+        56: { emoji: '🌧️', desc: 'Gerimis beku ringan' },
+        57: { emoji: '🌧️', desc: 'Gerimis beku lebat' },
+        61: { emoji: '🌦️', desc: 'Hujan ringan' },
+        63: { emoji: '🌧️', desc: 'Hujan sedang' },
+        65: { emoji: '🌧️', desc: 'Hujan lebat' },
+        66: { emoji: '🌧️', desc: 'Hujan beku ringan' },
+        67: { emoji: '🌧️', desc: 'Hujan beku lebat' },
+        71: { emoji: '❄️', desc: 'Salju ringan' },
+        73: { emoji: '❄️', desc: 'Salju sedang' },
+        75: { emoji: '❄️', desc: 'Salju lebat' },
+        77: { emoji: '🌨️', desc: 'Butiran salju' },
+        80: { emoji: '🌦️', desc: 'Hujan lokal ringan' },
+        81: { emoji: '🌧️', desc: 'Hujan lokal sedang' },
+        82: { emoji: '⛈️', desc: 'Hujan lokal lebat' },
+        85: { emoji: '🌨️', desc: 'Hujan salju ringan' },
+        86: { emoji: '🌨️', desc: 'Hujan salju lebat' },
+        95: { emoji: '⛈️', desc: 'Badai petir' },
+        96: { emoji: '⛈️', desc: 'Badai petir + es kecil' },
+        99: { emoji: '⛈️', desc: 'Badai petir + es besar' },
+      };
+      return table[code] || { emoji: '🌤️', desc: 'Cuaca' };
+    }
 
-        // jalankan pas pertama kali load halaman
-        loadWeather();
+    // jalankan pas pertama kali load halaman
+    loadWeather();
 
-        function applyTheme(theme) {
-          // Hapus semua tema lama
-          document.body.classList.remove('theme-light', 'dark-mode', 'theme-wibu', 'theme-rainbow');
+    function applyTheme(theme) {
+      // Hapus semua tema lama
+      document.body.classList.remove('theme-light', 'dark-mode', 'theme-wibu', 'theme-rainbow');
 
-          // Tambahkan tema baru
-          if (theme) {
-            document.body.classList.add(theme);
-          }
+      // Tambahkan tema baru
+      if (theme) {
+        document.body.classList.add(theme);
+      }
 
-          // Simpan tema aktif di localStorage
-          localStorage.setItem('activeTheme', theme || '');
+      // Simpan tema aktif di localStorage
+      localStorage.setItem('activeTheme', theme || '');
 
-          // Update tombol aktif
-          document.querySelectorAll('.theme-switcher button').forEach(btn => {
-            btn.classList.remove('active');
-          });
+      // Update tombol aktif
+      document.querySelectorAll('.theme-switcher button').forEach(btn => {
+        btn.classList.remove('active');
+      });
 
-          // Cari tombol sesuai tema
-          const activeBtnId = theme ? theme.replace('.', '') : 'theme-light';
-          const activeBtn = document.getElementById(activeBtnId);
-          if (activeBtn) {
-            activeBtn.classList.add('active');
-          }
-        }
+      // Cari tombol sesuai tema
+      const activeBtnId = theme ? theme.replace('.', '') : 'theme-light';
+      const activeBtn = document.getElementById(activeBtnId);
+      if (activeBtn) {
+        activeBtn.classList.add('active');
+      }
+    }
 
 
-        // Sakura Falling Animation 🌸
-        const sakuraContainer = document.querySelector(".sakura-container");
-        const body = document.body;
+    // Sakura Falling Animation 🌸
+    const sakuraContainer = document.querySelector(".sakura-container");
+    const body = document.body;
 
-        function createSakura() {
-          const sakura = document.createElement("div");
-          sakura.classList.add("sakura");
+    function createSakura() {
+      const sakura = document.createElement("div");
+      sakura.classList.add("sakura");
 
-          // Posisi random horizontal
-          sakura.style.left = Math.random() * window.innerWidth + "px";
+      // Posisi random horizontal
+      sakura.style.left = Math.random() * window.innerWidth + "px";
 
-          // Ukuran random
-          const size = Math.random() * 12 + 10; // 10px - 22px
-          sakura.style.width = `${size}px`;
-          sakura.style.height = `${size}px`;
+      // Ukuran random
+      const size = Math.random() * 12 + 10; // 10px - 22px
+      sakura.style.width = `${size}px`;
+      sakura.style.height = `${size}px`;
 
-          // Durasi jatuh random
-          sakura.style.animationDuration = Math.random() * 3 + 4 + "s";
+      // Durasi jatuh random
+      sakura.style.animationDuration = Math.random() * 3 + 4 + "s";
 
-          // Delay random biar gak serempak
-          sakura.style.animationDelay = Math.random() * 3 + "s";
+      // Delay random biar gak serempak
+      sakura.style.animationDelay = Math.random() * 3 + "s";
 
-          sakuraContainer.appendChild(sakura);
+      sakuraContainer.appendChild(sakura);
 
-          // Hapus setelah animasi selesai
-          setTimeout(() => {
-            sakura.remove();
-          }, 8000);
-        }
+      // Hapus setelah animasi selesai
+      setTimeout(() => {
+        sakura.remove();
+      }, 8000);
+    }
 
-        let sakuraInterval = null;
+    let sakuraInterval = null;
 
-        function startSakura() {
-          if (!sakuraInterval) {
-            sakuraContainer.style.display = "block";
-            sakuraInterval = setInterval(createSakura, 300); // tiap 300ms munculin kelopak baru
-          }
-        }
+    function startSakura() {
+      if (!sakuraInterval) {
+        sakuraContainer.style.display = "block";
+        sakuraInterval = setInterval(createSakura, 300); // tiap 300ms munculin kelopak baru
+      }
+    }
 
-        function stopSakura() {
-          sakuraContainer.style.display = "none";
-          sakuraContainer.innerHTML = "";
-          clearInterval(sakuraInterval);
-          sakuraInterval = null;
-        }
+    function stopSakura() {
+      sakuraContainer.style.display = "none";
+      sakuraContainer.innerHTML = "";
+      clearInterval(sakuraInterval);
+      sakuraInterval = null;
+    }
 
-        // Cek kalau body punya class "theme-wibu"
-        const observer = new MutationObserver(() => {
-          if (body.classList.contains("theme-wibu")) {
-            startSakura();
-          } else {
-            stopSakura();
-          }
+    // Cek kalau body punya class "theme-wibu"
+    const observer = new MutationObserver(() => {
+      if (body.classList.contains("theme-wibu")) {
+        startSakura();
+      } else {
+        stopSakura();
+      }
+    });
+
+    observer.observe(body, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    document.getElementById('theme-light').addEventListener('click', () => applyTheme(''));
+    document.getElementById('theme-dark').addEventListener('click', () => applyTheme('dark-mode'));
+    document.getElementById('theme-wibu').addEventListener('click', () => applyTheme('theme-wibu'));
+
+    async function handleSubmitNote(e) {
+      e.preventDefault();
+
+      const nama = isAnonymous ? 'Anonim' : document.getElementById('nama').value.trim();
+      const catatanText = catatan.value.trim();
+
+      if ((!isAnonymous && !nama) || !catatanText || !selectedMood || !selectedCategory) {
+        showNotification('Harap lengkapi semua field!', 'error');
+        return;
+      }
+
+      if (catatanText.length > 500) {
+        showNotification('Cerita terlalu panjang! Maksimal 500 karakter.', 'error');
+        return;
+      }
+
+      try {
+        await addDoc(collection(db, "notes"), {
+          nama,
+          catatan: catatanText,
+          mood: selectedMood,
+          category: selectedCategory,
+          createdAt: serverTimestamp(),   // waktu dibuat
+          updatedAt: serverTimestamp(),
+          waktu: serverTimestamp(),
+          likes: [],
+          hearts: [],
+          supports: [],
+          comments: [],
+          totalReactions: 0,
+          userId: isAnonymous ? 'anonymous' : userId,
+          isAnonymous
         });
 
-        observer.observe(body, {
-          attributes: true,
-          attributeFilter: ["class"],
+        noteForm.reset();
+        selectedMood = null;
+        selectedCategory = null;
+        document.querySelectorAll('.mood-option').forEach(option => {
+          option.classList.remove('selected');
+        });
+        document.querySelectorAll('.category-option').forEach(option => {
+          option.classList.remove('selected');
+        });
+        updateCharCount();
+
+        // Update daily streak
+        updateDailyStreak();
+
+        showNotification('Cerita berhasil dikirim! 🎉');
+        switchPage('page-daftar');
+      } catch (error) {
+        console.error("Error adding document: ", error);
+        showNotification('Terjadi kesalahan saat mengirim cerita.', 'error');
+      }
+    }
+
+    async function handleEditNote(e) {
+      e.preventDefault();
+
+      const newText = editCatatan.value.trim();
+
+      if (!newText) {
+        showNotification('Cerita tidak boleh kosong!', 'error');
+        return;
+      }
+
+      if (newText.length > 500) {
+        showNotification('Cerita terlalu panjang! Maksimal 500 karakter.', 'error');
+        return;
+      }
+
+      try {
+        await updateDoc(doc(db, "notes", currentEditId), {
+          catatan: newText,
+          lastEdited: serverTimestamp()
         });
 
-        document.getElementById('theme-light').addEventListener('click', () => applyTheme(''));
-        document.getElementById('theme-dark').addEventListener('click', () => applyTheme('dark-mode'));
-        document.getElementById('theme-wibu').addEventListener('click', () => applyTheme('theme-wibu'));
+        showNotification('Cerita berhasil diupdate! ✨');
+        closeEditModal();
+      } catch (error) {
+        console.error("Error updating document: ", error);
+        showNotification('Terjadi kesalahan saat mengupdate cerita.', 'error');
+      }
+    }
 
-        async function handleSubmitNote(e) {
-          e.preventDefault();
+    function openEditModal(id, currentText) {
+      currentEditId = id;
+      editCatatan.value = currentText;
+      updateEditCharCount();
+      document.getElementById('editModal').classList.add('active');
+    }
 
-          const nama = isAnonymous ? 'Anonim' : document.getElementById('nama').value.trim();
-          const catatanText = catatan.value.trim();
+    function closeEditModal() {
+      document.getElementById('editModal').classList.remove('active');
+      currentEditId = null;
+      editCatatan.value = '';
+    }
 
-          if ((!isAnonymous && !nama) || !catatanText || !selectedMood || !selectedCategory) {
-            showNotification('Harap lengkapi semua field!', 'error');
-            return;
-          }
+    window.closeEditModal = closeEditModal;
 
-          if (catatanText.length > 500) {
-            showNotification('Cerita terlalu panjang! Maksimal 500 karakter.', 'error');
-            return;
-          }
+    async function toggleReaction(noteId, reactionType) {
+      try {
+        const noteRef = doc(db, "notes", noteId);
+        const note = allNotes.find(n => n.id === noteId);
 
-          try {
-            await addDoc(collection(db, "notes"), {
-              nama,
-              catatan: catatanText,
-              mood: selectedMood,
-              category: selectedCategory,
-              createdAt: serverTimestamp(),   // waktu dibuat
-              updatedAt: serverTimestamp(),
-              waktu: serverTimestamp(),
-              likes: [],
-              hearts: [],
-              supports: [],
-              comments: [],
-              totalReactions: 0,
-              userId: isAnonymous ? 'anonymous' : userId,
-              isAnonymous
-            });
+        if (!note) return;
 
-            noteForm.reset();
-            selectedMood = null;
-            selectedCategory = null;
-            document.querySelectorAll('.mood-option').forEach(option => {
-              option.classList.remove('selected');
-            });
-            document.querySelectorAll('.category-option').forEach(option => {
-              option.classList.remove('selected');
-            });
-            updateCharCount();
+        const userReacted = note[reactionType] && note[reactionType].includes(userId);
 
-            // Update daily streak
-            updateDailyStreak();
-
-            showNotification('Cerita berhasil dikirim! 🎉');
-            switchPage('page-daftar');
-          } catch (error) {
-            console.error("Error adding document: ", error);
-            showNotification('Terjadi kesalahan saat mengirim cerita.', 'error');
-          }
-        }
-
-        async function handleEditNote(e) {
-          e.preventDefault();
-
-          const newText = editCatatan.value.trim();
-
-          if (!newText) {
-            showNotification('Cerita tidak boleh kosong!', 'error');
-            return;
-          }
-
-          if (newText.length > 500) {
-            showNotification('Cerita terlalu panjang! Maksimal 500 karakter.', 'error');
-            return;
-          }
-
-          try {
-            await updateDoc(doc(db, "notes", currentEditId), {
-              catatan: newText,
-              lastEdited: serverTimestamp()
-            });
-
-            showNotification('Cerita berhasil diupdate! ✨');
-            closeEditModal();
-          } catch (error) {
-            console.error("Error updating document: ", error);
-            showNotification('Terjadi kesalahan saat mengupdate cerita.', 'error');
-          }
-        }
-
-        function openEditModal(id, currentText) {
-          currentEditId = id;
-          editCatatan.value = currentText;
-          updateEditCharCount();
-          document.getElementById('editModal').classList.add('active');
-        }
-
-        function closeEditModal() {
-          document.getElementById('editModal').classList.remove('active');
-          currentEditId = null;
-          editCatatan.value = '';
-        }
-
-        window.closeEditModal = closeEditModal;
-
-        async function toggleReaction(noteId, reactionType) {
-          try {
-            const noteRef = doc(db, "notes", noteId);
-            const note = allNotes.find(n => n.id === noteId);
-
-            if (!note) return;
-
-            const userReacted = note[reactionType] && note[reactionType].includes(userId);
-
-            if (userReacted) {
-              await updateDoc(noteRef, {
-                [reactionType]: arrayRemove(userId),
-                totalReactions: increment(-1)
-              });
-            } else {
-              await updateDoc(noteRef, {
-                [reactionType]: arrayUnion(userId),
-                totalReactions: increment(1)
-              });
-            }
-          } catch (error) {
-            console.error("Error toggling reaction: ", error);
-            showNotification('Terjadi kesalahan saat memberikan reaksi.', 'error');
-          }
-        }
-
-        async function addComment(noteId, comment) {
-          if (!comment.trim()) return;
-
-          try {
-            const noteRef = doc(db, "notes", noteId);
-            const commentData = {
-              text: comment,
-              author: isAnonymous ? 'Anonim' : document.getElementById('nama').value || 'Anonymous',
-              userId: userId,
-              timestamp: new Date().toISOString()
-            };
-
-            await updateDoc(noteRef, {
-              comments: arrayUnion(commentData)
-            });
-
-            showNotification('Komentar berhasil ditambahkan! 💬');
-          } catch (error) {
-            console.error("Error adding comment: ", error);
-            showNotification('Terjadi kesalahan saat menambahkan komentar.', 'error');
-          }
-        }
-
-        async function deleteNote(id) {
-          if (confirm("Yakin ingin menghapus cerita ini?")) {
-            try {
-              await deleteDoc(doc(db, "notes", id));
-              showNotification('Cerita berhasil dihapus! 🗑️');
-            } catch (error) {
-              console.error("Error deleting document: ", error);
-              showNotification('Terjadi kesalahan saat menghapus cerita.', 'error');
-            }
-          }
-        }
-
-        function shareNote(noteId) {
-          const url = `${window.location.origin}${window.location.pathname}#note-${noteId}`;
-
-          if (navigator.share) {
-            navigator.share({
-              title: 'Keluh Kesah',
-              text: 'Lihat cerita menarik ini!',
-              url: url
-            });
-          } else {
-            navigator.clipboard.writeText(url).then(() => {
-              showNotification('Link berhasil disalin! 🔗');
-            });
-          }
-        }
-
-        function updateDailyStreak() {
-          const today = new Date().toDateString();
-          const lastPost = localStorage.getItem('lastPostDate');
-          let streak = parseInt(localStorage.getItem('dailyStreak') || '0');
-
-          if (lastPost !== today) {
-            const yesterday = new Date();
-            yesterday.setDate(yesterday.getDate() - 1);
-
-            if (lastPost === yesterday.toDateString()) {
-              streak++;
-            } else if (lastPost !== today) {
-              streak = 1;
-            }
-
-            localStorage.setItem('dailyStreak', streak.toString());
-            localStorage.setItem('lastPostDate', today);
-            document.getElementById('dailyStreak').textContent = streak;
-          }
-        }
-
-        function formatTime(ts) {
-          if (!ts) return "Menunggu waktu...";
-
-          const date = ts.toDate ? ts.toDate() : new Date(ts); // Firestore Timestamp atau JS Date
-          const diff = Math.floor((Date.now() - date.getTime()) / 1000);
-
-          if (diff < 60) return "Baru saja";
-          if (diff < 3600) return `${Math.floor(diff / 60)} menit yang lalu`;
-          if (diff < 86400) return `${Math.floor(diff / 3600)} jam yang lalu`;
-          if (diff < 604800) return `${Math.floor(diff / 86400)} hari yang lalu`;
-
-          return date.toLocaleString("id-ID", {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit"
+        if (userReacted) {
+          await updateDoc(noteRef, {
+            [reactionType]: arrayRemove(userId),
+            totalReactions: increment(-1)
+          });
+        } else {
+          await updateDoc(noteRef, {
+            [reactionType]: arrayUnion(userId),
+            totalReactions: increment(1)
           });
         }
+      } catch (error) {
+        console.error("Error toggling reaction: ", error);
+        showNotification('Terjadi kesalahan saat memberikan reaksi.', 'error');
+      }
+    }
 
+    async function addComment(noteId, comment) {
+      if (!comment.trim()) return;
 
-        function getMoodBadgeClass(mood) {
-          return `mood-${mood}`;
+      try {
+        const noteRef = doc(db, "notes", noteId);
+        const commentData = {
+          text: comment,
+          author: isAnonymous ? 'Anonim' : document.getElementById('nama').value || 'Anonymous',
+          userId: userId,
+          timestamp: new Date().toISOString()
+        };
+
+        await updateDoc(noteRef, {
+          comments: arrayUnion(commentData)
+        });
+
+        showNotification('Komentar berhasil ditambahkan! 💬');
+      } catch (error) {
+        console.error("Error adding comment: ", error);
+        showNotification('Terjadi kesalahan saat menambahkan komentar.', 'error');
+      }
+    }
+
+    async function deleteNote(id) {
+      if (confirm("Yakin ingin menghapus cerita ini?")) {
+        try {
+          await deleteDoc(doc(db, "notes", id));
+          showNotification('Cerita berhasil dihapus! 🗑️');
+        } catch (error) {
+          console.error("Error deleting document: ", error);
+          showNotification('Terjadi kesalahan saat menghapus cerita.', 'error');
+        }
+      }
+    }
+
+    function shareNote(noteId) {
+      const url = `${window.location.origin}${window.location.pathname}#note-${noteId}`;
+
+      if (navigator.share) {
+        navigator.share({
+          title: 'Keluh Kesah',
+          text: 'Lihat cerita menarik ini!',
+          url: url
+        });
+      } else {
+        navigator.clipboard.writeText(url).then(() => {
+          showNotification('Link berhasil disalin! 🔗');
+        });
+      }
+    }
+
+    function updateDailyStreak() {
+      const today = new Date().toDateString();
+      const lastPost = localStorage.getItem('lastPostDate');
+      let streak = parseInt(localStorage.getItem('dailyStreak') || '0');
+
+      if (lastPost !== today) {
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+
+        if (lastPost === yesterday.toDateString()) {
+          streak++;
+        } else if (lastPost !== today) {
+          streak = 1;
         }
 
-        function getMoodEmoji(mood) {
-          const emojis = {
-            happy: '😊',
-            sad: '😢',
-            angry: '😠',
-            excited: '🤩',
-            confused: '😕',
-            grateful: '🙏'
-          };
-          return emojis[mood] || '😐';
-        }
+        localStorage.setItem('dailyStreak', streak.toString());
+        localStorage.setItem('lastPostDate', today);
+        document.getElementById('dailyStreak').textContent = streak;
+      }
+    }
 
-        function getCategoryEmoji(category) {
-          const emojis = {
-            personal: '👤',
-            work: '💼',
-            family: '👨‍👩‍👧‍👦',
-            love: '💕',
-            health: '🏥',
-            education: '🎓'
-          };
-          return emojis[category] || '📝';
-        }
+    function formatTime(ts) {
+      if (!ts) return "Menunggu waktu...";
 
-        function createNoteElement(docSnap) {
-          const data = docSnap.data();
-          const waktuTs = data.createdAt || data.waktu;
-          const waktuFormatted = formatTime(waktuTs);
-          const li = document.createElement("li");
-          li.id = `note-${docSnap.id}`;
+      const date = ts.toDate ? ts.toDate() : new Date(ts); // Firestore Timestamp atau JS Date
+      const diff = Math.floor((Date.now() - date.getTime()) / 1000);
 
-          const isOwner = data.userId === userId;
-          const authorName = data.isAnonymous ? '👤 Anonim' : `👤 ${data.nama}`;
+      if (diff < 60) return "Baru saja";
+      if (diff < 3600) return `${Math.floor(diff / 60)} menit yang lalu`;
+      if (diff < 86400) return `${Math.floor(diff / 3600)} jam yang lalu`;
+      if (diff < 604800) return `${Math.floor(diff / 86400)} hari yang lalu`;
 
-          const likesCount = data.likes ? data.likes.length : 0;
-          const heartsCount = data.hearts ? data.hearts.length : 0;
-          const supportsCount = data.supports ? data.supports.length : 0;
-          const commentsCount = data.comments ? data.comments.length : 0;
+      return date.toLocaleString("id-ID", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    }
 
-          const userLiked = data.likes ? data.likes.includes(userId) : false;
-          const userHearted = data.hearts ? data.hearts.includes(userId) : false;
-          const userSupported = data.supports ? data.supports.includes(userId) : false;
 
-          li.innerHTML = `
+    function getMoodBadgeClass(mood) {
+      return `mood-${mood}`;
+    }
+
+    function getMoodEmoji(mood) {
+      const emojis = {
+        happy: '😊',
+        sad: '😢',
+        angry: '😠',
+        excited: '🤩',
+        confused: '😕',
+        grateful: '🙏'
+      };
+      return emojis[mood] || '😐';
+    }
+
+    function getCategoryEmoji(category) {
+      const emojis = {
+        personal: '👤',
+        work: '💼',
+        family: '👨‍👩‍👧‍👦',
+        love: '💕',
+        health: '🏥',
+        education: '🎓'
+      };
+      return emojis[category] || '📝';
+    }
+
+    function createNoteElement(docSnap) {
+      const data = docSnap.data();
+      const waktuTs = data.createdAt || data.waktu;
+      const waktuFormatted = formatTime(waktuTs);
+      const li = document.createElement("li");
+      li.id = `note-${docSnap.id}`;
+
+      const isOwner = data.userId === userId;
+      const authorName = data.isAnonymous ? '👤 Anonim' : `👤 ${data.nama}`;
+
+      const likesCount = data.likes ? data.likes.length : 0;
+      const heartsCount = data.hearts ? data.hearts.length : 0;
+      const supportsCount = data.supports ? data.supports.length : 0;
+      const commentsCount = data.comments ? data.comments.length : 0;
+
+      const userLiked = data.likes ? data.likes.includes(userId) : false;
+      const userHearted = data.hearts ? data.hearts.includes(userId) : false;
+      const userSupported = data.supports ? data.supports.includes(userId) : false;
+
+      li.innerHTML = `
         <div class="note-header">
           <div class="note-info">
             <div class="author-info">
@@ -3398,19 +3492,19 @@
         </div>
       `;
 
-          return li;
-        }
+      return li;
+    }
 
-        function toggleComments(noteId) {
-          const commentsList = document.getElementById(`comments-${noteId}`);
-          const isVisible = commentsList.style.display !== 'none';
+    function toggleComments(noteId) {
+      const commentsList = document.getElementById(`comments-${noteId}`);
+      const isVisible = commentsList.style.display !== 'none';
 
-          if (isVisible) {
-            commentsList.style.display = 'none';
-          } else {
-            const note = allNotes.find(n => n.id === noteId);
-            if (note && note.comments) {
-              commentsList.innerHTML = note.comments.map(comment => `
+      if (isVisible) {
+        commentsList.style.display = 'none';
+      } else {
+        const note = allNotes.find(n => n.id === noteId);
+        if (note && note.comments) {
+          commentsList.innerHTML = note.comments.map(comment => `
             <div class="comment">
               <strong>${comment.author}:</strong> ${comment.text}
               <div style="font-size: 0.8em; color: #666; margin-top: 0.2rem;">
@@ -3418,274 +3512,274 @@
               </div>
             </div>
           `).join('');
-            }
-            commentsList.style.display = 'block';
+        }
+        commentsList.style.display = 'block';
+      }
+    }
+
+    function submitComment(noteId) {
+      const input = document.getElementById(`comment-input-${noteId}`);
+      const comment = input.value.trim();
+
+      if (comment) {
+        addComment(noteId, comment);
+        input.value = '';
+      }
+    }
+
+    function loadNotes() {
+      const q = query(collection(db, "notes"), orderBy("createdAt", "desc"));
+      onSnapshot(q, (snapshot) => {
+        allNotes = snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }));
+        updateStats();
+        filterNotes();
+        updatePopularNotes();
+        updateAnalytics();
+        generateWordCloud();
+      });
+    }
+
+
+    function filterNotes() {
+      let filteredNotes = [...allNotes]; // <- sebelumnya [.allNotes]
+
+      const getDate = (n) =>
+        n.createdAt ? (n.createdAt.toDate ? n.createdAt.toDate() : new Date(n.createdAt))
+          : (n.waktu ? (n.waktu.toDate ? n.waktu.toDate() : new Date(n.waktu)) : null);
+
+
+      if (currentTimeFilter !== 'all') {
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+        const monthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+        filteredNotes = filteredNotes.filter(note => {
+          const noteDate = getDate(note);
+          if (!noteDate) return false;
+          switch (currentTimeFilter) {
+            case 'today': return noteDate >= today;
+            case 'week': return noteDate >= weekAgo;
+            case 'month': return noteDate >= monthAgo;
+            default: return true;
           }
+        });
+      }
+
+      filteredNotes.sort((a, b) => {
+        const da = getDate(a)?.getTime() || 0;
+        const db = getDate(b)?.getTime() || 0;
+        switch (currentSort) {
+          case 'oldest': return da - db;
+          case 'popular': return (b.totalReactions || 0) - (a.totalReactions || 0);
+          case 'random': return Math.random() - 0.5;
+          default: return db - da; // newest
         }
+      });
 
-        function submitComment(noteId) {
-          const input = document.getElementById(`comment-input-${noteId}`);
-          const comment = input.value.trim();
 
-          if (comment) {
-            addComment(noteId, comment);
-            input.value = '';
+      // Filter by search
+      const searchTerm = searchInput.value.toLowerCase().trim();
+      if (searchTerm) {
+        filteredNotes = filteredNotes.filter(note =>
+          note.catatan.toLowerCase().includes(searchTerm) ||
+          note.nama.toLowerCase().includes(searchTerm) ||
+          (note.category && note.category.toLowerCase().includes(searchTerm))
+        );
+      }
+
+      // Filter by mood
+      if (currentFilter !== 'all') {
+        filteredNotes = filteredNotes.filter(note => note.mood === currentFilter);
+      }
+
+      // Filter by time
+      if (currentTimeFilter !== 'all') {
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+        const monthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+
+        filteredNotes = filteredNotes.filter(note => {
+          if (!note.waktu) return false;
+          const noteDate = note.waktu.toDate();
+
+          switch (currentTimeFilter) {
+            case 'today':
+              return noteDate >= today;
+            case 'week':
+              return noteDate >= weekAgo;
+            case 'month':
+              return noteDate >= monthAgo;
+            default:
+              return true;
           }
+        });
+      }
+
+      // Filter by category
+      if (currentCategoryFilter !== 'all') {
+        filteredNotes = filteredNotes.filter(note => note.category === currentCategoryFilter);
+      }
+
+      // Sort
+      filteredNotes.sort((a, b) => {
+        switch (currentSort) {
+          case 'oldest':
+            return (a.waktu?.toDate() || 0) - (b.waktu?.toDate() || 0);
+          case 'popular':
+            return (b.totalReactions || 0) - (a.totalReactions || 0);
+          case 'random':
+            return Math.random() - 0.5;
+          default: // newest
+            return (b.waktu?.toDate() || 0) - (a.waktu?.toDate() || 0);
         }
+      });
 
-        function loadNotes() {
-          const q = query(collection(db, "notes"), orderBy("createdAt", "desc"));
-          onSnapshot(q, (snapshot) => {
-            allNotes = snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() }));
-            updateStats();
-            filterNotes();
-            updatePopularNotes();
-            updateAnalytics();
-            generateWordCloud();
-          });
-        }
+      displayNotes(filteredNotes);
+    }
 
+    function displayNotes(notes) {
+      notesList.innerHTML = "";
 
-        function filterNotes() {
-          let filteredNotes = [...allNotes]; // <- sebelumnya [.allNotes]
+      if (notes.length === 0) {
+        emptyState.style.display = "block";
+        return;
+      }
 
-          const getDate = (n) =>
-            n.createdAt ? (n.createdAt.toDate ? n.createdAt.toDate() : new Date(n.createdAt))
-              : (n.waktu ? (n.waktu.toDate ? n.waktu.toDate() : new Date(n.waktu)) : null);
+      emptyState.style.display = "none";
 
+      notes.forEach((note) => {
+        const li = createNoteElement({ id: note.id, data: () => note });
+        notesList.appendChild(li);
+      });
+    }
 
-          if (currentTimeFilter !== 'all') {
-            const now = new Date();
-            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-            const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
-            const monthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+    function updatePopularNotes() {
+      const popular = [...allNotes]
+        .sort((a, b) => (b.totalReactions || 0) - (a.totalReactions || 0))
+        .slice(0, 5);
 
-            filteredNotes = filteredNotes.filter(note => {
-              const noteDate = getDate(note);
-              if (!noteDate) return false;
-              switch (currentTimeFilter) {
-                case 'today': return noteDate >= today;
-                case 'week': return noteDate >= weekAgo;
-                case 'month': return noteDate >= monthAgo;
-                default: return true;
-              }
-            });
+      popularNotes.innerHTML = "";
+
+      if (popular.length === 0) {
+        popularNotes.innerHTML = '<li style="text-align: center; padding: 2rem; color: #666;">Belum ada cerita populer</li>';
+        return;
+      }
+
+      popular.forEach((note) => {
+        const li = createNoteElement({ id: note.id, data: () => note });
+        popularNotes.appendChild(li);
+      });
+    }
+
+    function generateWordCloud() {
+      const wordFreq = {};
+      const commonWords = ['dan', 'yang', 'di', 'ke', 'dari', 'untuk', 'dengan', 'pada', 'adalah', 'ini', 'itu', 'tidak', 'juga', 'atau', 'tapi', 'karena', 'saya', 'aku', 'kamu', 'dia'];
+
+      allNotes.forEach(note => {
+        const words = note.catatan.toLowerCase().split(/\s+/);
+        words.forEach(word => {
+          word = word.replace(/[^\w\s]/g, '');
+          if (word.length > 3 && !commonWords.includes(word)) {
+            wordFreq[word] = (wordFreq[word] || 0) + 1;
           }
+        });
+      });
 
-          filteredNotes.sort((a, b) => {
-            const da = getDate(a)?.getTime() || 0;
-            const db = getDate(b)?.getTime() || 0;
-            switch (currentSort) {
-              case 'oldest': return da - db;
-              case 'popular': return (b.totalReactions || 0) - (a.totalReactions || 0);
-              case 'random': return Math.random() - 0.5;
-              default: return db - da; // newest
-            }
-          });
+      const sortedWords = Object.entries(wordFreq)
+        .sort(([, a], [, b]) => b - a)
+        .slice(0, 15);
 
+      const wordCloud = document.getElementById('wordCloud');
+      wordCloud.innerHTML = sortedWords.map(([word, freq]) => {
+        const size = Math.min(3, 1 + (freq / Math.max(...Object.values(wordFreq))) * 2);
+        const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7', '#ff7675', '#74b9ff'];
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        return `<span style="font-size: ${size}rem; color: ${color}; margin: 0.5rem;">${word}</span>`;
+      }).join(' ');
+    }
 
-          // Filter by search
-          const searchTerm = searchInput.value.toLowerCase().trim();
-          if (searchTerm) {
-            filteredNotes = filteredNotes.filter(note =>
-              note.catatan.toLowerCase().includes(searchTerm) ||
-              note.nama.toLowerCase().includes(searchTerm) ||
-              (note.category && note.category.toLowerCase().includes(searchTerm))
-            );
-          }
+    function setFilter(filter) {
+      currentFilter = filter;
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      document.querySelector(`[data-filter="${filter}"]`).classList.add('active');
+      filterNotes();
+    }
 
-          // Filter by mood
-          if (currentFilter !== 'all') {
-            filteredNotes = filteredNotes.filter(note => note.mood === currentFilter);
-          }
+    function setTimeFilter(timeFilter) {
+      currentTimeFilter = timeFilter;
+      document.querySelectorAll('[data-time]').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      document.querySelector(`[data-time="${timeFilter}"]`).classList.add('active');
+      filterNotes();
+    }
 
-          // Filter by time
-          if (currentTimeFilter !== 'all') {
-            const now = new Date();
-            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-            const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
-            const monthAgo = new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000);
+    function setCategoryFilter(categoryFilter) {
+      currentCategoryFilter = categoryFilter;
+      document.querySelectorAll('[data-category-filter]').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      document.querySelector(`[data-category-filter="${categoryFilter}"]`).classList.add('active');
+      filterNotes();
+    }
 
-            filteredNotes = filteredNotes.filter(note => {
-              if (!note.waktu) return false;
-              const noteDate = note.waktu.toDate();
+    function updateStats() {
+      const totalPosts = allNotes.length;
+      const totalLikes = allNotes.reduce((sum, note) => sum + (note.totalReactions || 0), 0);
+      const uniqueUsers = new Set(allNotes.map(note => note.userId)).size;
+      const dailyStreak = parseInt(localStorage.getItem('dailyStreak') || '0');
 
-              switch (currentTimeFilter) {
-                case 'today':
-                  return noteDate >= today;
-                case 'week':
-                  return noteDate >= weekAgo;
-                case 'month':
-                  return noteDate >= monthAgo;
-                default:
-                  return true;
-              }
-            });
-          }
+      document.getElementById('totalPosts').textContent = totalPosts;
+      document.getElementById('totalLikes').textContent = totalLikes;
+      document.getElementById('activeUsers').textContent = uniqueUsers;
+      document.getElementById('dailyStreak').textContent = dailyStreak;
+    }
 
-          // Filter by category
-          if (currentCategoryFilter !== 'all') {
-            filteredNotes = filteredNotes.filter(note => note.category === currentCategoryFilter);
-          }
+    function updateAnalytics() {
+      const totalPosts = allNotes.length;
+      const totalReactions = allNotes.reduce((sum, note) => sum + (note.totalReactions || 0), 0);
+      const avgReactions = totalPosts > 0 ? Math.round(totalReactions / totalPosts * 10) / 10 : 0;
 
-          // Sort
-          filteredNotes.sort((a, b) => {
-            switch (currentSort) {
-              case 'oldest':
-                return (a.waktu?.toDate() || 0) - (b.waktu?.toDate() || 0);
-              case 'popular':
-                return (b.totalReactions || 0) - (a.totalReactions || 0);
-              case 'random':
-                return Math.random() - 0.5;
-              default: // newest
-                return (b.waktu?.toDate() || 0) - (a.waktu?.toDate() || 0);
-            }
-          });
+      // Count moods
+      const moodCounts = {};
+      allNotes.forEach(note => {
+        moodCounts[note.mood] = (moodCounts[note.mood] || 0) + 1;
+      });
 
-          displayNotes(filteredNotes);
+      const topMood = Object.keys(moodCounts).reduce((a, b) =>
+        moodCounts[a] > moodCounts[b] ? a : b, 'happy');
+
+      // Calculate most active hour
+      const hourCounts = {};
+      allNotes.forEach(note => {
+        if (note.waktu) {
+          const hour = note.waktu.toDate().getHours();
+          hourCounts[hour] = (hourCounts[hour] || 0) + 1;
         }
+      });
 
-        function displayNotes(notes) {
-          notesList.innerHTML = "";
+      const mostActiveHour = Object.keys(hourCounts).reduce((a, b) =>
+        hourCounts[a] > hourCounts[b] ? a : b, '18');
 
-          if (notes.length === 0) {
-            emptyState.style.display = "block";
-            return;
-          }
+      document.getElementById('totalPostsAnalytics').textContent = totalPosts;
+      document.getElementById('totalReactionsAnalytics').textContent = totalReactions;
+      document.getElementById('avgReactionsAnalytics').textContent = avgReactions;
+      document.getElementById('topMoodAnalytics').textContent = getMoodEmoji(topMood);
+      document.getElementById('activeHoursAnalytics').textContent = `${mostActiveHour}:00`;
+      document.getElementById('longestStreakAnalytics').textContent = localStorage.getItem('longestStreak') || '0';
 
-          emptyState.style.display = "none";
+      // Update mood chart
+      const moodChart = document.getElementById('moodChart');
+      moodChart.innerHTML = '';
 
-          notes.forEach((note) => {
-            const li = createNoteElement({ id: note.id, data: () => note });
-            notesList.appendChild(li);
-          });
-        }
-
-        function updatePopularNotes() {
-          const popular = [...allNotes]
-            .sort((a, b) => (b.totalReactions || 0) - (a.totalReactions || 0))
-            .slice(0, 5);
-
-          popularNotes.innerHTML = "";
-
-          if (popular.length === 0) {
-            popularNotes.innerHTML = '<li style="text-align: center; padding: 2rem; color: #666;">Belum ada cerita populer</li>';
-            return;
-          }
-
-          popular.forEach((note) => {
-            const li = createNoteElement({ id: note.id, data: () => note });
-            popularNotes.appendChild(li);
-          });
-        }
-
-        function generateWordCloud() {
-          const wordFreq = {};
-          const commonWords = ['dan', 'yang', 'di', 'ke', 'dari', 'untuk', 'dengan', 'pada', 'adalah', 'ini', 'itu', 'tidak', 'juga', 'atau', 'tapi', 'karena', 'saya', 'aku', 'kamu', 'dia'];
-
-          allNotes.forEach(note => {
-            const words = note.catatan.toLowerCase().split(/\s+/);
-            words.forEach(word => {
-              word = word.replace(/[^\w\s]/g, '');
-              if (word.length > 3 && !commonWords.includes(word)) {
-                wordFreq[word] = (wordFreq[word] || 0) + 1;
-              }
-            });
-          });
-
-          const sortedWords = Object.entries(wordFreq)
-            .sort(([, a], [, b]) => b - a)
-            .slice(0, 15);
-
-          const wordCloud = document.getElementById('wordCloud');
-          wordCloud.innerHTML = sortedWords.map(([word, freq]) => {
-            const size = Math.min(3, 1 + (freq / Math.max(...Object.values(wordFreq))) * 2);
-            const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7', '#ff7675', '#74b9ff'];
-            const color = colors[Math.floor(Math.random() * colors.length)];
-            return `<span style="font-size: ${size}rem; color: ${color}; margin: 0.5rem;">${word}</span>`;
-          }).join(' ');
-        }
-
-        function setFilter(filter) {
-          currentFilter = filter;
-          document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.classList.remove('active');
-          });
-          document.querySelector(`[data-filter="${filter}"]`).classList.add('active');
-          filterNotes();
-        }
-
-        function setTimeFilter(timeFilter) {
-          currentTimeFilter = timeFilter;
-          document.querySelectorAll('[data-time]').forEach(btn => {
-            btn.classList.remove('active');
-          });
-          document.querySelector(`[data-time="${timeFilter}"]`).classList.add('active');
-          filterNotes();
-        }
-
-        function setCategoryFilter(categoryFilter) {
-          currentCategoryFilter = categoryFilter;
-          document.querySelectorAll('[data-category-filter]').forEach(btn => {
-            btn.classList.remove('active');
-          });
-          document.querySelector(`[data-category-filter="${categoryFilter}"]`).classList.add('active');
-          filterNotes();
-        }
-
-        function updateStats() {
-          const totalPosts = allNotes.length;
-          const totalLikes = allNotes.reduce((sum, note) => sum + (note.totalReactions || 0), 0);
-          const uniqueUsers = new Set(allNotes.map(note => note.userId)).size;
-          const dailyStreak = parseInt(localStorage.getItem('dailyStreak') || '0');
-
-          document.getElementById('totalPosts').textContent = totalPosts;
-          document.getElementById('totalLikes').textContent = totalLikes;
-          document.getElementById('activeUsers').textContent = uniqueUsers;
-          document.getElementById('dailyStreak').textContent = dailyStreak;
-        }
-
-        function updateAnalytics() {
-          const totalPosts = allNotes.length;
-          const totalReactions = allNotes.reduce((sum, note) => sum + (note.totalReactions || 0), 0);
-          const avgReactions = totalPosts > 0 ? Math.round(totalReactions / totalPosts * 10) / 10 : 0;
-
-          // Count moods
-          const moodCounts = {};
-          allNotes.forEach(note => {
-            moodCounts[note.mood] = (moodCounts[note.mood] || 0) + 1;
-          });
-
-          const topMood = Object.keys(moodCounts).reduce((a, b) =>
-            moodCounts[a] > moodCounts[b] ? a : b, 'happy');
-
-          // Calculate most active hour
-          const hourCounts = {};
-          allNotes.forEach(note => {
-            if (note.waktu) {
-              const hour = note.waktu.toDate().getHours();
-              hourCounts[hour] = (hourCounts[hour] || 0) + 1;
-            }
-          });
-
-          const mostActiveHour = Object.keys(hourCounts).reduce((a, b) =>
-            hourCounts[a] > hourCounts[b] ? a : b, '18');
-
-          document.getElementById('totalPostsAnalytics').textContent = totalPosts;
-          document.getElementById('totalReactionsAnalytics').textContent = totalReactions;
-          document.getElementById('avgReactionsAnalytics').textContent = avgReactions;
-          document.getElementById('topMoodAnalytics').textContent = getMoodEmoji(topMood);
-          document.getElementById('activeHoursAnalytics').textContent = `${mostActiveHour}:00`;
-          document.getElementById('longestStreakAnalytics').textContent = localStorage.getItem('longestStreak') || '0';
-
-          // Update mood chart
-          const moodChart = document.getElementById('moodChart');
-          moodChart.innerHTML = '';
-
-          Object.entries(moodCounts).forEach(([mood, count]) => {
-            const percentage = totalPosts > 0 ? Math.round(count / totalPosts * 100) : 0;
-            const bar = document.createElement('div');
-            bar.style.cssText = `
+      Object.entries(moodCounts).forEach(([mood, count]) => {
+        const percentage = totalPosts > 0 ? Math.round(count / totalPosts * 100) : 0;
+        const bar = document.createElement('div');
+        bar.style.cssText = `
           background: linear-gradient(45deg, #4ecdc4, #45b7d1);
           color: white;
           padding: 1rem;
@@ -3693,33 +3787,33 @@
           text-align: center;
           min-width: 120px;
         `;
-            bar.innerHTML = `
+        bar.innerHTML = `
           <div style="font-size: 1.5rem;">${getMoodEmoji(mood)}</div>
           <div style="font-weight: bold;">${count}</div>
           <div style="font-size: 0.8rem;">${percentage}%</div>
         `;
-            moodChart.appendChild(bar);
-          });
+        moodChart.appendChild(bar);
+      });
 
-          // Update activity chart
-          const activityChart = document.getElementById('activityChart');
-          const dayNames = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
+      // Update activity chart
+      const activityChart = document.getElementById('activityChart');
+      const dayNames = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
 
-          // Skip the headers and update activity bars
-          const dayCounts = [0, 0, 0, 0, 0, 0, 0];
-          allNotes.forEach(note => {
-            if (note.waktu) {
-              const dayOfWeek = (note.waktu.toDate().getDay() + 6) % 7; // Convert to Monday = 0
-              dayCounts[dayOfWeek]++;
-            }
-          });
+      // Skip the headers and update activity bars
+      const dayCounts = [0, 0, 0, 0, 0, 0, 0];
+      allNotes.forEach(note => {
+        if (note.waktu) {
+          const dayOfWeek = (note.waktu.toDate().getDay() + 6) % 7; // Convert to Monday = 0
+          dayCounts[dayOfWeek]++;
+        }
+      });
 
-          const maxCount = Math.max(...dayCounts) || 1;
+      const maxCount = Math.max(...dayCounts) || 1;
 
-          dayCounts.forEach((count, index) => {
-            const intensity = count / maxCount;
-            const activityBar = document.createElement('div');
-            activityBar.style.cssText = `
+      dayCounts.forEach((count, index) => {
+        const intensity = count / maxCount;
+        const activityBar = document.createElement('div');
+        activityBar.style.cssText = `
           background: rgba(78, 205, 196, ${0.2 + intensity * 0.8});
           padding: 1rem;
           border-radius: 5px;
@@ -3727,359 +3821,359 @@
           font-weight: bold;
           color: ${intensity > 0.5 ? 'white' : '#333'};
         `;
-            activityBar.textContent = count;
-            activityChart.appendChild(activityBar);
-          });
-        }
+        activityBar.textContent = count;
+        activityChart.appendChild(activityBar);
+      });
+    }
 
-        function switchPage(pageId) {
-          document.querySelectorAll('.page').forEach(page => {
-            page.classList.remove('active');
-          });
-          document.getElementById(pageId).classList.add('active');
+    function switchPage(pageId) {
+      document.querySelectorAll('.page').forEach(page => {
+        page.classList.remove('active');
+      });
+      document.getElementById(pageId).classList.add('active');
 
-          document.querySelectorAll('nav button').forEach(btn => {
-            btn.classList.remove('active');
-          });
+      document.querySelectorAll('nav button').forEach(btn => {
+        btn.classList.remove('active');
+      });
 
-          if (pageId === 'page-tulis') document.getElementById('btn-tulis').classList.add('active');
-          else if (pageId === 'page-daftar') document.getElementById('btn-daftar').classList.add('active');
-          else if (pageId === 'page-trending') document.getElementById('btn-trending').classList.add('active');
-          else if (pageId === 'page-analytics') document.getElementById('btn-analytics').classList.add('active');
-          else if (pageId === 'page-mood-map') document.getElementById('btn-mood-map').classList.add('active');
-          else if (pageId === 'page-gallery') document.getElementById('btn-gallery').classList.add('active');
-          else if (pageId === 'page-daily-notes') document.getElementById('btn-daily-notes').classList.add('active');
-          else if (pageId === 'pn-page') document.getElementById('btn-private-notes').classList.add('active');
-          else if (pageId === 'page-translator') document.getElementById('btn-translator').classList.add('active');
-          else if (pageId === 'page-nightcore') document.getElementById('btn-nightcore').classList.add('active');
+      if (pageId === 'page-tulis') document.getElementById('btn-tulis').classList.add('active');
+      else if (pageId === 'page-daftar') document.getElementById('btn-daftar').classList.add('active');
+      else if (pageId === 'page-trending') document.getElementById('btn-trending').classList.add('active');
+      else if (pageId === 'page-analytics') document.getElementById('btn-analytics').classList.add('active');
+      else if (pageId === 'page-mood-map') document.getElementById('btn-mood-map').classList.add('active');
+      else if (pageId === 'page-gallery') document.getElementById('btn-gallery').classList.add('active');
+      else if (pageId === 'page-daily-notes') document.getElementById('btn-daily-notes').classList.add('active');
+      else if (pageId === 'pn-page') document.getElementById('btn-private-notes').classList.add('active');
+      else if (pageId === 'page-translator') document.getElementById('btn-translator').classList.add('active');
+      else if (pageId === 'page-nightcore') document.getElementById('btn-nightcore').classList.add('active');
 
 
 
-          localStorage.setItem('lastPage', pageId);
+      localStorage.setItem('lastPage', pageId);
 
-          // Update mood calendar when switching to mood map page
-          if (pageId === 'page-mood-map') {
-            generateMoodCalendar();
-          }
-        }
+      // Update mood calendar when switching to mood map page
+      if (pageId === 'page-mood-map') {
+        generateMoodCalendar();
+      }
+    }
 
-        function showNotification(message, type = 'success') {
-          const notification = document.getElementById('notification');
-          notification.textContent = message;
-          notification.className = `notification ${type}`;
-          notification.classList.add('show');
+    function showNotification(message, type = 'success') {
+      const notification = document.getElementById('notification');
+      notification.textContent = message;
+      notification.className = `notification ${type}`;
+      notification.classList.add('show');
 
-          setTimeout(() => {
-            notification.classList.remove('show');
-          }, 3000);
-        }
+      setTimeout(() => {
+        notification.classList.remove('show');
+      }, 3000);
+    }
 
-        // Make functions global for onclick handlers
-        window.toggleReaction = toggleReaction;
-        window.deleteNote = deleteNote;
-        window.shareNote = shareNote;
-        window.openEditModal = openEditModal;
-        window.toggleComments = toggleComments;
-        window.submitComment = submitComment;
+    // Make functions global for onclick handlers
+    window.toggleReaction = toggleReaction;
+    window.deleteNote = deleteNote;
+    window.shareNote = shareNote;
+    window.openEditModal = openEditModal;
+    window.toggleComments = toggleComments;
+    window.submitComment = submitComment;
 
-        // Auto-refresh features
-        setInterval(() => {
-          // Update relative timestamps
-          if (document.getElementById('page-daftar').classList.contains('active') ||
-            document.getElementById('page-trending').classList.contains('active')) {
-            document.querySelectorAll('.timestamp').forEach(timestamp => {
-              // Timestamps will be updated on next Firebase update
-            });
-          }
-
-          // Update daily challenge
-          generateDailyChallenge();
-
-          // Update weather
-          loadWeather();
-        }, 60000);
-
-        // Handle deep linking to specific notes
-        if (window.location.hash.startsWith('#note-')) {
-          const noteId = window.location.hash.substring(6);
-          setTimeout(() => {
-            const noteElement = document.getElementById(`note-${noteId}`);
-            if (noteElement) {
-              switchPage('page-daftar');
-              noteElement.scrollIntoView({ behavior: 'smooth' });
-              noteElement.style.animation = 'pulse 2s ease-in-out';
-            }
-          }, 1000);
-        }
-
-        // Tombol theme rainbow
-        const themeRainbowBtn = document.getElementById("theme-rainbow");
-
-        themeRainbowBtn.addEventListener("click", () => {
-          document.body.classList.remove("theme-light", "theme-dark", "theme-wibu");
-          document.body.classList.add("theme-rainbow");
-          localStorage.setItem("theme", "rainbow");
+    // Auto-refresh features
+    setInterval(() => {
+      // Update relative timestamps
+      if (document.getElementById('page-daftar').classList.contains('active') ||
+        document.getElementById('page-trending').classList.contains('active')) {
+        document.querySelectorAll('.timestamp').forEach(timestamp => {
+          // Timestamps will be updated on next Firebase update
         });
+      }
 
-        // Simpan tema terakhir saat reload
-        const savedTheme = localStorage.getItem("theme");
-        if (savedTheme) {
-          document.body.classList.add(`theme-${savedTheme}`);
+      // Update daily challenge
+      generateDailyChallenge();
+
+      // Update weather
+      loadWeather();
+    }, 60000);
+
+    // Handle deep linking to specific notes
+    if (window.location.hash.startsWith('#note-')) {
+      const noteId = window.location.hash.substring(6);
+      setTimeout(() => {
+        const noteElement = document.getElementById(`note-${noteId}`);
+        if (noteElement) {
+          switchPage('page-daftar');
+          noteElement.scrollIntoView({ behavior: 'smooth' });
+          noteElement.style.animation = 'pulse 2s ease-in-out';
         }
+      }, 1000);
+    }
+
+    // Tombol theme rainbow
+    const themeRainbowBtn = document.getElementById("theme-rainbow");
+
+    themeRainbowBtn.addEventListener("click", () => {
+      document.body.classList.remove("theme-light", "theme-dark", "theme-wibu");
+      document.body.classList.add("theme-rainbow");
+      localStorage.setItem("theme", "rainbow");
+    });
+
+    // Simpan tema terakhir saat reload
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme) {
+      document.body.classList.add(`theme-${savedTheme}`);
+    }
 
 
-        // Initialize streak counter
-        const currentStreak = parseInt(localStorage.getItem('dailyStreak') || '0');
-        const longestStreak = parseInt(localStorage.getItem('longestStreak') || '0');
-        if (currentStreak > longestStreak) {
-          localStorage.setItem('longestStreak', currentStreak.toString());
-        }
+    // Initialize streak counter
+    const currentStreak = parseInt(localStorage.getItem('dailyStreak') || '0');
+    const longestStreak = parseInt(localStorage.getItem('longestStreak') || '0');
+    if (currentStreak > longestStreak) {
+      localStorage.setItem('longestStreak', currentStreak.toString());
+    }
 
-        // Event listener tombol tema
-        document.getElementById("theme-light").addEventListener("click", () => applyTheme("theme-light"));
-        document.getElementById("theme-dark").addEventListener("click", () => applyTheme("dark-mode"));
-        document.getElementById("theme-wibu").addEventListener("click", () => applyTheme("theme-wibu"));
-        document.getElementById("theme-rainbow").addEventListener("click", () => applyTheme("theme-rainbow"));
+    // Event listener tombol tema
+    document.getElementById("theme-light").addEventListener("click", () => applyTheme("theme-light"));
+    document.getElementById("theme-dark").addEventListener("click", () => applyTheme("dark-mode"));
+    document.getElementById("theme-wibu").addEventListener("click", () => applyTheme("theme-wibu"));
+    document.getElementById("theme-rainbow").addEventListener("click", () => applyTheme("theme-rainbow"));
 
-        // Terapkan tema terakhir saat reload
+    // Terapkan tema terakhir saat reload
 
-        applyTheme(savedTheme);
+    applyTheme(savedTheme);
 
-        // === FITUR KALENDER CATATAN ===
-        const calendarGrid = document.getElementById("calendarGrid");
-        const notesModal = document.getElementById("notesModal");
-        const notesListByDate = document.getElementById("notesListByDate");
-        const modalDateEl = document.getElementById("modalDate");
-        let selectedDate = null;
+    // === FITUR KALENDER CATATAN ===
+    const calendarGrid = document.getElementById("calendarGrid");
+    const notesModal = document.getElementById("notesModal");
+    const notesListByDate = document.getElementById("notesListByDate");
+    const modalDateEl = document.getElementById("modalDate");
+    let selectedDate = null;
 
-        let currentYear = new Date().getFullYear();
-        let currentMonth = new Date().getMonth();
-        let unsubscribeNotes = null;
+    let currentYear = new Date().getFullYear();
+    let currentMonth = new Date().getMonth();
+    let unsubscribeNotes = null;
 
-        // Render kalender sesuai bulan & tahun
-        function loadCalendar(year = currentYear, month = currentMonth) {
-          currentYear = year;
-          currentMonth = month;
+    // Render kalender sesuai bulan & tahun
+    function loadCalendar(year = currentYear, month = currentMonth) {
+      currentYear = year;
+      currentMonth = month;
 
-          const monthNames = [
-            "Januari", "Februari", "Maret", "April", "Mei", "Juni",
-            "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-          ];
-          document.getElementById("currentMonth").innerText =
-            `${monthNames[month]} ${year}`;
+      const monthNames = [
+        "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+        "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+      ];
+      document.getElementById("currentMonth").innerText =
+        `${monthNames[month]} ${year}`;
 
-          calendarGrid.innerHTML = "";
+      calendarGrid.innerHTML = "";
 
-          const firstDay = new Date(year, month, 1).getDay();
-          const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const firstDay = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-          // padding kosong sebelum tanggal 1
-          for (let i = 0; i < (firstDay === 0 ? 6 : firstDay - 1); i++) {
-            const emptyCell = document.createElement("div");
-            calendarGrid.appendChild(emptyCell);
-          }
+      // padding kosong sebelum tanggal 1
+      for (let i = 0; i < (firstDay === 0 ? 6 : firstDay - 1); i++) {
+        const emptyCell = document.createElement("div");
+        calendarGrid.appendChild(emptyCell);
+      }
 
-          // isi tanggal
-          for (let d = 1; d <= daysInMonth; d++) {
-            const cell = document.createElement("div");
-            cell.classList.add("calendar-day");
-            const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
-            cell.innerHTML = `<strong>${d}</strong>`;
-            cell.onclick = () => openNotesModal(dateStr);
-            cell.dataset.date = dateStr;
-            calendarGrid.appendChild(cell);
-          }
+      // isi tanggal
+      for (let d = 1; d <= daysInMonth; d++) {
+        const cell = document.createElement("div");
+        cell.classList.add("calendar-day");
+        const dateStr = `${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+        cell.innerHTML = `<strong>${d}</strong>`;
+        cell.onclick = () => openNotesModal(dateStr);
+        cell.dataset.date = dateStr;
+        calendarGrid.appendChild(cell);
+      }
 
-          // 🔹 pasang listener realtime Firestore untuk bulan ini
-          if (unsubscribeNotes) unsubscribeNotes(); // matikan listener lama
-          const start = `${year}-${String(month + 1).padStart(2, "0")}-01`;
-          const end = `${year}-${String(month + 1).padStart(2, "0")}-${String(daysInMonth).padStart(2, "0")}`;
-          const qNotes = query(
-            collection(db, "dailyNotes"),
-            where("date", ">=", start),
-            where("date", "<=", end)
-          );
+      // 🔹 pasang listener realtime Firestore untuk bulan ini
+      if (unsubscribeNotes) unsubscribeNotes(); // matikan listener lama
+      const start = `${year}-${String(month + 1).padStart(2, "0")}-01`;
+      const end = `${year}-${String(month + 1).padStart(2, "0")}-${String(daysInMonth).padStart(2, "0")}`;
+      const qNotes = query(
+        collection(db, "dailyNotes"),
+        where("date", ">=", start),
+        where("date", "<=", end)
+      );
 
-          unsubscribeNotes = onSnapshot(qNotes, (snap) => {
-            // reset semua badge
-            document.querySelectorAll(".note-count").forEach(b => b.remove());
-            snap.forEach(docSnap => {
-              const data = docSnap.data();
-              if (data.notes && data.notes.length > 0) {
-                const cell = document.querySelector(`[data-date='${data.date}']`);
-                if (cell) {
-                  const badge = document.createElement("div");
-                  badge.className = "note-count";
-                  badge.innerText = data.notes.length;
-                  cell.appendChild(badge);
-                }
-              }
-            });
-          });
-        }
-
-        // buka modal untuk tanggal tertentu
-        function openNotesModal(dateStr) {
-          selectedDate = dateStr;
-          modalDateEl.innerText = dateStr;
-          notesListByDate.innerHTML = "Loading...";
-
-          const q = query(collection(db, "dailyNotes"), where("date", "==", dateStr));
-          onSnapshot(q, (snap) => {
-            let notes = [];
-            if (!snap.empty) {
-              notes = snap.docs[0].data().notes || [];
+      unsubscribeNotes = onSnapshot(qNotes, (snap) => {
+        // reset semua badge
+        document.querySelectorAll(".note-count").forEach(b => b.remove());
+        snap.forEach(docSnap => {
+          const data = docSnap.data();
+          if (data.notes && data.notes.length > 0) {
+            const cell = document.querySelector(`[data-date='${data.date}']`);
+            if (cell) {
+              const badge = document.createElement("div");
+              badge.className = "note-count";
+              badge.innerText = data.notes.length;
+              cell.appendChild(badge);
             }
-            if (notes.length === 0) {
-              notesListByDate.innerHTML = "<p>Belum ada catatan.</p>";
-            } else {
-              notesListByDate.innerHTML = "<ul>" + notes.map(n => `<li>${n}</li>`).join("") + "</ul>";
-            }
-          });
-
-          notesModal.classList.add("active");
-        }
-
-        // simpan catatan baru
-        async function saveNote() {
-          const noteText = document.getElementById("newNoteInput").value.trim();
-          if (!noteText) return;
-
-          const q = query(collection(db, "dailyNotes"), where("date", "==", selectedDate));
-          const snap = await getDocs(q);
-
-          if (snap.empty) {
-            await addDoc(collection(db, "dailyNotes"), {
-              date: selectedDate,
-              notes: [noteText],
-              createdAt: serverTimestamp()
-            });
-          } else {
-            const docRef = snap.docs[0].ref;
-            await updateDoc(docRef, { notes: arrayUnion(noteText) });
-          }
-
-          document.getElementById("newNoteInput").value = "";
-        }
-
-        function closeNotesModal() {
-          notesModal.classList.remove("active");
-        }
-
-        // 🔹 supaya bisa dipanggil dari HTML
-        window.saveNote = saveNote;
-        window.closeNotesModal = closeNotesModal;
-
-        // Navigasi bulan
-        document.getElementById("prevMonth").addEventListener("click", () => {
-          if (currentMonth === 0) {
-            loadCalendar(currentYear - 1, 11);
-          } else {
-            loadCalendar(currentYear, currentMonth - 1);
           }
         });
+      });
+    }
 
-        document.getElementById("nextMonth").addEventListener("click", () => {
-          if (currentMonth === 11) {
-            loadCalendar(currentYear + 1, 0);
-          } else {
-            loadCalendar(currentYear, currentMonth + 1);
-          }
-        });
+    // buka modal untuk tanggal tertentu
+    function openNotesModal(dateStr) {
+      selectedDate = dateStr;
+      modalDateEl.innerText = dateStr;
+      notesListByDate.innerHTML = "Loading...";
 
-        // jalankan pertama kali
-        loadCalendar();
-
-
-
-        // 🔐 Password yang diset (ganti sesuai kebutuhan)
-        const APP_PASSWORD = "405090";
-
-        // Elemen modal
-        const passwordModal = document.getElementById("passwordModal");
-        const passwordInput = document.getElementById("passwordInput");
-        const submitPassword = document.getElementById("submitPassword");
-        const passwordError = document.getElementById("passwordError");
-
-        // 🚀 Cek apakah user sudah pernah login
-        if (localStorage.getItem("authenticated") === "true") {
-          passwordModal.classList.remove("active");
+      const q = query(collection(db, "dailyNotes"), where("date", "==", dateStr));
+      onSnapshot(q, (snap) => {
+        let notes = [];
+        if (!snap.empty) {
+          notes = snap.docs[0].data().notes || [];
+        }
+        if (notes.length === 0) {
+          notesListByDate.innerHTML = "<p>Belum ada catatan.</p>";
         } else {
-          passwordModal.classList.add("active");
+          notesListByDate.innerHTML = "<ul>" + notes.map(n => `<li>${n}</li>`).join("") + "</ul>";
         }
+      });
 
-        // Saat klik tombol masuk
-        submitPassword.addEventListener("click", () => {
-          if (passwordInput.value === APP_PASSWORD) {
-            // ✅ Password benar → tutup modal + simpan status login
-            localStorage.setItem("authenticated", "true");
-            passwordModal.classList.remove("active");
-          } else {
-            // ❌ Password salah → tampilkan error
-            passwordError.style.display = "block";
-            passwordInput.value = "";
-          }
+      notesModal.classList.add("active");
+    }
+
+    // simpan catatan baru
+    async function saveNote() {
+      const noteText = document.getElementById("newNoteInput").value.trim();
+      if (!noteText) return;
+
+      const q = query(collection(db, "dailyNotes"), where("date", "==", selectedDate));
+      const snap = await getDocs(q);
+
+      if (snap.empty) {
+        await addDoc(collection(db, "dailyNotes"), {
+          date: selectedDate,
+          notes: [noteText],
+          createdAt: serverTimestamp()
         });
+      } else {
+        const docRef = snap.docs[0].ref;
+        await updateDoc(docRef, { notes: arrayUnion(noteText) });
+      }
 
-        // Enter key juga bisa submit
-        passwordInput.addEventListener("keypress", (e) => {
-          if (e.key === "Enter") submitPassword.click();
-        });
+      document.getElementById("newNoteInput").value = "";
+    }
+
+    function closeNotesModal() {
+      notesModal.classList.remove("active");
+    }
+
+    // 🔹 supaya bisa dipanggil dari HTML
+    window.saveNote = saveNote;
+    window.closeNotesModal = closeNotesModal;
+
+    // Navigasi bulan
+    document.getElementById("prevMonth").addEventListener("click", () => {
+      if (currentMonth === 0) {
+        loadCalendar(currentYear - 1, 11);
+      } else {
+        loadCalendar(currentYear, currentMonth - 1);
+      }
+    });
+
+    document.getElementById("nextMonth").addEventListener("click", () => {
+      if (currentMonth === 11) {
+        loadCalendar(currentYear + 1, 0);
+      } else {
+        loadCalendar(currentYear, currentMonth + 1);
+      }
+    });
+
+    // jalankan pertama kali
+    loadCalendar();
 
 
-        // ===== Catatan Pribadi (Firestore, no-login) =====
-        const pn_colRef = collection(db, "privateNotes");
 
-        const pn_title = document.getElementById("pn-title");
-        const pn_content = document.getElementById("pn-content");
-        const pn_tags = document.getElementById("pn-tags");
-        const pn_pin = document.getElementById("pn-pin");
-        const pn_container = document.getElementById("pn-container");
-        const pn_empty = document.getElementById("pn-empty");
-        const pn_search = document.getElementById("pn-search");
-        const pn_saveBtn = document.getElementById("pn-save-btn");
-        const pn_cancelBtn = document.getElementById("pn-cancel-edit");
-        const pn_exportBtn = document.getElementById("pn-export-btn");
-        const pn_importInput = document.getElementById("pn-import-input");
+    // 🔐 Password yang diset (ganti sesuai kebutuhan)
+    const APP_PASSWORD = "405090";
 
-        let pn_notes = [];
-        let pn_editingId = null;
+    // Elemen modal
+    const passwordModal = document.getElementById("passwordModal");
+    const passwordInput = document.getElementById("passwordInput");
+    const submitPassword = document.getElementById("submitPassword");
+    const passwordError = document.getElementById("passwordError");
 
-        // Load notes (orderBy createdAt saja; pin di-sort di client biar gak butuh index)
-        async function pnLoadNotes() {
-          const q = query(pn_colRef, orderBy("createdAt", "desc"));
-          const snap = await getDocs(q);
-          pn_notes = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    // 🚀 Cek apakah user sudah pernah login
+    if (localStorage.getItem("authenticated") === "true") {
+      passwordModal.classList.remove("active");
+    } else {
+      passwordModal.classList.add("active");
+    }
 
-          // sort pinned dulu
-          pn_notes.sort((a, b) => {
-            const pinDiff = (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
-            if (pinDiff) return pinDiff;
-            const ta = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
-            const tb = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
-            return tb - ta;
-          });
+    // Saat klik tombol masuk
+    submitPassword.addEventListener("click", () => {
+      if (passwordInput.value === APP_PASSWORD) {
+        // ✅ Password benar → tutup modal + simpan status login
+        localStorage.setItem("authenticated", "true");
+        passwordModal.classList.remove("active");
+      } else {
+        // ❌ Password salah → tampilkan error
+        passwordError.style.display = "block";
+        passwordInput.value = "";
+      }
+    });
 
-          pnRenderNotes(pn_notes);
-        }
+    // Enter key juga bisa submit
+    passwordInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") submitPassword.click();
+    });
 
-        // Render
-        function pnRenderNotes(list) {
-          pn_container.innerHTML = "";
-          if (!list.length) {
-            pn_empty.style.display = "block";
-            return;
-          }
-          pn_empty.style.display = "none";
 
-          list.forEach(note => {
-            const card = document.createElement("div");
-            card.style.cssText = `
+    // ===== Catatan Pribadi (Firestore, no-login) =====
+    const pn_colRef = collection(db, "privateNotes");
+
+    const pn_title = document.getElementById("pn-title");
+    const pn_content = document.getElementById("pn-content");
+    const pn_tags = document.getElementById("pn-tags");
+    const pn_pin = document.getElementById("pn-pin");
+    const pn_container = document.getElementById("pn-container");
+    const pn_empty = document.getElementById("pn-empty");
+    const pn_search = document.getElementById("pn-search");
+    const pn_saveBtn = document.getElementById("pn-save-btn");
+    const pn_cancelBtn = document.getElementById("pn-cancel-edit");
+    const pn_exportBtn = document.getElementById("pn-export-btn");
+    const pn_importInput = document.getElementById("pn-import-input");
+
+    let pn_notes = [];
+    let pn_editingId = null;
+
+    // Load notes (orderBy createdAt saja; pin di-sort di client biar gak butuh index)
+    async function pnLoadNotes() {
+      const q = query(pn_colRef, orderBy("createdAt", "desc"));
+      const snap = await getDocs(q);
+      pn_notes = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+      // sort pinned dulu
+      pn_notes.sort((a, b) => {
+        const pinDiff = (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0);
+        if (pinDiff) return pinDiff;
+        const ta = a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
+        const tb = b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
+        return tb - ta;
+      });
+
+      pnRenderNotes(pn_notes);
+    }
+
+    // Render
+    function pnRenderNotes(list) {
+      pn_container.innerHTML = "";
+      if (!list.length) {
+        pn_empty.style.display = "block";
+        return;
+      }
+      pn_empty.style.display = "none";
+
+      list.forEach(note => {
+        const card = document.createElement("div");
+        card.style.cssText = `
       background:#151a21;border:1px solid #2d3748;color:#fff;border-radius:12px;
       padding:12px;display:flex;flex-direction:column;gap:8px;box-shadow:0 4px 10px rgba(0,0,0,.3)
     `;
 
-            card.innerHTML = `
+        card.innerHTML = `
       <div style="display:flex;justify-content:space-between;align-items:center">
         <h3 style="margin:0;font-size:16px;font-weight:700">${note.title || "(Tanpa Judul)"}</h3>
         <span style="font-size:12px;color:${note.pinned ? "#7cf5d2" : "#aaa"}">${note.pinned ? "📌 Pinned" : ""}</span>
@@ -4094,500 +4188,608 @@
         <button data-id="${note.id}" class="pn-delete" style="background:#e11d48;color:#fff;border:none;border-radius:6px;padding:4px 8px;cursor:pointer;font-size:12px">Hapus</button>
       </div>
     `;
-            pn_container.appendChild(card);
+        pn_container.appendChild(card);
+      });
+    }
+
+    // Save / Update
+    pn_saveBtn.addEventListener("click", async () => {
+      const title = pn_title.value.trim();
+      const content = pn_content.value.trim();
+      const tags = pn_tags.value.split(",").map(t => t.trim()).filter(Boolean);
+      const pinned = pn_pin.checked;
+
+      if (!content) {
+        showNotification ? showNotification("Isi catatan tidak boleh kosong!", "error") : alert("Isi kosong");
+        return;
+      }
+
+      try {
+        if (pn_editingId) {
+          await updateDoc(doc(db, "privateNotes", pn_editingId), {
+            title, content, tags, pinned, updatedAt: serverTimestamp()
           });
-        }
-
-        // Save / Update
-        pn_saveBtn.addEventListener("click", async () => {
-          const title = pn_title.value.trim();
-          const content = pn_content.value.trim();
-          const tags = pn_tags.value.split(",").map(t => t.trim()).filter(Boolean);
-          const pinned = pn_pin.checked;
-
-          if (!content) {
-            showNotification ? showNotification("Isi catatan tidak boleh kosong!", "error") : alert("Isi kosong");
-            return;
-          }
-
-          try {
-            if (pn_editingId) {
-              await updateDoc(doc(db, "privateNotes", pn_editingId), {
-                title, content, tags, pinned, updatedAt: serverTimestamp()
-              });
-              pn_editingId = null;
-              pn_cancelBtn.style.display = "none";
-              pn_saveBtn.textContent = "Simpan";
-              showNotification && showNotification("Catatan diperbarui ✔️");
-            } else {
-              await addDoc(pn_colRef, {
-                title, content, tags, pinned, createdAt: serverTimestamp(), updatedAt: serverTimestamp()
-              });
-              showNotification && showNotification("Catatan disimpan ✔️");
-            }
-            pn_title.value = "";
-            pn_content.value = "";
-            pn_tags.value = "";
-            pn_pin.checked = false;
-
-            await pnLoadNotes();
-          } catch (e) {
-            console.error(e);
-            showNotification ? showNotification("Gagal menyimpan catatan", "error") : alert("Gagal menyimpan");
-          }
-        });
-
-        // Cancel edit
-        pn_cancelBtn.addEventListener("click", () => {
           pn_editingId = null;
-          pn_title.value = "";
-          pn_content.value = "";
-          pn_tags.value = "";
-          pn_pin.checked = false;
           pn_cancelBtn.style.display = "none";
           pn_saveBtn.textContent = "Simpan";
-        });
-
-        // Search
-        pn_search.addEventListener("input", (e) => {
-          const q = e.target.value.toLowerCase();
-          const filtered = pn_notes.filter(n =>
-            (n.title || "").toLowerCase().includes(q) ||
-            (n.content || "").toLowerCase().includes(q) ||
-            (n.tags || []).some(t => (t || "").toLowerCase().includes(q))
-          );
-          pnRenderNotes(filtered);
-        });
-
-        // Card actions (edit / pin / delete)
-        pn_container.addEventListener("click", async (e) => {
-          const id = e.target.dataset.id;
-          if (!id) return;
-
-          if (e.target.classList.contains("pn-delete")) {
-            if (confirm("Hapus catatan ini?")) {
-              await deleteDoc(doc(db, "privateNotes", id));
-              showNotification && showNotification("Catatan dihapus 🗑️");
-              await pnLoadNotes();
-            }
-          } else if (e.target.classList.contains("pn-pin")) {
-            const note = pn_notes.find(n => n.id === id);
-            await updateDoc(doc(db, "privateNotes", id), { pinned: !note?.pinned });
-            await pnLoadNotes();
-          } else if (e.target.classList.contains("pn-edit")) {
-            const note = pn_notes.find(n => n.id === id);
-            if (!note) return;
-            pn_editingId = id;
-            pn_title.value = note.title || "";
-            pn_content.value = note.content || "";
-            pn_tags.value = (note.tags || []).join(", ");
-            pn_pin.checked = !!note.pinned;
-            pn_cancelBtn.style.display = "inline-block";
-            pn_saveBtn.textContent = "Update";
-            // pindah ke composer (opsional)
-            window.scrollTo({ top: document.getElementById("pn-page").offsetTop, behavior: "smooth" });
-          }
-        });
-
-        // Export / Import
-        pn_exportBtn.addEventListener("click", () => {
-          const blob = new Blob([JSON.stringify(pn_notes, null, 2)], { type: "application/json" });
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = "catatan-pribadi.json";
-          a.click();
-          URL.revokeObjectURL(url);
-        });
-
-        pn_importInput.addEventListener("change", async (e) => {
-          const file = e.target.files?.[0];
-          if (!file) return;
-          try {
-            const text = await file.text();
-            const data = JSON.parse(text);
-            for (const n of data) {
-              await addDoc(pn_colRef, {
-                title: n.title || "", content: n.content || "", tags: n.tags || [],
-                pinned: !!n.pinned, createdAt: serverTimestamp(), updatedAt: serverTimestamp()
-              });
-            }
-            showNotification && showNotification("Import selesai ✔️");
-            await pnLoadNotes();
-          } catch (err) {
-            console.error(err);
-            showNotification ? showNotification("Gagal import", "error") : alert("Gagal import");
-          } finally {
-            e.target.value = "";
-          }
-        });
-
-        // load awal
-        pnLoadNotes();
-
-        // ================== KONFIGURASI ==================
-        const H56_BASE = "https://h56-translator-api.netlify.app";
-        const COEIROINK_TTS = "https://api.tts.quest/v3/voicevox/synthesis";
-        const TR_LANGS = [
-          { code: "auto", label: "Auto Detect" },
-          { code: "en", label: "English" },
-          { code: "id", label: "Indonesia" },
-          { code: "ja", label: "日本語 (Japanese)" },
-          { code: "ko", label: "한국어 (Korean)" },
-          { code: "fr", label: "Français (French)" },
-          { code: "de", label: "Deutsch (German)" },
-          { code: "es", label: "Español (Spanish)" },
-          { code: "pt", label: "Português (Portuguese)" },
-          { code: "ru", label: "Русский (Russian)" },
-          { code: "ar", label: "العربية (Arabic)" },
-          { code: "zh", label: "中文 (Chinese Simplified)" },
-          { code: "zh-TW", label: "繁體中文 (Chinese Traditional)" },
-          { code: "hi", label: "हिन्दी (Hindi)" },
-          { code: "th", label: "ไทย (Thai)" },
-          { code: "tr", label: "Türkçe (Turkish)" },
-          { code: "vi", label: "Tiếng Việt (Vietnamese)" },
-          { code: "ms", label: "Bahasa Melayu (Malay)" },
-          { code: "fil", label: "Filipino" }
-        ];
-
-        // ================== ELEMENTS ==================
-        const noteInput = document.getElementById("catatanText");
-        const targetSel = document.getElementById("tr-target");
-        const autoChk = document.getElementById("tr-auto");
-        const goBtn = document.getElementById("tr-btn");
-        const outArea = document.getElementById("tr-output");
-        const statusEl = document.getElementById("tr-status");
-        const copyBtn = document.getElementById("tr-copy");
-        const replaceBtn = document.getElementById("tr-replace");
-        const speakBtn = document.getElementById("tr-speak");
-
-        // ================== DROPDOWN BAHASA ==================
-        (function initLangs() {
-          TR_LANGS.forEach(({ code, label }) => {
-            const opt = document.createElement("option");
-            opt.value = code;
-            opt.textContent = `${label} — ${code}`;
-            targetSel.appendChild(opt);
+          showNotification && showNotification("Catatan diperbarui ✔️");
+        } else {
+          await addDoc(pn_colRef, {
+            title, content, tags, pinned, createdAt: serverTimestamp(), updatedAt: serverTimestamp()
           });
-          targetSel.value = "en";
-        })();
-
-        // ================== UTILS ==================
-        function debounce(fn, ms = 500) {
-          let t;
-          return (...args) => {
-            clearTimeout(t);
-            t = setTimeout(() => fn(...args), ms);
-          };
+          showNotification && showNotification("Catatan disimpan ✔️");
         }
+        pn_title.value = "";
+        pn_content.value = "";
+        pn_tags.value = "";
+        pn_pin.checked = false;
 
-        function chunkText(s, size = 4500) {
-          if (!s || s.length <= size) return [s];
-          const chunks = [];
-          for (let i = 0; i < s.length; i += size) chunks.push(s.slice(i, i + size));
-          return chunks;
+        await pnLoadNotes();
+      } catch (e) {
+        console.error(e);
+        showNotification ? showNotification("Gagal menyimpan catatan", "error") : alert("Gagal menyimpan");
+      }
+    });
+
+    // Cancel edit
+    pn_cancelBtn.addEventListener("click", () => {
+      pn_editingId = null;
+      pn_title.value = "";
+      pn_content.value = "";
+      pn_tags.value = "";
+      pn_pin.checked = false;
+      pn_cancelBtn.style.display = "none";
+      pn_saveBtn.textContent = "Simpan";
+    });
+
+    // Search
+    pn_search.addEventListener("input", (e) => {
+      const q = e.target.value.toLowerCase();
+      const filtered = pn_notes.filter(n =>
+        (n.title || "").toLowerCase().includes(q) ||
+        (n.content || "").toLowerCase().includes(q) ||
+        (n.tags || []).some(t => (t || "").toLowerCase().includes(q))
+      );
+      pnRenderNotes(filtered);
+    });
+
+    // Card actions (edit / pin / delete)
+    pn_container.addEventListener("click", async (e) => {
+      const id = e.target.dataset.id;
+      if (!id) return;
+
+      if (e.target.classList.contains("pn-delete")) {
+        if (confirm("Hapus catatan ini?")) {
+          await deleteDoc(doc(db, "privateNotes", id));
+          showNotification && showNotification("Catatan dihapus 🗑️");
+          await pnLoadNotes();
         }
+      } else if (e.target.classList.contains("pn-pin")) {
+        const note = pn_notes.find(n => n.id === id);
+        await updateDoc(doc(db, "privateNotes", id), { pinned: !note?.pinned });
+        await pnLoadNotes();
+      } else if (e.target.classList.contains("pn-edit")) {
+        const note = pn_notes.find(n => n.id === id);
+        if (!note) return;
+        pn_editingId = id;
+        pn_title.value = note.title || "";
+        pn_content.value = note.content || "";
+        pn_tags.value = (note.tags || []).join(", ");
+        pn_pin.checked = !!note.pinned;
+        pn_cancelBtn.style.display = "inline-block";
+        pn_saveBtn.textContent = "Update";
+        // pindah ke composer (opsional)
+        window.scrollTo({ top: document.getElementById("pn-page").offsetTop, behavior: "smooth" });
+      }
+    });
 
-        // ================== TRANSLATE ==================
-        async function h56TranslateOnce(text, targetLang, signal) {
-          const resp = await fetch(`${H56_BASE}/api/translate`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              text,
-              sourceLang: "auto",   // ✅ wajib untuk akurasi maksimal
-              targetLang
-            }),
-            signal
+    // Export / Import
+    pn_exportBtn.addEventListener("click", () => {
+      const blob = new Blob([JSON.stringify(pn_notes, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "catatan-pribadi.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+
+    pn_importInput.addEventListener("change", async (e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      try {
+        const text = await file.text();
+        const data = JSON.parse(text);
+        for (const n of data) {
+          await addDoc(pn_colRef, {
+            title: n.title || "", content: n.content || "", tags: n.tags || [],
+            pinned: !!n.pinned, createdAt: serverTimestamp(), updatedAt: serverTimestamp()
           });
+        }
+        showNotification && showNotification("Import selesai ✔️");
+        await pnLoadNotes();
+      } catch (err) {
+        console.error(err);
+        showNotification ? showNotification("Gagal import", "error") : alert("Gagal import");
+      } finally {
+        e.target.value = "";
+      }
+    });
 
-          if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-          const data = await resp.json();
+    // load awal
+    pnLoadNotes();
 
-          if (data.serviceStatus !== "ok") {
-            throw new Error("Service error");
-          }
+    // ================== KONFIGURASI ==================
+    const H56_BASE = "https://h56-translator-api.netlify.app";
+    const COEIROINK_TTS = "https://api.tts.quest/v3/voicevox/synthesis";
+    const TR_LANGS = [
+      { code: "auto", label: "Auto Detect" },
+      { code: "en", label: "English" },
+      { code: "id", label: "Indonesia" },
+      { code: "ja", label: "日本語 (Japanese)" },
+      { code: "ko", label: "한국어 (Korean)" },
+      { code: "fr", label: "Français (French)" },
+      { code: "de", label: "Deutsch (German)" },
+      { code: "es", label: "Español (Spanish)" },
+      { code: "pt", label: "Português (Portuguese)" },
+      { code: "ru", label: "Русский (Russian)" },
+      { code: "ar", label: "العربية (Arabic)" },
+      { code: "zh", label: "中文 (Chinese Simplified)" },
+      { code: "zh-TW", label: "繁體中文 (Chinese Traditional)" },
+      { code: "hi", label: "हिन्दी (Hindi)" },
+      { code: "th", label: "ไทย (Thai)" },
+      { code: "tr", label: "Türkçe (Turkish)" },
+      { code: "vi", label: "Tiếng Việt (Vietnamese)" },
+      { code: "ms", label: "Bahasa Melayu (Malay)" },
+      { code: "fil", label: "Filipino" }
+    ];
 
-          return {
-            text: data.translatedText || "",
-            source: data.sourceLang || "auto"
-          };
+    // ================== ELEMENTS ==================
+    const noteInput = document.getElementById("catatanText");
+    const targetSel = document.getElementById("tr-target");
+    const autoChk = document.getElementById("tr-auto");
+    const goBtn = document.getElementById("tr-btn");
+    const outArea = document.getElementById("tr-output");
+    const statusEl = document.getElementById("tr-status");
+    const copyBtn = document.getElementById("tr-copy");
+    const replaceBtn = document.getElementById("tr-replace");
+    const speakBtn = document.getElementById("tr-speak");
+
+    // ================== DROPDOWN BAHASA ==================
+    (function initLangs() {
+      TR_LANGS.forEach(({ code, label }) => {
+        const opt = document.createElement("option");
+        opt.value = code;
+        opt.textContent = `${label} — ${code}`;
+        targetSel.appendChild(opt);
+      });
+      targetSel.value = "en";
+    })();
+
+    // ================== UTILS ==================
+    function debounce(fn, ms = 500) {
+      let t;
+      return (...args) => {
+        clearTimeout(t);
+        t = setTimeout(() => fn(...args), ms);
+      };
+    }
+
+    function chunkText(s, size = 4500) {
+      if (!s || s.length <= size) return [s];
+      const chunks = [];
+      for (let i = 0; i < s.length; i += size) chunks.push(s.slice(i, i + size));
+      return chunks;
+    }
+
+    // ================== TRANSLATE ==================
+    async function h56TranslateOnce(text, targetLang, signal) {
+      const resp = await fetch(`${H56_BASE}/api/translate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          text,
+          sourceLang: "auto",   // ✅ wajib untuk akurasi maksimal
+          targetLang
+        }),
+        signal
+      });
+
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      const data = await resp.json();
+
+      if (data.serviceStatus !== "ok") {
+        throw new Error("Service error");
+      }
+
+      return {
+        text: data.translatedText || "",
+        source: data.sourceLang || "auto"
+      };
+    }
+
+    async function translateAll(text, targetLang, signal) {
+      const parts = chunkText(text);
+      const results = [];
+      for (const p of parts) {
+        if (signal?.aborted) throw new Error("abort");
+        const t = p.trim()
+          ? await h56TranslateOnce(p, targetLang, signal)
+          : { text: "" };
+        results.push(t.text);
+      }
+      return results.join("");
+    }
+
+    let lastCtrl = null;
+    async function runTranslate() {
+      const src = (noteInput?.value || "").trim();
+      const lang = targetSel.value;
+
+      if (!src) {
+        outArea.value = "";
+        statusEl.textContent = "⚠️ Teks kosong.";
+        return;
+      }
+
+      if (lastCtrl) lastCtrl.abort();
+      lastCtrl = new AbortController();
+
+      statusEl.textContent = "⏳ Menerjemahkan...";
+      outArea.value = "";
+
+      try {
+        const translated = await translateAll(src, lang, lastCtrl.signal);
+        outArea.value = translated || "(kosong)";
+        statusEl.textContent = "✅ Selesai.";
+      } catch (e) {
+        if (e.name === "AbortError" || e.message === "abort") {
+          statusEl.textContent = "⏹️ Dibatalkan.";
+          return;
+        }
+        console.error(e);
+        statusEl.textContent = "🚨 Gagal menerjemahkan.";
+      }
+    }
+
+    // ================== AUTO TRANSLATE ==================
+    const autoTranslateHandler = debounce(() => {
+      if (autoChk.checked) runTranslate();
+    }, 600);
+
+    if (noteInput) {
+      noteInput.addEventListener("input", autoTranslateHandler);
+    }
+
+    goBtn.addEventListener("click", runTranslate);
+
+    replaceBtn.addEventListener("click", () => {
+      const t = outArea.value.trim();
+      if (!t) return;
+      if (noteInput) noteInput.value = t;
+      statusEl.textContent = "✍️ Catatan diganti dengan hasil terjemahan.";
+    });
+
+    copyBtn.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(outArea.value || "");
+        statusEl.textContent = "📄 Disalin ke clipboard.";
+      } catch {
+        statusEl.textContent = "❌ Gagal menyalin.";
+      }
+    });
+
+    const audioCache = new Map();
+    let currentAudio = null;
+    let isProcessing = false; // Flag untuk mencegah multiple requests
+    const TTS_MAX_CHARS = 200;
+    const voiceSelect = document.getElementById("voice-select");
+
+    speakBtn.addEventListener("click", async () => {
+      // Cegah multiple clicks
+      if (isProcessing) {
+        console.log("Masih memproses permintaan sebelumnya...");
+        return;
+      }
+
+      const text = outArea.value.trim();
+      const selectedVoice = voiceSelect.value;
+
+      if (!text) {
+        statusEl.textContent = "⚠️ Tidak ada teks untuk dibacakan.";
+        return;
+      }
+
+      if (text.length > TTS_MAX_CHARS) {
+        statusEl.textContent = `❌ Teks terlalu panjang (maks ${TTS_MAX_CHARS} karakter).`;
+        return;
+      }
+
+      // Set flag processing
+      isProcessing = true;
+
+      // Cek cache audio per kombinasi suara + teks
+      const cacheKey = `${selectedVoice}-${text}`;
+      if (audioCache.has(cacheKey)) {
+        console.log("Menggunakan audio dari cache...");
+        await playAnimeVoice(audioCache.get(cacheKey));
+        isProcessing = false; // Reset flag setelah selesai
+        return;
+      }
+
+      // Update UI state
+      updateButtonState(true, "Memproses...");
+      statusEl.textContent = "⏳ Menyiapkan suara anime...";
+
+      try {
+        const response = await fetch(
+          `${COEIROINK_TTS}?speaker=${selectedVoice}&text=${encodeURIComponent(text)}`
+        );
+
+        if (!response.ok) {
+          throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`);
         }
 
-        async function translateAll(text, targetLang, signal) {
-          const parts = chunkText(text);
-          const results = [];
-          for (const p of parts) {
-            if (signal?.aborted) throw new Error("abort");
-            const t = p.trim()
-              ? await h56TranslateOnce(p, targetLang, signal)
-              : { text: "" };
-            results.push(t.text);
-          }
-          return results.join("");
+        const result = await response.json();
+
+        if (!result.success || !result.mp3DownloadUrl) {
+          const errorMessage = result.errorReason || "Gagal generate suara dari API.";
+          throw new Error(errorMessage);
         }
 
-        let lastCtrl = null;
-        async function runTranslate() {
-          const src = (noteInput?.value || "").trim();
-          const lang = targetSel.value;
+        const audioUrl = result.mp3DownloadUrl;
+        audioCache.set(cacheKey, audioUrl);
+        await playAnimeVoice(audioUrl);
 
-          if (!src) {
-            outArea.value = "";
-            statusEl.textContent = "⚠️ Teks kosong.";
-            return;
-          }
+      } catch (e) {
+        console.error("TTS Error:", e);
+        statusEl.textContent = `❌ Gagal memutar suara: ${e.message}`;
+        updateButtonState(false, "🎧 Putar Suara Anime");
+      } finally {
+        // Pastikan flag selalu di-reset
+        isProcessing = false;
+      }
+    });
 
-          if (lastCtrl) lastCtrl.abort();
-          lastCtrl = new AbortController();
+    function updateButtonState(disabled, text) {
+      speakBtn.disabled = disabled;
+      speakBtn.textContent = text;
+    }
 
-          statusEl.textContent = "⏳ Menerjemahkan...";
-          outArea.value = "";
-
-          try {
-            const translated = await translateAll(src, lang, lastCtrl.signal);
-            outArea.value = translated || "(kosong)";
-            statusEl.textContent = "✅ Selesai.";
-          } catch (e) {
-            if (e.name === "AbortError" || e.message === "abort") {
-              statusEl.textContent = "⏹️ Dibatalkan.";
-              return;
-            }
-            console.error(e);
-            statusEl.textContent = "🚨 Gagal menerjemahkan.";
-          }
+    function playAnimeVoice(audioUrl) {
+      return new Promise((resolve, reject) => {
+        // Stop audio yang sedang berjalan
+        if (currentAudio) {
+          currentAudio.pause();
+          currentAudio.currentTime = 0;
+          currentAudio = null;
         }
 
-        // ================== AUTO TRANSLATE ==================
-        const autoTranslateHandler = debounce(() => {
-          if (autoChk.checked) runTranslate();
-        }, 600);
+        currentAudio = new Audio(audioUrl);
 
-        if (noteInput) {
-          noteInput.addEventListener("input", autoTranslateHandler);
-        }
+        // Set preload untuk memastikan audio siap
+        currentAudio.preload = "auto";
 
-        goBtn.addEventListener("click", runTranslate);
-
-        replaceBtn.addEventListener("click", () => {
-          const t = outArea.value.trim();
-          if (!t) return;
-          if (noteInput) noteInput.value = t;
-          statusEl.textContent = "✍️ Catatan diganti dengan hasil terjemahan.";
-        });
-
-        copyBtn.addEventListener("click", async () => {
-          try {
-            await navigator.clipboard.writeText(outArea.value || "");
-            statusEl.textContent = "📄 Disalin ke clipboard.";
-          } catch {
-            statusEl.textContent = "❌ Gagal menyalin.";
-          }
-        });
-
-        const audioCache = new Map();
-        let currentAudio = null;
-        const TTS_MAX_CHARS = 200;
-        const voiceSelect = document.getElementById("voice-select");
-
-        speakBtn.addEventListener("click", async () => {
-          const text = outArea.value.trim();
-          const selectedVoice = voiceSelect.value;
-
-          if (!text) {
-            statusEl.textContent = "⚠️ Tidak ada teks untuk dibacakan.";
-            return;
-          }
-
-          if (text.length > TTS_MAX_CHARS) {
-            statusEl.textContent = `❌ Teks terlalu panjang (maks ${TTS_MAX_CHARS} karakter).`;
-            return;
-          }
-
-          // Cek cache audio per kombinasi suara + teks
-          const cacheKey = `${selectedVoice}-${text}`;
-          if (audioCache.has(cacheKey)) {
-            playAnimeVoice(audioCache.get(cacheKey));
-            return;
-          }
-
-          speakBtn.disabled = true;
-          speakBtn.textContent = "Memproses...";
-          statusEl.textContent = "⏳ Menyiapkan suara anime...";
-
-          try {
-            const response = await fetch(
-              `${COEIROINK_TTS}?speaker=${selectedVoice}&text=${encodeURIComponent(text)}`
-            );
-            const result = await response.json();
-
-            if (!result.success || !result.mp3DownloadUrl) {
-              const errorMessage = result.errorReason || "Gagal generate suara dari API.";
-              throw new Error(errorMessage);
-            }
-
-            const audioUrl = result.mp3DownloadUrl;
-            audioCache.set(cacheKey, audioUrl);
-            playAnimeVoice(audioUrl);
-
-          } catch (e) {
-            console.error(e);
-            statusEl.textContent = `❌ Gagal memutar suara: ${e.message}`;
-            speakBtn.disabled = false;
-            speakBtn.textContent = "🎧 Putar Suara Anime";
-          }
-        });
-
-        function playAnimeVoice(audioUrl) {
+        // Event listeners dengan proper cleanup
+        const cleanup = () => {
           if (currentAudio) {
-            currentAudio.pause();
-            currentAudio.currentTime = 0;
+            currentAudio.removeEventListener("canplaythrough", onCanPlayThrough);
+            currentAudio.removeEventListener("loadeddata", onLoadedData);
+            currentAudio.removeEventListener("waiting", onWaiting);
+            currentAudio.removeEventListener("playing", onPlaying);
+            currentAudio.removeEventListener("ended", onEnded);
+            currentAudio.removeEventListener("error", onError);
+            currentAudio.removeEventListener("pause", onPause);
           }
+        };
 
-          currentAudio = new Audio(audioUrl);
-          currentAudio.preload = "auto";
+        const onCanPlayThrough = () => {
+          console.log("Audio ready to play");
+          statusEl.textContent = "🔊 Memutar suara anime...";
 
-          currentAudio.addEventListener("canplay", () => {
-            statusEl.textContent = "🔊 Memutar suara anime...";
-            currentAudio.play();
-          });
+          // Play audio dengan error handling
+          const playPromise = currentAudio.play();
+          if (playPromise !== undefined) {
+            playPromise.catch(error => {
+              console.error("Play failed:", error);
+              statusEl.textContent = "❌ Gagal memutar audio. Coba lagi.";
+              updateButtonState(false, "🎧 Putar Suara Anime");
+              cleanup();
+              reject(error);
+            });
+          }
+        };
 
-          currentAudio.addEventListener("waiting", () => {
-            statusEl.textContent = "⏳ Buffering suara anime...";
-          });
+        const onLoadedData = () => {
+          console.log("Audio data loaded");
+        };
 
-          currentAudio.addEventListener("ended", () => {
-            statusEl.textContent = "✅ Selesai memutar suara.";
-            speakBtn.disabled = false;
-            speakBtn.textContent = "🎧 Putar Suara Anime";
-          });
+        const onWaiting = () => {
+          statusEl.textContent = "⏳ Buffering suara anime...";
+        };
 
-          currentAudio.addEventListener("error", () => {
-            statusEl.textContent = "❌ Gagal memuat atau memutar file audio.";
-            speakBtn.disabled = false;
-            speakBtn.textContent = "🎧 Putar Suara Anime";
-          });
+        const onPlaying = () => {
+          statusEl.textContent = "🔊 Memutar suara anime...";
+          updateButtonState(true, "⏸️ Sedang Memutar");
+        };
+
+        const onEnded = () => {
+          statusEl.textContent = "✅ Selesai memutar suara.";
+          updateButtonState(false, "🎧 Putar Suara Anime");
+          cleanup();
+          resolve();
+        };
+
+        const onError = (e) => {
+          console.error("Audio error:", e);
+          statusEl.textContent = "❌ Gagal memuat atau memutar file audio.";
+          updateButtonState(false, "🎧 Putar Suara Anime");
+          cleanup();
+          reject(new Error("Audio playback failed"));
+        };
+
+        const onPause = () => {
+          if (currentAudio && !currentAudio.ended) {
+            statusEl.textContent = "⏸️ Audio dihentikan.";
+            updateButtonState(false, "🎧 Putar Suara Anime");
+          }
+        };
+
+        // Attach event listeners
+        currentAudio.addEventListener("canplaythrough", onCanPlayThrough, { once: true });
+        currentAudio.addEventListener("loadeddata", onLoadedData, { once: true });
+        currentAudio.addEventListener("waiting", onWaiting);
+        currentAudio.addEventListener("playing", onPlaying, { once: true });
+        currentAudio.addEventListener("ended", onEnded, { once: true });
+        currentAudio.addEventListener("error", onError, { once: true });
+        currentAudio.addEventListener("pause", onPause);
+
+        // Load audio
+        currentAudio.load();
+
+        // Timeout fallback (15 detik)
+        setTimeout(() => {
+          if (currentAudio && currentAudio.readyState < 4) {
+            console.warn("Audio loading timeout");
+            statusEl.textContent = "⏰ Timeout loading audio. Coba lagi.";
+            updateButtonState(false, "🎧 Putar Suara Anime");
+            cleanup();
+            reject(new Error("Audio loading timeout"));
+          }
+        }, 15000);
+      });
+    }
+
+    // Optional: Tambahkan fungsi untuk stop audio manual
+    function stopCurrentAudio() {
+      if (currentAudio && !currentAudio.ended) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+        statusEl.textContent = "⏹️ Audio dihentikan.";
+        updateButtonState(false, "🎧 Putar Suara Anime");
+        isProcessing = false;
+      }
+    }
+
+    // === NIGHTCORE CONVERTER FINAL ===
+
+    // Tampilkan nama file setelah dipilih
+    document.getElementById("audioInput").addEventListener("change", function () {
+      const file = this.files[0];
+      document.getElementById("fileName").textContent = file ? `🎵 ${file.name}` : "";
+    });
+
+    // Proses convert
+    document.getElementById("nightcoreForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const file = document.getElementById("audioInput").files[0];
+      if (!file) return;
+
+      // decode audio
+      const arrayBuffer = await file.arrayBuffer();
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+
+      // Offline context untuk render
+      const offlineCtx = new OfflineAudioContext(
+        audioBuffer.numberOfChannels,
+        Math.ceil(audioBuffer.length / 1.35), // lebih cepat
+        audioBuffer.sampleRate
+      );
+
+      const source = offlineCtx.createBufferSource();
+      source.buffer = audioBuffer;
+
+      // speed + pitch naik (efek nightcore)
+      source.playbackRate.value = 1.35;
+
+      // filter high-shelf untuk suara lebih "anime"
+      const filter = offlineCtx.createBiquadFilter();
+      filter.type = "highshelf";
+      filter.frequency.value = 3000; // boost high freq
+      filter.gain.value = 8;
+
+      source.connect(filter);
+      filter.connect(offlineCtx.destination);
+
+      source.start();
+      const renderedBuffer = await offlineCtx.startRendering();
+
+      // Convert AudioBuffer → WAV
+      function bufferToWave(abuffer, len) {
+        const numOfChan = abuffer.numberOfChannels;
+        const length = len * numOfChan * 2 + 44;
+        const buffer = new ArrayBuffer(length);
+        const view = new DataView(buffer);
+        const channels = [];
+
+        let i, sample;
+        let offset = 0;
+        let pos = 0;
+
+        setUint32(0x46464952); // "RIFF"
+        setUint32(length - 8);
+        setUint32(0x45564157); // "WAVE"
+
+        setUint32(0x20746d66); // "fmt "
+        setUint32(16);
+        setUint16(1);
+        setUint16(numOfChan);
+        setUint32(abuffer.sampleRate);
+        setUint32(abuffer.sampleRate * 2 * numOfChan);
+        setUint16(numOfChan * 2);
+        setUint16(16);
+
+        setUint32(0x61746164); // "data"
+        setUint32(length - pos - 4);
+
+        for (i = 0; i < abuffer.numberOfChannels; i++) {
+          channels.push(abuffer.getChannelData(i));
         }
 
-        // === NIGHTCORE CONVERTER FINAL ===
-
-        // Tampilkan nama file setelah dipilih
-        document.getElementById("audioInput").addEventListener("change", function () {
-          const file = this.files[0];
-          document.getElementById("fileName").textContent = file ? `🎵 ${file.name}` : "";
-        });
-
-        // Proses convert
-        document.getElementById("nightcoreForm").addEventListener("submit", async function (e) {
-          e.preventDefault();
-
-          const file = document.getElementById("audioInput").files[0];
-          if (!file) return;
-
-          // decode audio
-          const arrayBuffer = await file.arrayBuffer();
-          const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-          const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
-
-          // Offline context untuk render
-          const offlineCtx = new OfflineAudioContext(
-            audioBuffer.numberOfChannels,
-            Math.ceil(audioBuffer.length / 1.35), // lebih cepat
-            audioBuffer.sampleRate
-          );
-
-          const source = offlineCtx.createBufferSource();
-          source.buffer = audioBuffer;
-
-          // speed + pitch naik (efek nightcore)
-          source.playbackRate.value = 1.35;
-
-          // filter high-shelf untuk suara lebih "anime"
-          const filter = offlineCtx.createBiquadFilter();
-          filter.type = "highshelf";
-          filter.frequency.value = 3000; // boost high freq
-          filter.gain.value = 8;
-
-          source.connect(filter);
-          filter.connect(offlineCtx.destination);
-
-          source.start();
-          const renderedBuffer = await offlineCtx.startRendering();
-
-          // Convert AudioBuffer → WAV
-          function bufferToWave(abuffer, len) {
-            const numOfChan = abuffer.numberOfChannels;
-            const length = len * numOfChan * 2 + 44;
-            const buffer = new ArrayBuffer(length);
-            const view = new DataView(buffer);
-            const channels = [];
-
-            let i, sample;
-            let offset = 0;
-            let pos = 0;
-
-            setUint32(0x46464952); // "RIFF"
-            setUint32(length - 8);
-            setUint32(0x45564157); // "WAVE"
-
-            setUint32(0x20746d66); // "fmt "
-            setUint32(16);
-            setUint16(1);
-            setUint16(numOfChan);
-            setUint32(abuffer.sampleRate);
-            setUint32(abuffer.sampleRate * 2 * numOfChan);
-            setUint16(numOfChan * 2);
-            setUint16(16);
-
-            setUint32(0x61746164); // "data"
-            setUint32(length - pos - 4);
-
-            for (i = 0; i < abuffer.numberOfChannels; i++) {
-              channels.push(abuffer.getChannelData(i));
-            }
-
-            while (pos < length - 44) {
-              for (i = 0; i < numOfChan; i++) {
-                sample = Math.max(-1, Math.min(1, channels[i][offset]));
-                sample = (sample * 32767) | 0;
-                view.setInt16(pos + 44, sample, true);
-                pos += 2;
-              }
-              offset++;
-            }
-
-            return buffer;
-
-            function setUint16(data) { view.setUint16(pos, data, true); pos += 2; }
-            function setUint32(data) { view.setUint32(pos, data, true); pos += 4; }
+        while (pos < length - 44) {
+          for (i = 0; i < numOfChan; i++) {
+            sample = Math.max(-1, Math.min(1, channels[i][offset]));
+            sample = (sample * 32767) | 0;
+            view.setInt16(pos + 44, sample, true);
+            pos += 2;
           }
-
-          const wavBuffer = bufferToWave(renderedBuffer, renderedBuffer.length);
-          const blob = new Blob([wavBuffer], { type: "audio/wav" });
-          const url = URL.createObjectURL(blob);
-
-          // tampilkan hasil
-          document.getElementById("nightcorePlayer").src = url;
-          document.getElementById("downloadNightcore").href = url;
-          document.getElementById("nightcoreResult").style.display = "block";
-        });
-      </script>
-
-
-      <style>
-        @keyframes pulse {
-
-          0%,
-          100% {
-            transform: scale(1);
-          }
-
-          50% {
-            transform: scale(1.02);
-            box-shadow: 0 20px 50px rgba(78, 205, 196, 0.3);
-          }
+          offset++;
         }
-      </style>
+
+        return buffer;
+
+        function setUint16(data) { view.setUint16(pos, data, true); pos += 2; }
+        function setUint32(data) { view.setUint32(pos, data, true); pos += 4; }
+      }
+
+      const wavBuffer = bufferToWave(renderedBuffer, renderedBuffer.length);
+      const blob = new Blob([wavBuffer], { type: "audio/wav" });
+      const url = URL.createObjectURL(blob);
+
+      // tampilkan hasil
+      document.getElementById("nightcorePlayer").src = url;
+      document.getElementById("downloadNightcore").href = url;
+      document.getElementById("nightcoreResult").style.display = "block";
+    });
+  </script>
+
+
+  <style>
+    @keyframes pulse {
+
+      0%,
+      100% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.02);
+        box-shadow: 0 20px 50px rgba(78, 205, 196, 0.3);
+      }
+    }
+  </style>
 </body>
 
 </html>
