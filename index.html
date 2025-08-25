@@ -154,6 +154,8 @@
       animation: fadeIn 0.5s ease;
     }
 
+    
+
     @keyframes fadeIn {
       from {
         opacity: 0;
@@ -2068,9 +2070,7 @@
     </div>
   </div>
 
-  <div id="pn-page" class="page"
-    style="width: 100%; max-width: 100vw; margin: 0; background: linear-gradient(135deg, #0f1419 0%, #1a1f2e 100%); height: 100vh; display: flex; flex-direction: column; font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif; overflow: hidden;">
-    <!-- Header Modern Style -->
+  <div id="pn-page" class="page">
     <div
       style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); backdrop-filter: blur(20px); padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(148, 163, 184, 0.1); box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
       <div style="display: flex; align-items: center; gap: 16px;">
@@ -2214,7 +2214,7 @@
   </div>
 
   <!-- 🌐 Halaman Translator -->
-  <div id="page-translator" class="page" style="padding:20px; display:flex; justify-content:center;">
+<div id="page-translator" class="page">
     <style>
       /* Scoped style cuma buat translator */
       .translator-card {
@@ -2391,6 +2391,8 @@
         <button id="tr-replace" class="btn-primary">🔄 Ganti Catatan</button>
         <button id="tr-speak" class="btn-anime">🎧 Putar Suara Anime</button>
       </div>
+    </div>
+</div>
 
       <div id="page-nightcore" class="page">
         <h2>🎵 Nightcore Converter</h2>
@@ -2402,6 +2404,7 @@
                   font-weight:bold;max-width:200px;">
             📂 Pilih Lagu
           </label>
+          <span id="fileName" style="margin-left:1rem;color:#333;font-weight:bold;"></span>
           <input type="file" id="audioInput" accept="audio/*" required style="display:none;">
 
           <!-- Tombol convert -->
@@ -2535,9 +2538,9 @@
           document.getElementById('btn-mood-map').addEventListener('click', () => switchPage('page-mood-map'));
           document.getElementById("btn-gallery").addEventListener("click", () => switchPage("page-gallery"));
           document.getElementById('btn-daily-notes').addEventListener('click', () => switchPage('page-daily-notes'));
-          document.getElementById('btn-private-notes').addEventListener('click', () => switchPage('pn-page'));
           document.getElementById('btn-translator').addEventListener('click', () => switchPage('page-translator'));
           document.getElementById('btn-nightcore').addEventListener('click', () => switchPage('page-nightcore'));
+           document.getElementById('btn-private-notes').addEventListener('click', () => switchPage('pn-page'));
 
           // Upload gambar ke Supabase
           if (uploadForm) {
@@ -4466,13 +4469,17 @@
           });
         }
 
-        // === NIGHTCORE CONVERTER ===
+        // === NIGHTCORE CONVERTER FINAL ===
+
+        // Tampilkan nama file setelah dipilih
+        document.getElementById("audioInput").addEventListener("change", function () {
+          const file = this.files[0];
+          document.getElementById("fileName").textContent = file ? `🎵 ${file.name}` : "";
+        });
+
+        // Proses convert
         document.getElementById("nightcoreForm").addEventListener("submit", async function (e) {
           e.preventDefault();
-          document.getElementById("audioInput").addEventListener("change", function () {
-            const file = this.files[0];
-            document.getElementById("fileName").textContent = file ? `🎵 ${file.name}` : "";
-          });
 
           const file = document.getElementById("audioInput").files[0];
           if (!file) return;
@@ -4482,25 +4489,32 @@
           const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
           const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
 
-          // buat OfflineAudioContext untuk render hasil nightcore
+          // Offline context untuk render
           const offlineCtx = new OfflineAudioContext(
             audioBuffer.numberOfChannels,
-            Math.ceil(audioBuffer.length / 1.25), // dipercepat
+            Math.ceil(audioBuffer.length / 1.35), // lebih cepat
             audioBuffer.sampleRate
           );
 
           const source = offlineCtx.createBufferSource();
           source.buffer = audioBuffer;
 
-          // speed up 1.25x = efek nightcore
-          source.playbackRate.value = 1.25;
+          // speed + pitch naik (efek nightcore)
+          source.playbackRate.value = 1.35;
 
-          source.connect(offlineCtx.destination);
+          // filter high-shelf untuk suara lebih "anime"
+          const filter = offlineCtx.createBiquadFilter();
+          filter.type = "highshelf";
+          filter.frequency.value = 3000; // boost high freq
+          filter.gain.value = 8;
+
+          source.connect(filter);
+          filter.connect(offlineCtx.destination);
+
           source.start();
-
           const renderedBuffer = await offlineCtx.startRendering();
 
-          // Convert buffer → WAV blob
+          // Convert AudioBuffer → WAV
           function bufferToWave(abuffer, len) {
             const numOfChan = abuffer.numberOfChannels;
             const length = len * numOfChan * 2 + 44;
@@ -4512,7 +4526,6 @@
             let offset = 0;
             let pos = 0;
 
-            // header WAVE
             setUint32(0x46464952); // "RIFF"
             setUint32(length - 8);
             setUint32(0x45564157); // "WAVE"
@@ -4529,7 +4542,6 @@
             setUint32(0x61746164); // "data"
             setUint32(length - pos - 4);
 
-            // isi data
             for (i = 0; i < abuffer.numberOfChannels; i++) {
               channels.push(abuffer.getChannelData(i));
             }
@@ -4559,8 +4571,8 @@
           document.getElementById("downloadNightcore").href = url;
           document.getElementById("nightcoreResult").style.display = "block";
         });
-
       </script>
+
 
       <style>
         @keyframes pulse {
