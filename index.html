@@ -2522,6 +2522,9 @@
   <!-- Notification -->
   <div id="notification" class="notification"></div>
 
+  <script src="https://cdn.jsdelivr.net/npm/lamejs@1.2.0/lame.min.js"></script>
+
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
     import {
@@ -4775,14 +4778,13 @@
         source.start();
         const renderedBuffer = await offlineCtx.startRendering();
 
-        const wavBuffer = bufferToWave(renderedBuffer, renderedBuffer.length);
-        const blob = new Blob([wavBuffer], { type: "audio/wav" });
-        const url = URL.createObjectURL(blob);
+        const blob = encodeMp3(renderedBuffer);
 
+        const url = URL.createObjectURL(blob);
         const originalName = file.name.split('.')[0];
         const downloadLink = document.getElementById("downloadNightcore");
         downloadLink.href = url;
-        downloadLink.download = `${originalName}_nightcore_smooth.wav`;
+        downloadLink.download = `${originalName}_nightcore.mp3`;
 
         document.getElementById("nightcorePlayer").src = url;
         document.getElementById("nightcoreResult").style.display = "block";
@@ -4809,50 +4811,31 @@
     }
 
     // Convert AudioBuffer → WAV
-    function bufferToWave(abuffer, len) {
-      const numOfChan = abuffer.numberOfChannels;
-      const length = len * numOfChan * 2 + 44;
-      const buffer = new ArrayBuffer(length);
-      const view = new DataView(buffer);
-      const channels = [];
-      let i, sample;
-      let offset = 0;
-      let pos = 0;
+    function encodeMp3(renderedBuffer) {
+      const numChannels = renderedBuffer.numberOfChannels;
+      const sampleRate = renderedBuffer.sampleRate;
+      const mp3encoder = new lamejs.Mp3Encoder(numChannels, sampleRate, 320); // 320 kbps
+      const mp3Data = [];
+      const samplesLeft = renderedBuffer.getChannelData(0);
+      const samplesRight = numChannels > 1 ? renderedBuffer.getChannelData(1) : null;
 
-      setUint32(0x46464952); // "RIFF"
-      setUint32(length - 8);
-      setUint32(0x45564157); // "WAVE"
-      setUint32(0x20746d66); // "fmt "
-      setUint32(16);
-      setUint16(1); // PCM
-      setUint16(numOfChan);
-      setUint32(abuffer.sampleRate);
-      setUint32(abuffer.sampleRate * 2 * numOfChan);
-      setUint16(numOfChan * 2);
-      setUint16(16); // 16-bit
-      setUint32(0x61746164); // "data"
-      setUint32(length - pos - 4);
-
-      for (i = 0; i < abuffer.numberOfChannels; i++) {
-        channels.push(abuffer.getChannelData(i));
-      }
-
-      while (pos < length - 44) {
-        for (i = 0; i < numOfChan; i++) {
-          sample = Math.max(-1, Math.min(1, channels[i][offset]));
-          const dither = (Math.random() - 0.5) / 32768;
-          sample = sample + dither;
-          sample = Math.round(sample * 32767);
-          view.setInt16(pos + 44, sample, true);
-          pos += 2;
+      const blockSize = 1152;
+      for (let i = 0; i < samplesLeft.length; i += blockSize) {
+        const leftChunk = samplesLeft.subarray(i, i + blockSize);
+        let mp3buf;
+        if (samplesRight) {
+          const rightChunk = samplesRight.subarray(i, i + blockSize);
+          mp3buf = mp3encoder.encodeBuffer(leftChunk, rightChunk);
+        } else {
+          mp3buf = mp3encoder.encodeBuffer(leftChunk);
         }
-        offset++;
+        if (mp3buf.length > 0) mp3Data.push(mp3buf);
       }
 
-      return buffer;
+      const end = mp3encoder.flush();
+      if (end.length > 0) mp3Data.push(end);
 
-      function setUint16(data) { view.setUint16(pos, data, true); pos += 2; }
-      function setUint32(data) { view.setUint32(pos, data, true); pos += 4; }
+      return new Blob(mp3Data, { type: "audio/mp3" });
     }
   </script>
 
