@@ -1705,6 +1705,8 @@
     <button id="btn-daily-notes">📅 Kalender Catatan</button>
     <button id="btn-private-notes">📝 Catatan Pribadi</button>
     <button id="btn-translator">🌐 Translator</button>
+    <button id="btn-nightcore">🎵 Nightcore</button>
+
 
   </nav>
 
@@ -2390,6 +2392,33 @@
         <button id="tr-speak" class="btn-anime">🎧 Putar Suara Anime</button>
       </div>
 
+      <div id="page-nightcore" class="page">
+        <h2>🎵 Nightcore Converter</h2>
+        <form id="nightcoreForm" style="display:flex;flex-direction:column;gap:1rem;">
+
+          <!-- Input file -->
+          <label for="audioInput" style="padding:0.6rem 1rem;background:#4ecdc4;color:white;
+                  border-radius:10px;cursor:pointer;text-align:center;
+                  font-weight:bold;max-width:200px;">
+            📂 Pilih Lagu
+          </label>
+          <input type="file" id="audioInput" accept="audio/*" required style="display:none;">
+
+          <!-- Tombol convert -->
+          <button type="submit" class="submit">🚀 Convert to Nightcore</button>
+        </form>
+
+        <!-- Hasil -->
+        <div id="nightcoreResult" style="margin-top:1rem; display:none;">
+          <h3>✅ Hasil Nightcore:</h3>
+          <audio id="nightcorePlayer" controls></audio>
+          <br>
+          <a id="downloadNightcore" download="nightcore.wav" style="display:inline-block;margin-top:0.5rem;padding:0.6rem 1rem;
+              background:#3b82f6;color:white;border-radius:8px;text-decoration:none;">
+            ⬇️ Download
+          </a>
+        </div>
+      </div>
 
 
 
@@ -2508,6 +2537,7 @@
           document.getElementById('btn-daily-notes').addEventListener('click', () => switchPage('page-daily-notes'));
           document.getElementById('btn-private-notes').addEventListener('click', () => switchPage('pn-page'));
           document.getElementById('btn-translator').addEventListener('click', () => switchPage('page-translator'));
+          document.getElementById('btn-nightcore').addEventListener('click', () => switchPage('page-nightcore'));
 
           // Upload gambar ke Supabase
           if (uploadForm) {
@@ -3717,6 +3747,8 @@
           else if (pageId === 'page-gallery') document.getElementById('btn-gallery').classList.add('active');
           else if (pageId === 'page-daily-notes') document.getElementById('btn-daily-notes').classList.add('active');
           else if (pageId === 'pn-page') document.getElementById('btn-private-notes').classList.add('active');
+          else if (pageId === 'page-translator') document.getElementById('btn-translator').classList.add('active');
+          else if (pageId === 'page-nightcore') document.getElementById('btn-nightcore').classList.add('active');
 
 
 
@@ -4433,6 +4465,100 @@
             speakBtn.textContent = "🎧 Putar Suara Anime";
           });
         }
+
+        // === NIGHTCORE CONVERTER ===
+        document.getElementById("nightcoreForm").addEventListener("submit", async function (e) {
+          e.preventDefault();
+          document.getElementById("audioInput").addEventListener("change", function () {
+            const file = this.files[0];
+            document.getElementById("fileName").textContent = file ? `🎵 ${file.name}` : "";
+          });
+
+          const file = document.getElementById("audioInput").files[0];
+          if (!file) return;
+
+          // decode audio
+          const arrayBuffer = await file.arrayBuffer();
+          const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+
+          // buat OfflineAudioContext untuk render hasil nightcore
+          const offlineCtx = new OfflineAudioContext(
+            audioBuffer.numberOfChannels,
+            Math.ceil(audioBuffer.length / 1.25), // dipercepat
+            audioBuffer.sampleRate
+          );
+
+          const source = offlineCtx.createBufferSource();
+          source.buffer = audioBuffer;
+
+          // speed up 1.25x = efek nightcore
+          source.playbackRate.value = 1.25;
+
+          source.connect(offlineCtx.destination);
+          source.start();
+
+          const renderedBuffer = await offlineCtx.startRendering();
+
+          // Convert buffer → WAV blob
+          function bufferToWave(abuffer, len) {
+            const numOfChan = abuffer.numberOfChannels;
+            const length = len * numOfChan * 2 + 44;
+            const buffer = new ArrayBuffer(length);
+            const view = new DataView(buffer);
+            const channels = [];
+
+            let i, sample;
+            let offset = 0;
+            let pos = 0;
+
+            // header WAVE
+            setUint32(0x46464952); // "RIFF"
+            setUint32(length - 8);
+            setUint32(0x45564157); // "WAVE"
+
+            setUint32(0x20746d66); // "fmt "
+            setUint32(16);
+            setUint16(1);
+            setUint16(numOfChan);
+            setUint32(abuffer.sampleRate);
+            setUint32(abuffer.sampleRate * 2 * numOfChan);
+            setUint16(numOfChan * 2);
+            setUint16(16);
+
+            setUint32(0x61746164); // "data"
+            setUint32(length - pos - 4);
+
+            // isi data
+            for (i = 0; i < abuffer.numberOfChannels; i++) {
+              channels.push(abuffer.getChannelData(i));
+            }
+
+            while (pos < length - 44) {
+              for (i = 0; i < numOfChan; i++) {
+                sample = Math.max(-1, Math.min(1, channels[i][offset]));
+                sample = (sample * 32767) | 0;
+                view.setInt16(pos + 44, sample, true);
+                pos += 2;
+              }
+              offset++;
+            }
+
+            return buffer;
+
+            function setUint16(data) { view.setUint16(pos, data, true); pos += 2; }
+            function setUint32(data) { view.setUint32(pos, data, true); pos += 4; }
+          }
+
+          const wavBuffer = bufferToWave(renderedBuffer, renderedBuffer.length);
+          const blob = new Blob([wavBuffer], { type: "audio/wav" });
+          const url = URL.createObjectURL(blob);
+
+          // tampilkan hasil
+          document.getElementById("nightcorePlayer").src = url;
+          document.getElementById("downloadNightcore").href = url;
+          document.getElementById("nightcoreResult").style.display = "block";
+        });
 
       </script>
 
