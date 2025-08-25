@@ -4686,93 +4686,175 @@
       const file = document.getElementById("audioInput").files[0];
       if (!file) return;
 
-      // decode audio
-      const arrayBuffer = await file.arrayBuffer();
-      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+      // Tampilkan loading
+      const submitBtn = document.getElementById("convertBtn");
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = "Converting...";
+      submitBtn.disabled = true;
 
-      // Offline context untuk render
-      const offlineCtx = new OfflineAudioContext(
-        audioBuffer.numberOfChannels,
-        Math.ceil(audioBuffer.length / 1.35), // lebih cepat
-        audioBuffer.sampleRate
-      );
+      try {
+        // decode audio
+        const arrayBuffer = await file.arrayBuffer();
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
 
-      const source = offlineCtx.createBufferSource();
-      source.buffer = audioBuffer;
+        // Speed yang lebih cocok untuk nightcore (tidak terlalu cepat)
+        const speedMultiplier = 1.18; // Turun dari 1.35 ke 1.18
 
-      // speed + pitch naik (efek nightcore)
-      source.playbackRate.value = 1.35;
+        // Offline context untuk render
+        const offlineCtx = new OfflineAudioContext(
+          audioBuffer.numberOfChannels,
+          Math.ceil(audioBuffer.length / speedMultiplier),
+          audioBuffer.sampleRate
+        );
 
-      // filter high-shelf untuk suara lebih "anime"
-      const filter = offlineCtx.createBiquadFilter();
-      filter.type = "highshelf";
-      filter.frequency.value = 3000; // boost high freq
-      filter.gain.value = 8;
+        const source = offlineCtx.createBufferSource();
+        source.buffer = audioBuffer;
 
-      source.connect(filter);
-      filter.connect(offlineCtx.destination);
+        // speed + pitch naik (efek nightcore yang lebih halus)
+        source.playbackRate.value = speedMultiplier;
 
-      source.start();
-      const renderedBuffer = await offlineCtx.startRendering();
+        // Multiple filter untuk suara anime yang lebih natural
 
-      // Convert AudioBuffer → WAV
-      function bufferToWave(abuffer, len) {
-        const numOfChan = abuffer.numberOfChannels;
-        const length = len * numOfChan * 2 + 44;
-        const buffer = new ArrayBuffer(length);
-        const view = new DataView(buffer);
-        const channels = [];
+        // 1. High-pass filter untuk mengurangi bass berlebih
+        const highpass = offlineCtx.createBiquadFilter();
+        highpass.type = "highpass";
+        highpass.frequency.value = 80;
+        highpass.Q.value = 0.7;
 
-        let i, sample;
-        let offset = 0;
-        let pos = 0;
+        // 2. Peaking filter untuk boost mid-high (suara vokal anime)
+        const midBoost = offlineCtx.createBiquadFilter();
+        midBoost.type = "peaking";
+        midBoost.frequency.value = 2800; // Frekuensi vokal wanita
+        midBoost.Q.value = 1.2;
+        midBoost.gain.value = 4; // Boost lebih lembut
 
-        setUint32(0x46464952); // "RIFF"
-        setUint32(length - 8);
-        setUint32(0x45564157); // "WAVE"
+        // 3. High-shelf untuk brightness tapi tidak berlebihan
+        const brightness = offlineCtx.createBiquadFilter();
+        brightness.type = "highshelf";
+        brightness.frequency.value = 4500;
+        brightness.gain.value = 3; // Turun dari 8 ke 3
 
-        setUint32(0x20746d66); // "fmt "
-        setUint32(16);
-        setUint16(1);
-        setUint16(numOfChan);
-        setUint32(abuffer.sampleRate);
-        setUint32(abuffer.sampleRate * 2 * numOfChan);
-        setUint16(numOfChan * 2);
-        setUint16(16);
+        // 4. Compressor untuk kontrol dinamis
+        const compressor = offlineCtx.createDynamicsCompressor();
+        compressor.threshold.value = -24;
+        compressor.knee.value = 30;
+        compressor.ratio.value = 6;
+        compressor.attack.value = 0.003;
+        compressor.release.value = 0.25;
 
-        setUint32(0x61746164); // "data"
-        setUint32(length - pos - 4);
+        // 5. Gentle saturation dengan waveshaper
+        const waveshaper = offlineCtx.createWaveShaper();
+        waveshaper.curve = makeDistortionCurve(15); // Saturation ringan
+        waveshaper.oversample = '4x';
 
-        for (i = 0; i < abuffer.numberOfChannels; i++) {
-          channels.push(abuffer.getChannelData(i));
-        }
+        // Chain semua filter
+        source.connect(highpass);
+        highpass.connect(midBoost);
+        midBoost.connect(brightness);
+        brightness.connect(waveshaper);
+        waveshaper.connect(compressor);
+        compressor.connect(offlineCtx.destination);
 
-        while (pos < length - 44) {
-          for (i = 0; i < numOfChan; i++) {
-            sample = Math.max(-1, Math.min(1, channels[i][offset]));
-            sample = (sample * 32767) | 0;
-            view.setInt16(pos + 44, sample, true);
-            pos += 2;
-          }
-          offset++;
-        }
+        source.start();
+        const renderedBuffer = await offlineCtx.startRendering();
 
-        return buffer;
+        // Convert AudioBuffer → WAV dengan kualitas lebih baik
+        const wavBuffer = bufferToWave(renderedBuffer, renderedBuffer.length);
+        const blob = new Blob([wavBuffer], { type: "audio/wav" });
+        const url = URL.createObjectURL(blob);
 
-        function setUint16(data) { view.setUint16(pos, data, true); pos += 2; }
-        function setUint32(data) { view.setUint32(pos, data, true); pos += 4; }
+        // Set nama file output
+        const originalName = file.name.split('.')[0];
+        const downloadLink = document.getElementById("downloadNightcore");
+        downloadLink.href = url;
+        downloadLink.download = `${originalName}_nightcore.wav`;
+
+        // tampilkan hasil
+        document.getElementById("nightcorePlayer").src = url;
+        document.getElementById("nightcoreResult").style.display = "block";
+
+      } catch (error) {
+        console.error("Error converting audio:", error);
+        alert("Terjadi error saat convert audio. Pastikan file audio valid.");
+      } finally {
+        // Reset button
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+      }
+    });
+
+    // Function untuk membuat kurva distorsi halus (anime-like saturation)
+    function makeDistortionCurve(amount) {
+      const samples = 44100;
+      const curve = new Float32Array(samples);
+      const deg = Math.PI / 180;
+
+      for (let i = 0; i < samples; i++) {
+        const x = (i * 2) / samples - 1;
+        curve[i] = ((3 + amount) * x * 20 * deg) / (Math.PI + amount * Math.abs(x));
       }
 
-      const wavBuffer = bufferToWave(renderedBuffer, renderedBuffer.length);
-      const blob = new Blob([wavBuffer], { type: "audio/wav" });
-      const url = URL.createObjectURL(blob);
+      return curve;
+    }
 
-      // tampilkan hasil
-      document.getElementById("nightcorePlayer").src = url;
-      document.getElementById("downloadNightcore").href = url;
-      document.getElementById("nightcoreResult").style.display = "block";
-    });
+    // Convert AudioBuffer → WAV (improved version)
+    function bufferToWave(abuffer, len) {
+      const numOfChan = abuffer.numberOfChannels;
+      const length = len * numOfChan * 2 + 44;
+      const buffer = new ArrayBuffer(length);
+      const view = new DataView(buffer);
+      const channels = [];
+
+      let i, sample;
+      let offset = 0;
+      let pos = 0;
+
+      // WAV header
+      setUint32(0x46464952); // "RIFF"
+      setUint32(length - 8);
+      setUint32(0x45564157); // "WAVE"
+
+      setUint32(0x20746d66); // "fmt "
+      setUint32(16);
+      setUint16(1); // PCM
+      setUint16(numOfChan);
+      setUint32(abuffer.sampleRate);
+      setUint32(abuffer.sampleRate * 2 * numOfChan);
+      setUint16(numOfChan * 2);
+      setUint16(16); // 16-bit
+
+      setUint32(0x61746164); // "data"
+      setUint32(length - pos - 4);
+
+      // Get channel data
+      for (i = 0; i < abuffer.numberOfChannels; i++) {
+        channels.push(abuffer.getChannelData(i));
+      }
+
+      // Convert float samples to 16-bit PCM
+      while (pos < length - 44) {
+        for (i = 0; i < numOfChan; i++) {
+          // Soft clipping untuk mencegah distorsi digital
+          sample = Math.max(-1, Math.min(1, channels[i][offset]));
+
+          // Dithering sederhana untuk kualitas lebih baik
+          const dither = (Math.random() - 0.5) / 32768;
+          sample = sample + dither;
+
+          // Convert to 16-bit integer
+          sample = Math.round(sample * 32767);
+          view.setInt16(pos + 44, sample, true);
+          pos += 2;
+        }
+        offset++;
+      }
+
+      return buffer;
+
+      function setUint16(data) { view.setUint16(pos, data, true); pos += 2; }
+      function setUint32(data) { view.setUint32(pos, data, true); pos += 4; }
+    }
   </script>
 
 
