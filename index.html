@@ -4675,37 +4675,37 @@
 
     // Tampilkan nama file setelah dipilih
     document.getElementById("audioInput").addEventListener("change", function () {
-      const file = this.files[0];
-      document.getElementById("fileName").textContent = file ? `🎵 ${file.name}` : "";
-    });
+    const file = this.files[0];
+    document.getElementById("fileName").textContent = file ? `🎵 ${file.name}` : "";
+});
 
-    // Proses convert
-    document.getElementById("nightcoreForm").addEventListener("submit", async function (e) {
-      e.preventDefault();
+// Proses convert
+document.getElementById("nightcoreForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
 
-      const file = document.getElementById("audioInput").files[0];
-      if (!file) return;
+    const file = document.getElementById("audioInput").files[0];
+    if (!file) return;
 
-      // Tampilkan loading
-      const submitBtn = document.getElementById("convertBtn");
-      const originalText = submitBtn.textContent;
-      submitBtn.textContent = "Converting...";
-      submitBtn.disabled = true;
+    // Tampilkan loading
+    const submitBtn = document.getElementById("convertBtn");
+    const originalText = submitBtn.textContent;
+    submitBtn.textContent = "Converting...";
+    submitBtn.disabled = true;
 
-      try {
+    try {
         // decode audio
         const arrayBuffer = await file.arrayBuffer();
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
 
         // Speed yang lebih cocok untuk nightcore (tidak terlalu cepat)
-        const speedMultiplier = 1.18; // Turun dari 1.35 ke 1.18
+        const speedMultiplier = 1.18;
 
         // Offline context untuk render
         const offlineCtx = new OfflineAudioContext(
-          audioBuffer.numberOfChannels,
-          Math.ceil(audioBuffer.length / speedMultiplier),
-          audioBuffer.sampleRate
+            audioBuffer.numberOfChannels,
+            Math.ceil(audioBuffer.length / speedMultiplier),
+            audioBuffer.sampleRate
         );
 
         const source = offlineCtx.createBufferSource();
@@ -4714,47 +4714,58 @@
         // speed + pitch naik (efek nightcore yang lebih halus)
         source.playbackRate.value = speedMultiplier;
 
-        // Multiple filter untuk suara anime yang lebih natural
+        // --- RANGKAIAN EFEK YANG TELAH DIPERBAIKI UNTUK SUARA JERNIH ---
 
-        // 1. High-pass filter untuk mengurangi bass berlebih
+        // 1. High-pass filter untuk mengurangi bass berlebih (Tidak diubah)
         const highpass = offlineCtx.createBiquadFilter();
         highpass.type = "highpass";
         highpass.frequency.value = 80;
         highpass.Q.value = 0.7;
 
-        // 2. Peaking filter untuk boost mid-high (suara vokal anime)
+        // 2. Peaking filter untuk boost vokal (dibuat lebih halus)
         const midBoost = offlineCtx.createBiquadFilter();
         midBoost.type = "peaking";
         midBoost.frequency.value = 2800; // Frekuensi vokal wanita
         midBoost.Q.value = 1.2;
-        midBoost.gain.value = 4; // Boost lebih lembut
+        midBoost.gain.value = 3; // DIKURANGI: Dari 4 menjadi 3 agar tidak terlalu tajam
 
-        // 3. High-shelf untuk brightness tapi tidak berlebihan
+        // 3. High-shelf untuk brightness (dibuat lebih natural)
         const brightness = offlineCtx.createBiquadFilter();
         brightness.type = "highshelf";
         brightness.frequency.value = 4500;
-        brightness.gain.value = 3; // Turun dari 8 ke 3
+        brightness.gain.value = 2; // DIKURANGI: Dari 3 menjadi 2 agar tidak serak
 
-        // 4. Compressor untuk kontrol dinamis
-        const compressor = offlineCtx.createDynamicsCompressor();
-        compressor.threshold.value = -24;
-        compressor.knee.value = 30;
-        compressor.ratio.value = 6;
-        compressor.attack.value = 0.003;
-        compressor.release.value = 0.25;
-
-        // 5. Gentle saturation dengan waveshaper
+        // 4. Gentle saturation dengan waveshaper (dibuat lebih subtil)
         const waveshaper = offlineCtx.createWaveShaper();
-        waveshaper.curve = makeDistortionCurve(15); // Saturation ringan
+        waveshaper.curve = makeDistortionCurve(10); // DIKURANGI: Dari 15 menjadi 10 untuk saturasi ringan
         waveshaper.oversample = '4x';
 
-        // Chain semua filter
+        // 5. Compressor untuk kontrol dinamis (dibuat lebih natural)
+        const compressor = offlineCtx.createDynamicsCompressor();
+        compressor.threshold.value = -20;
+        compressor.knee.value = 30;
+        compressor.ratio.value = 4; // DIKURANGI: Dari 6 menjadi 4
+        compressor.attack.value = 0.003;
+        compressor.release.value = 0.25;
+        
+        // 6. [BARU & PENTING] Limiter untuk mencegah suara pecah (clipping)
+        const limiter = offlineCtx.createDynamicsCompressor();
+        limiter.threshold.value = -1.0;  // Batas atas sinyal, mencegah melewati 0dB
+        limiter.knee.value = 0;          // Hard knee, khas untuk limiter
+        limiter.ratio.value = 20.0;      // Rasio sangat tinggi untuk "memukul rata" sinyal
+        limiter.attack.value = 0.001;    // Attack sangat cepat menangkap puncak
+        limiter.release.value = 0.1;     // Release cepat
+
+        // Rangkai (chain) semua filter dengan urutan yang benar
         source.connect(highpass);
         highpass.connect(midBoost);
         midBoost.connect(brightness);
         brightness.connect(waveshaper);
         waveshaper.connect(compressor);
-        compressor.connect(offlineCtx.destination);
+        compressor.connect(limiter); // Compressor kini mengarah ke Limiter
+        limiter.connect(offlineCtx.destination); // Limiter menjadi output terakhir ke tujuan
+
+        // --- AKHIR DARI PERBAIKAN ---
 
         source.start();
         const renderedBuffer = await offlineCtx.startRendering();
@@ -4768,93 +4779,93 @@
         const originalName = file.name.split('.')[0];
         const downloadLink = document.getElementById("downloadNightcore");
         downloadLink.href = url;
-        downloadLink.download = `${originalName}_nightcore.wav`;
+        downloadLink.download = `${originalName}_nightcore_clear.wav`;
 
         // tampilkan hasil
         document.getElementById("nightcorePlayer").src = url;
         document.getElementById("nightcoreResult").style.display = "block";
 
-      } catch (error) {
+    } catch (error) {
         console.error("Error converting audio:", error);
         alert("Terjadi error saat convert audio. Pastikan file audio valid.");
-      } finally {
+    } finally {
         // Reset button
         submitBtn.textContent = originalText;
         submitBtn.disabled = false;
-      }
-    });
+    }
+});
 
-    // Function untuk membuat kurva distorsi halus (anime-like saturation)
-    function makeDistortionCurve(amount) {
-      const samples = 44100;
-      const curve = new Float32Array(samples);
-      const deg = Math.PI / 180;
+// Function untuk membuat kurva distorsi halus (anime-like saturation)
+function makeDistortionCurve(amount) {
+    const samples = 44100;
+    const curve = new Float32Array(samples);
+    const deg = Math.PI / 180;
 
-      for (let i = 0; i < samples; i++) {
+    for (let i = 0; i < samples; i++) {
         const x = (i * 2) / samples - 1;
         curve[i] = ((3 + amount) * x * 20 * deg) / (Math.PI + amount * Math.abs(x));
-      }
-
-      return curve;
     }
 
-    // Convert AudioBuffer → WAV (improved version)
-    function bufferToWave(abuffer, len) {
-      const numOfChan = abuffer.numberOfChannels;
-      const length = len * numOfChan * 2 + 44;
-      const buffer = new ArrayBuffer(length);
-      const view = new DataView(buffer);
-      const channels = [];
+    return curve;
+}
 
-      let i, sample;
-      let offset = 0;
-      let pos = 0;
+// Convert AudioBuffer → WAV (improved version)
+function bufferToWave(abuffer, len) {
+    const numOfChan = abuffer.numberOfChannels;
+    const length = len * numOfChan * 2 + 44;
+    const buffer = new ArrayBuffer(length);
+    const view = new DataView(buffer);
+    const channels = [];
 
-      // WAV header
-      setUint32(0x46464952); // "RIFF"
-      setUint32(length - 8);
-      setUint32(0x45564157); // "WAVE"
+    let i, sample;
+    let offset = 0;
+    let pos = 0;
 
-      setUint32(0x20746d66); // "fmt "
-      setUint32(16);
-      setUint16(1); // PCM
-      setUint16(numOfChan);
-      setUint32(abuffer.sampleRate);
-      setUint32(abuffer.sampleRate * 2 * numOfChan);
-      setUint16(numOfChan * 2);
-      setUint16(16); // 16-bit
+    // WAV header
+    setUint32(0x46464952); // "RIFF"
+    setUint32(length - 8);
+    setUint32(0x45564157); // "WAVE"
 
-      setUint32(0x61746164); // "data"
-      setUint32(length - pos - 4);
+    setUint32(0x20746d66); // "fmt "
+    setUint32(16);
+    setUint16(1); // PCM
+    setUint16(numOfChan);
+    setUint32(abuffer.sampleRate);
+    setUint32(abuffer.sampleRate * 2 * numOfChan);
+    setUint16(numOfChan * 2);
+    setUint16(16); // 16-bit
 
-      // Get channel data
-      for (i = 0; i < abuffer.numberOfChannels; i++) {
+    setUint32(0x61746164); // "data"
+    setUint32(length - pos - 4);
+
+    // Get channel data
+    for (i = 0; i < abuffer.numberOfChannels; i++) {
         channels.push(abuffer.getChannelData(i));
-      }
+    }
 
-      // Convert float samples to 16-bit PCM
-      while (pos < length - 44) {
+    // Convert float samples to 16-bit PCM
+    while (pos < length - 44) {
         for (i = 0; i < numOfChan; i++) {
-          // Soft clipping untuk mencegah distorsi digital
-          sample = Math.max(-1, Math.min(1, channels[i][offset]));
+            // Soft clipping untuk mencegah distorsi digital
+            sample = Math.max(-1, Math.min(1, channels[i][offset]));
 
-          // Dithering sederhana untuk kualitas lebih baik
-          const dither = (Math.random() - 0.5) / 32768;
-          sample = sample + dither;
+            // Dithering sederhana untuk kualitas lebih baik
+            const dither = (Math.random() - 0.5) / 32768;
+            sample = sample + dither;
 
-          // Convert to 16-bit integer
-          sample = Math.round(sample * 32767);
-          view.setInt16(pos + 44, sample, true);
-          pos += 2;
+            // Convert to 16-bit integer
+            sample = Math.round(sample * 32767);
+            view.setInt16(pos + 44, sample, true);
+            pos += 2;
         }
         offset++;
-      }
-
-      return buffer;
-
-      function setUint16(data) { view.setUint16(pos, data, true); pos += 2; }
-      function setUint32(data) { view.setUint32(pos, data, true); pos += 4; }
     }
+
+    return buffer;
+
+    function setUint16(data) { view.setUint16(pos, data, true); pos += 2; }
+    function setUint32(data) { view.setUint32(pos, data, true); pos += 4; }
+}
   </script>
 
 
