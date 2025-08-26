@@ -4678,147 +4678,223 @@
 
     // Tampilkan nama file setelah dipilih
     document.getElementById("audioInput").addEventListener("change", function () {
-      const file = this.files[0];
-      document.getElementById("fileName").textContent = file ? `🎵 ${file.name}` : "";
-    });
+  const file = this.files[0];
+  document.getElementById("fileName").textContent = file ? `🎵 ${file.name}` : "";
+});
 
-    // Proses convert
-    document.getElementById("nightcoreForm").addEventListener("submit", async function (e) {
-      e.preventDefault();
+// Proses convert
+document.getElementById("nightcoreForm").addEventListener("submit", async function (e) {
+  e.preventDefault();
 
-      const file = document.getElementById("audioInput").files[0];
-      if (!file) return;
+  const file = document.getElementById("audioInput").files[0];
+  if (!file) return;
 
-      // Tampilkan loading
-      const submitBtn = document.getElementById("convertBtn");
-      const originalText = submitBtn.textContent;
-      submitBtn.textContent = "Sabar ya...";
-      submitBtn.disabled = true;
+  // Tampilkan loading
+  const submitBtn = document.getElementById("convertBtn");
+  const originalText = submitBtn.textContent;
+  submitBtn.textContent = "Sabar ya...";
+  submitBtn.disabled = true;
 
-      try {
-        // decode audio
-        const arrayBuffer = await file.arrayBuffer();
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+  try {
+    // decode audio
+    const arrayBuffer = await file.arrayBuffer();
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
 
-        const speedMultiplier = 1.18;
+    const speedMultiplier = 1.18;
 
-        // Offline context untuk render
-        const offlineCtx = new OfflineAudioContext(
-          audioBuffer.numberOfChannels,
-          Math.ceil(audioBuffer.length / speedMultiplier),
-          audioBuffer.sampleRate
-        );
+    // Offline context untuk render dengan sample rate lebih tinggi untuk kualitas
+    const offlineCtx = new OfflineAudioContext(
+      audioBuffer.numberOfChannels,
+      Math.ceil(audioBuffer.length / speedMultiplier),
+      Math.max(audioBuffer.sampleRate, 44100) // Minimal 44.1kHz
+    );
 
-        const source = offlineCtx.createBufferSource();
-        source.buffer = audioBuffer;
-        source.playbackRate.value = speedMultiplier;
+    const source = offlineCtx.createBufferSource();
+    source.buffer = audioBuffer;
+    source.playbackRate.value = speedMultiplier;
 
-        // --- RANGKAIAN EFEK YANG DIPERHALUS LAGI ---
+    // --- RANGKAIAN EFEK YANG DIPERHALUS DAN DIPERBAIKI ---
 
-        // 1. High-pass filter (Tidak diubah)
-        const highpass = offlineCtx.createBiquadFilter();
-        highpass.type = "highpass";
-        highpass.frequency.value = 80;
-        highpass.Q.value = 0.7;
+    // 1. Pre-processing: Noise Gate untuk mengurangi background noise
+    const noiseGate = offlineCtx.createDynamicsCompressor();
+    noiseGate.threshold.value = -45; // Potong suara di bawah -45dB
+    noiseGate.knee.value = 0;
+    noiseGate.ratio.value = 20;
+    noiseGate.attack.value = 0.001;
+    noiseGate.release.value = 0.05;
 
-        // 2. Peaking filter untuk vokal (lebih lembut dan lebar)
-        const midBoost = offlineCtx.createBiquadFilter();
-        midBoost.type = "peaking";
-        midBoost.frequency.value = 2500; // Frekuensi sedikit diturunkan agar lebih natural
-        midBoost.Q.value = 1.0;          // Q value diturunkan agar cakupan lebih lebar dan halus
-        midBoost.gain.value = 2;         // DIKURANGI: Dari 3 menjadi 2
+    // 2. High-pass filter yang lebih halus untuk menghilangkan rumble
+    const highpass = offlineCtx.createBiquadFilter();
+    highpass.type = "highpass";
+    highpass.frequency.value = 100; // Naikkan sedikit dari 80Hz
+    highpass.Q.value = 0.5; // Lebih halus
 
-        // 3. High-shelf untuk brightness (boost sangat tipis)
-        const brightness = offlineCtx.createBiquadFilter();
-        brightness.type = "highshelf";
-        brightness.frequency.value = 4500;
-        brightness.gain.value = 1.5;     // DIKURANGI: Dari 2 menjadi 1.5
+    // 3. Low-pass filter untuk anti-aliasing dan mengurangi harsh high frequencies
+    const antiAlias = offlineCtx.createBiquadFilter();
+    antiAlias.type = "lowpass";
+    antiAlias.frequency.value = 16000; // Potong frekuensi di atas 16kHz
+    antiAlias.Q.value = 0.7;
 
-        // 4. Saturasi (dibuat sangat-sangat ringan)
-        const waveshaper = offlineCtx.createWaveShaper();
-        waveshaper.curve = makeDistortionCurve(5); // DIKURANGI: Dari 10 ke 5 untuk kehangatan tipis
-        waveshaper.oversample = '4x';
+    // 4. Peaking filter untuk vokal anime (frequency range yang tepat)
+    const vocalBoost = offlineCtx.createBiquadFilter();
+    vocalBoost.type = "peaking";
+    vocalBoost.frequency.value = 2200; // Sweet spot untuk vokal anime
+    vocalBoost.Q.value = 1.2;
+    vocalBoost.gain.value = 3; // Boost yang cukup untuk kejelasan
 
-        // 5. [BARU] De-Esser untuk mengurangi suara 's' yang tajam dan serak
-        const deEsser = offlineCtx.createBiquadFilter();
-        deEsser.type = "peaking";
-        deEsser.frequency.value = 7500; // Target frekuensi desis 's'
-        deEsser.Q.value = 1.5;
-        deEsser.gain.value = -2.5;      // MEMOTONG frekuensi, bukan menaikkan
+    // 5. Presence boost untuk kejelasan tanpa harsh
+    const presence = offlineCtx.createBiquadFilter();
+    presence.type = "peaking";
+    presence.frequency.value = 3500;
+    presence.Q.value = 0.8; // Q lebih lebar untuk transisi halus
+    presence.gain.value = 2;
 
-        // 6. Compressor (Tidak diubah, sudah bagus)
-        const compressor = offlineCtx.createDynamicsCompressor();
-        compressor.threshold.value = -20;
-        compressor.knee.value = 30;
-        compressor.ratio.value = 4;
-        compressor.attack.value = 0.003;
-        compressor.release.value = 0.25;
+    // 6. Air band untuk sparkle yang lembut
+    const airBand = offlineCtx.createBiquadFilter();
+    airBand.type = "highshelf";
+    airBand.frequency.value = 8000;
+    airBand.gain.value = 1; // Sangat subtle
 
-        // 7. Limiter (Tidak diubah, untuk mencegah pecah)
-        const limiter = offlineCtx.createDynamicsCompressor();
-        limiter.threshold.value = -1.0;
-        limiter.knee.value = 0;
-        limiter.ratio.value = 20.0;
-        limiter.attack.value = 0.001;
-        limiter.release.value = 0.1;
+    // 7. De-esser yang lebih agresif untuk menghilangkan sibilance
+    const deEsser1 = offlineCtx.createBiquadFilter();
+    deEsser1.type = "peaking";
+    deEsser1.frequency.value = 6500; // Target frekuensi sibilant
+    deEsser1.Q.value = 2;
+    deEsser1.gain.value = -4; // Potong lebih dalam
 
-        // Rangkai (chain) semua filter dengan urutan yang baru
-        source.connect(highpass);
-        highpass.connect(midBoost);
-        midBoost.connect(brightness);
-        brightness.connect(waveshaper);
-        waveshaper.connect(deEsser); // -> Output waveshaper masuk ke De-Esser
-        deEsser.connect(compressor); // -> Output De-Esser masuk ke Compressor
-        compressor.connect(limiter);
-        limiter.connect(offlineCtx.destination);
+    const deEsser2 = offlineCtx.createBiquadFilter();
+    deEsser2.type = "peaking";
+    deEsser2.frequency.value = 8500; // Target kedua untuk sibilant
+    deEsser2.Q.value = 1.5;
+    deEsser2.gain.value = -3;
 
-        // --- AKHIR DARI PERBAIKAN ---
+    // 8. Multi-band compressor simulation dengan beberapa compressor
+    // Low frequency compressor
+    const lowCompressor = offlineCtx.createDynamicsCompressor();
+    lowCompressor.threshold.value = -25;
+    lowCompressor.knee.value = 20;
+    lowCompressor.ratio.value = 3;
+    lowCompressor.attack.value = 0.01;
+    lowCompressor.release.value = 0.3;
 
-        source.start();
-        const renderedBuffer = await offlineCtx.startRendering();
+    // 9. Saturasi yang sangat halus untuk warmth
+    const waveshaper = offlineCtx.createWaveShaper();
+    waveshaper.curve = makeAdvancedDistortionCurve(2); // Sangat ringan
+    waveshaper.oversample = '4x';
 
-        const blob = encodeMp3(renderedBuffer);
+    // 10. Main compressor untuk kontrol dinamik
+    const mainCompressor = offlineCtx.createDynamicsCompressor();
+    mainCompressor.threshold.value = -18;
+    mainCompressor.knee.value = 25;
+    mainCompressor.ratio.value = 3.5;
+    mainCompressor.attack.value = 0.005;
+    mainCompressor.release.value = 0.2;
 
-        const url = URL.createObjectURL(blob);
-        const originalName = file.name.split('.')[0];
-        const downloadLink = document.getElementById("downloadNightcore");
-        downloadLink.href = url;
-        downloadLink.download = `${originalName}_nightcore.mp3`;
+    // 11. Final limiter yang lebih gentle
+    const finalLimiter = offlineCtx.createDynamicsCompressor();
+    finalLimiter.threshold.value = -0.5;
+    finalLimiter.knee.value = 0;
+    finalLimiter.ratio.value = 15;
+    finalLimiter.attack.value = 0.0005;
+    finalLimiter.release.value = 0.05;
 
-        document.getElementById("nightcorePlayer").src = url;
-        document.getElementById("nightcoreResult").style.display = "block";
+    // 12. Output gain control
+    const outputGain = offlineCtx.createGain();
+    outputGain.gain.value = 0.95; // Slight reduction untuk headroom
 
-      } catch (error) {
-        console.error("Error converting audio:", error);
-        alert("Terjadi error saat convert audio. Pastikan file audio valid.");
-      } finally {
-        submitBtn.textContent = originalText;
-        submitBtn.disabled = false;
-      }
-    });
+    // Rangkai semua efek dengan urutan yang dioptimalkan
+    source.connect(noiseGate);
+    noiseGate.connect(highpass);
+    highpass.connect(antiAlias);
+    antiAlias.connect(vocalBoost);
+    vocalBoost.connect(presence);
+    presence.connect(airBand);
+    airBand.connect(deEsser1);
+    deEsser1.connect(deEsser2);
+    deEsser2.connect(lowCompressor);
+    lowCompressor.connect(waveshaper);
+    waveshaper.connect(mainCompressor);
+    mainCompressor.connect(finalLimiter);
+    finalLimiter.connect(outputGain);
+    outputGain.connect(offlineCtx.destination);
 
-    // Function untuk membuat kurva distorsi halus
-    function makeDistortionCurve(amount) {
-      const samples = 44100;
-      const curve = new Float32Array(samples);
-      const deg = Math.PI / 180;
-      for (let i = 0; i < samples; i++) {
-        const x = (i * 2) / samples - 1;
-        curve[i] = ((3 + amount) * x * 20 * deg) / (Math.PI + amount * Math.abs(x));
-      }
-      return curve;
+    source.start();
+    const renderedBuffer = await offlineCtx.startRendering();
+
+    // Post-processing: Dither untuk mengurangi quantization noise
+    const ditheredBuffer = applyDither(renderedBuffer);
+
+    const blob = encodeMp3(ditheredBuffer);
+
+    const url = URL.createObjectURL(blob);
+    const originalName = file.name.split('.')[0];
+    const downloadLink = document.getElementById("downloadNightcore");
+    downloadLink.href = url;
+    downloadLink.download = `${originalName}_nightcore.mp3`;
+
+    document.getElementById("nightcorePlayer").src = url;
+    document.getElementById("nightcoreResult").style.display = "block";
+
+  } catch (error) {
+    console.error("Error converting audio:", error);
+    alert("Terjadi error saat convert audio. Pastikan file audio valid.");
+  } finally {
+    submitBtn.textContent = originalText;
+    submitBtn.disabled = false;
+  }
+});
+
+// Function untuk membuat kurva distorsi yang lebih advanced dan halus
+function makeAdvancedDistortionCurve(amount) {
+  const samples = 44100;
+  const curve = new Float32Array(samples);
+  for (let i = 0; i < samples; i++) {
+    const x = (i * 2) / samples - 1;
+    // Soft clipping dengan fungsi tanh untuk warmth yang natural
+    curve[i] = Math.tanh(amount * x) / Math.tanh(amount);
+  }
+  return curve;
+}
+
+// Function untuk menerapkan dither dan mengurangi noise
+function applyDither(audioBuffer) {
+  const numChannels = audioBuffer.numberOfChannels;
+  const length = audioBuffer.length;
+  const sampleRate = audioBuffer.sampleRate;
+  
+  // Create new buffer untuk hasil
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const newBuffer = ctx.createBuffer(numChannels, length, sampleRate);
+  
+  for (let channel = 0; channel < numChannels; channel++) {
+    const inputData = audioBuffer.getChannelData(channel);
+    const outputData = newBuffer.getChannelData(channel);
+    
+    for (let i = 0; i < length; i++) {
+      // Triangular dither untuk mengurangi quantization noise
+      const dither = (Math.random() + Math.random() - 1) * 0.0000152587890625; // 1/65536
+      outputData[i] = inputData[i] + dither;
+      
+      // Soft clipping untuk mencegah overflow
+      outputData[i] = Math.tanh(outputData[i] * 0.98) / Math.tanh(0.98);
     }
+  }
+  
+  return newBuffer;
+}
 
-    // Convert AudioBuffer → WAV
-    function encodeMp3(renderedBuffer) {
+// Enhanced MP3 encoding dengan kualitas tinggi
+function encodeMp3(renderedBuffer) {
   const numChannels = renderedBuffer.numberOfChannels;
   const sampleRate = renderedBuffer.sampleRate;
-  const mp3encoder = new lamejs.Mp3Encoder(numChannels, sampleRate, 320); // 320 kbps
+  
+  // Gunakan bitrate yang lebih tinggi untuk kualitas yang lebih baik
+  const mp3encoder = new lamejs.Mp3Encoder(numChannels, sampleRate, 320);
   const mp3Data = [];
 
-  const samplesLeft = floatTo16BitPCM(renderedBuffer.getChannelData(0));
-  const samplesRight = numChannels > 1 ? floatTo16BitPCM(renderedBuffer.getChannelData(1)) : null;
+  const samplesLeft = floatTo16BitPCMEnhanced(renderedBuffer.getChannelData(0));
+  const samplesRight = numChannels > 1 ? floatTo16BitPCMEnhanced(renderedBuffer.getChannelData(1)) : null;
 
   const blockSize = 1152;
   for (let i = 0; i < samplesLeft.length; i += blockSize) {
@@ -4839,11 +4915,14 @@
   return new Blob(mp3Data, { type: "audio/mp3" });
 }
 
-// Konversi Float32 → Int16
-function floatTo16BitPCM(float32Array) {
+// Enhanced konversi Float32 → Int16 dengan better dynamic range
+function floatTo16BitPCMEnhanced(float32Array) {
   const buffer = new Int16Array(float32Array.length);
   for (let i = 0; i < float32Array.length; i++) {
-    let s = Math.max(-1, Math.min(1, float32Array[i]));
+    // Soft limiting untuk mencegah harsh clipping
+    let s = float32Array[i];
+    s = Math.tanh(s * 0.9) / Math.tanh(0.9); // Soft limit
+    s = Math.max(-0.98, Math.min(0.98, s)); // Hard limit dengan headroom
     buffer[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
   }
   return buffer;
