@@ -4484,17 +4484,17 @@
 
     const audioCache = new Map();
     let currentAudio = null;
-    let isProcessing = false; // Flag untuk mencegah multiple requests
+    let isProcessing = false;
     const TTS_MAX_CHARS = 200;
     const voiceSelect = document.getElementById("voice-select");
+    const MAX_RETRIES = 3;
+    const RETRY_DELAY = 2000; // Increased delay
+    const RATE_LIMIT_DELAY = 1200; // 1.2 detik antara request
+    let lastRequestTime = 0;
+    const requestQueue = [];
+    let isProcessingQueue = false;
 
     speakBtn.addEventListener("click", async () => {
-      // Cegah multiple clicks
-      if (isProcessing) {
-        console.log("Masih memproses permintaan sebelumnya...");
-        return;
-      }
-
       const text = outArea.value.trim();
       const selectedVoice = voiceSelect.value;
 
@@ -4508,73 +4508,253 @@
         return;
       }
 
-      // Set flag processing
-      isProcessing = true;
-
-      // Cek cache audio per kombinasi suara + teks
       const cacheKey = `${selectedVoice}-${text}`;
+
+      // Prioritas cache - langsung mainkan tanpa delay
       if (audioCache.has(cacheKey)) {
-        console.log("Menggunakan audio dari cache...");
-        await playAnimeVoice(audioCache.get(cacheKey));
-        isProcessing = false; // Reset flag setelah selesai
+        if (isProcessing) {
+          statusEl.textContent = "⚠️ Sedang memproses request lain...";
+          return;
+        }
+
+        console.log("Cache hit - langsung mainkan!");
+        isProcessing = true;
+        cleanupCurrentAudio();
+
+        try {
+          await playAnimeVoice(audioCache.get(cacheKey));
+        } catch (error) {
+          console.warn("Cache audio failed, removing from cache:", error);
+          audioCache.delete(cacheKey);
+          // Fallback ke API
+          addToQueue({ text, selectedVoice });
+        }
+        isProcessing = false;
         return;
       }
 
-      // Update UI state
-      updateButtonState(true, "Memproses...");
-      statusEl.textContent = "⏳ Menyiapkan suara anime...";
-
-      try {
-        const response = await fetch(
-          `${COEIROINK_TTS}?speaker=${selectedVoice}&text=${encodeURIComponent(text)}`
-        );
-
-        if (!response.ok) {
-          throw new Error(`HTTP Error: ${response.status} - ${response.statusText}`);
-        }
-
-        const result = await response.json();
-
-        if (!result.success || !result.mp3DownloadUrl) {
-          const errorMessage = result.errorReason || "Gagal generate suara dari API.";
-          throw new Error(errorMessage);
-        }
-
-        const audioUrl = result.mp3DownloadUrl;
-        audioCache.set(cacheKey, audioUrl);
-        await playAnimeVoice(audioUrl);
-
-      } catch (e) {
-        console.error("TTS Error:", e);
-        statusEl.textContent = `❌ Gagal memutar suara: ${e.message}`;
-        updateButtonState(false, "🎧 Putar Suara Anime");
-      } finally {
-        // Pastikan flag selalu di-reset
-        isProcessing = false;
-      }
+      // Jika tidak ada cache, masukkan ke queue
+      addToQueue({ text, selectedVoice });
     });
+
+    function addToQueue(request) {
+      // Cek duplikasi - jangan tambah request yang sama
+      const isDuplicate = requestQueue.some(req =>
+        req.text === request.text && req.selectedVoice === request.selectedVoice
+      );
+
+      if (isDuplicate) {
+        statusEl.textContent = "⚠️ Request yang sama sudah dalam antrian";
+        return;
+      }
+
+      requestQueue.push(request);
+
+      if (!isProcessingQueue) {
+        processQueue();
+      } else {
+        statusEl.textContent = `⏳ Antrian: ${requestQueue.length} permintaan`;
+      }
+    }
+
+    async function processQueue() {
+      if (isProcessingQueue || requestQueue.length === 0) return;
+
+      isProcessingQueue = true;
+      isProcessing = true;
+
+      while (requestQueue.length > 0) {
+        const { text, selectedVoice } = requestQueue.shift();
+
+        try {
+          // Clean up any existing audio first
+          cleanupCurrentAudio();
+
+          const cacheKey = `${selectedVoice}-${text}`;
+          if (audioCache.has(cacheKey)) {
+            console.log("Menggunakan audio dari cache...");
+            try {
+              await playAnimeVoice(audioCache.get(cacheKey));
+            } catch (error) {
+              console.warn("Cache audio failed, removing from cache:", error);
+              audioCache.delete(cacheKey);
+              await processNewTTS(text, selectedVoice, cacheKey);
+            }
+          } else {
+            await processNewTTS(text, selectedVoice, cacheKey);
+          }
+
+          // Wait smartly before next request
+          if (requestQueue.length > 0) {
+            const waitTime = Math.max(500, RATE_LIMIT_DELAY - (Date.now() - lastRequestTime));
+            statusEl.textContent = `⏳ Menunggu ${Math.ceil(waitTime / 1000)}s untuk request berikutnya...`;
+            await sleep(waitTime);
+          }
+
+        } catch (error) {
+          console.error("Queue processing error:", error);
+          statusEl.textContent = `❌ Error: ${error.message}`;
+        }
+      }
+
+      isProcessingQueue = false;
+      isProcessing = false;
+    }
+    async function processNewTTS(text, selectedVoice, cacheKey) {
+      updateButtonState(true, "Memproses...");
+
+      // Enforce rate limiting
+      const now = Date.now();
+      const timeSinceLastRequest = now - lastRequestTime;
+
+      if (timeSinceLastRequest < RATE_LIMIT_DELAY) {
+        const waitTime = RATE_LIMIT_DELAY - timeSinceLastRequest;
+        statusEl.textContent = `⏳ Cooldown ${Math.ceil(waitTime / 1000)}s...`;
+        await sleep(waitTime);
+      }
+
+      statusEl.textContent = "⏳ Menyiapkan suara anime...";
+      lastRequestTime = Date.now();
+
+      let retryCount = 0;
+
+      while (retryCount < MAX_RETRIES) {
+        try {
+          // Add timeout to fetch request
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 15000); // Increased timeout
+
+          const response = await fetch(
+            `${COEIROINK_TTS}?speaker=${selectedVoice}&text=${encodeURIComponent(text)}`,
+            {
+              signal: controller.signal,
+              headers: {
+                'Accept': 'application/json',
+                'User-Agent': 'TTS-Client/1.0',
+              }
+            }
+          );
+
+          clearTimeout(timeoutId);
+
+          if (response.status === 429) {
+            throw new Error(`Rate limit exceeded. Menunggu ${(retryCount + 1) * 5}s...`);
+          }
+
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+
+          const result = await response.json();
+
+          if (!result.success || !result.mp3DownloadUrl) {
+            throw new Error(result.errorReason || "API gagal generate suara");
+          }
+
+          // Validate URL before caching
+          const audioUrl = result.mp3DownloadUrl;
+          if (!isValidUrl(audioUrl)) {
+            throw new Error("URL audio tidak valid dari API");
+          }
+
+          audioCache.set(cacheKey, audioUrl);
+          await playAnimeVoice(audioUrl);
+
+          return;
+
+        } catch (error) {
+          retryCount++;
+          console.error(`TTS attempt ${retryCount} failed:`, error);
+
+          if (error.message.includes('Rate limit') || error.message.includes('429')) {
+            // Shorter delay for rate limits but progressive
+            const rateDelay = Math.min(2000 + (retryCount * 1000), 5000); // Max 5s
+            statusEl.textContent = `⚠️ Rate limit. Menunggu ${rateDelay / 1000}s...`;
+            await sleep(rateDelay);
+            lastRequestTime = Date.now();
+          } else if (retryCount >= MAX_RETRIES) {
+            statusEl.textContent = `❌ Gagal setelah ${MAX_RETRIES} percobaan: ${error.message}`;
+            updateButtonState(false, "🎧 Putar Suara Anime");
+            throw error;
+          } else {
+            statusEl.textContent = `⚠️ Percobaan ${retryCount} gagal, mengulang dalam ${RETRY_DELAY / 1000}s...`;
+            await sleep(RETRY_DELAY * retryCount); // Exponential backoff
+          }
+        }
+      }
+    }
 
     function updateButtonState(disabled, text) {
       speakBtn.disabled = disabled;
       speakBtn.textContent = text;
     }
 
-    function playAnimeVoice(audioUrl) {
-      return new Promise((resolve, reject) => {
-        // Stop audio yang sedang berjalan
-        if (currentAudio) {
+    function cleanupCurrentAudio() {
+      if (currentAudio) {
+        try {
           currentAudio.pause();
           currentAudio.currentTime = 0;
-          currentAudio = null;
+          currentAudio.src = '';
+          currentAudio.load(); // Force cleanup
+        } catch (e) {
+          console.warn("Error cleaning up audio:", e);
+        }
+        currentAudio = null;
+      }
+    }
+
+    function isValidUrl(url) {
+      try {
+        const urlObj = new URL(url);
+        return urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
+      } catch {
+        return false;
+      }
+    }
+
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function playAnimeVoice(audioUrl) {
+      return new Promise((resolve, reject) => {
+        let resolved = false;
+
+        const safeResolve = (value) => {
+          if (!resolved) {
+            resolved = true;
+            resolve(value);
+          }
+        };
+
+        const safeReject = (error) => {
+          if (!resolved) {
+            resolved = true;
+            reject(error);
+          }
+        };
+
+        // Validate URL first
+        if (!isValidUrl(audioUrl)) {
+          safeReject(new Error("URL audio tidak valid"));
+          return;
         }
 
-        currentAudio = new Audio(audioUrl);
+        cleanupCurrentAudio();
+        currentAudio = new Audio();
 
-        // Set preload untuk memastikan audio siap
+        // Set audio properties for better compatibility
+        currentAudio.crossOrigin = "anonymous";
         currentAudio.preload = "auto";
+        currentAudio.volume = 1.0;
 
-        // Event listeners dengan proper cleanup
+        let loadTimeout;
+        let playTimeout;
+
         const cleanup = () => {
+          if (loadTimeout) clearTimeout(loadTimeout);
+          if (playTimeout) clearTimeout(playTimeout);
+
           if (currentAudio) {
             currentAudio.removeEventListener("canplaythrough", onCanPlayThrough);
             currentAudio.removeEventListener("loadeddata", onLoadedData);
@@ -4583,28 +4763,61 @@
             currentAudio.removeEventListener("ended", onEnded);
             currentAudio.removeEventListener("error", onError);
             currentAudio.removeEventListener("pause", onPause);
+            currentAudio.removeEventListener("stalled", onStalled);
+            currentAudio.removeEventListener("suspend", onSuspend);
           }
         };
 
-        const onCanPlayThrough = () => {
+        const onCanPlayThrough = async () => {
           console.log("Audio ready to play");
           statusEl.textContent = "🔊 Memutar suara anime...";
 
-          // Play audio dengan error handling
-          const playPromise = currentAudio.play();
-          if (playPromise !== undefined) {
-            playPromise.catch(error => {
-              console.error("Play failed:", error);
-              statusEl.textContent = "❌ Gagal memutar audio. Coba lagi.";
-              updateButtonState(false, "🎧 Putar Suara Anime");
-              cleanup();
-              reject(error);
-            });
+          try {
+            // Check if audio context is suspended (Chrome autoplay policy)
+            if (typeof AudioContext !== 'undefined') {
+              const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+              if (audioContext.state === 'suspended') {
+                await audioContext.resume();
+              }
+              audioContext.close();
+            }
+
+            const playPromise = currentAudio.play();
+
+            if (playPromise !== undefined) {
+              playTimeout = setTimeout(() => {
+                if (!resolved) {
+                  safeReject(new Error("Play timeout - audio tidak merespon"));
+                }
+              }, 5000);
+
+              await playPromise;
+              if (playTimeout) clearTimeout(playTimeout);
+            }
+          } catch (error) {
+            console.error("Play failed:", error);
+
+            // Handle specific autoplay errors
+            if (error.name === 'NotAllowedError') {
+              statusEl.textContent = "❌ Browser memblokir autoplay. Klik tombol lagi.";
+            } else {
+              statusEl.textContent = `❌ Gagal memutar: ${error.message}`;
+            }
+
+            updateButtonState(false, "🎧 Putar Suara Anime");
+            cleanup();
+            safeReject(error);
           }
         };
 
         const onLoadedData = () => {
-          console.log("Audio data loaded");
+          console.log("Audio data loaded, duration:", currentAudio.duration);
+
+          // Check if duration is valid
+          if (isNaN(currentAudio.duration) || currentAudio.duration === 0) {
+            console.warn("Invalid audio duration detected");
+            statusEl.textContent = "⚠️ File audio mungkin rusak";
+          }
         };
 
         const onWaiting = () => {
@@ -4620,15 +4833,37 @@
           statusEl.textContent = "✅ Selesai memutar suara.";
           updateButtonState(false, "🎧 Putar Suara Anime");
           cleanup();
-          resolve();
+          safeResolve();
         };
 
         const onError = (e) => {
-          console.error("Audio error:", e);
-          statusEl.textContent = "❌ Gagal memuat atau memutar file audio.";
+          const error = currentAudio.error;
+          let errorMessage = "Audio playback failed";
+
+          if (error) {
+            switch (error.code) {
+              case error.MEDIA_ERR_ABORTED:
+                errorMessage = "Playback dibatalkan";
+                break;
+              case error.MEDIA_ERR_NETWORK:
+                errorMessage = "Error jaringan saat memuat audio";
+                break;
+              case error.MEDIA_ERR_DECODE:
+                errorMessage = "File audio rusak atau format tidak didukung";
+                break;
+              case error.MEDIA_ERR_SRC_NOT_SUPPORTED:
+                errorMessage = "Format audio tidak didukung browser";
+                break;
+              default:
+                errorMessage = `Audio error code: ${error.code}`;
+            }
+          }
+
+          console.error("Audio error:", errorMessage, e);
+          statusEl.textContent = `❌ ${errorMessage}`;
           updateButtonState(false, "🎧 Putar Suara Anime");
           cleanup();
-          reject(new Error("Audio playback failed"));
+          safeReject(new Error(errorMessage));
         };
 
         const onPause = () => {
@@ -4636,6 +4871,15 @@
             statusEl.textContent = "⏸️ Audio dihentikan.";
             updateButtonState(false, "🎧 Putar Suara Anime");
           }
+        };
+
+        const onStalled = () => {
+          console.warn("Audio stalled");
+          statusEl.textContent = "⚠️ Audio terhenti, mencoba lagi...";
+        };
+
+        const onSuspend = () => {
+          console.log("Audio loading suspended");
         };
 
         // Attach event listeners
@@ -4646,24 +4890,26 @@
         currentAudio.addEventListener("ended", onEnded, { once: true });
         currentAudio.addEventListener("error", onError, { once: true });
         currentAudio.addEventListener("pause", onPause);
+        currentAudio.addEventListener("stalled", onStalled);
+        currentAudio.addEventListener("suspend", onSuspend);
 
-        // Load audio
+        // Set source and start loading
+        currentAudio.src = audioUrl;
         currentAudio.load();
 
-        // Timeout fallback (15 detik)
-        setTimeout(() => {
-          if (currentAudio && currentAudio.readyState < 4) {
-            console.warn("Audio loading timeout");
-            statusEl.textContent = "⏰ Timeout loading audio. Coba lagi.";
+        // Enhanced timeout with proper cleanup
+        loadTimeout = setTimeout(() => {
+          if (currentAudio && currentAudio.readyState < 3) {
+            console.warn("Audio loading timeout after 20s");
+            statusEl.textContent = "⏰ Timeout memuat audio. Coba lagi.";
             updateButtonState(false, "🎧 Putar Suara Anime");
             cleanup();
-            reject(new Error("Audio loading timeout"));
+            safeReject(new Error("Audio loading timeout"));
           }
-        }, 15000);
+        }, 20000);
       });
     }
 
-    // Optional: Tambahkan fungsi untuk stop audio manual
     function stopCurrentAudio() {
       if (currentAudio && !currentAudio.ended) {
         currentAudio.pause();
@@ -4672,261 +4918,293 @@
         updateButtonState(false, "🎧 Putar Suara Anime");
         isProcessing = false;
       }
+
+      // Clear queue if needed
+      if (requestQueue.length > 0) {
+        requestQueue.length = 0; // Clear queue
+        isProcessingQueue = false;
+        statusEl.textContent = "⏹️ Semua audio dihentikan.";
+      }
     }
+
+    // Add function to get queue status
+    function getQueueStatus() {
+      return {
+        queueLength: requestQueue.length,
+        isProcessing: isProcessingQueue,
+        timeToNextRequest: Math.max(0, RATE_LIMIT_DELAY - (Date.now() - lastRequestTime))
+      };
+    }
+
+    // Add global error handler for uncaught audio errors
+    window.addEventListener('error', (e) => {
+      if (e.message && e.message.includes('audio')) {
+        console.error('Global audio error:', e);
+        statusEl.textContent = "❌ Error sistem audio";
+        updateButtonState(false, "🎧 Putar Suara Anime");
+        isProcessing = false;
+      }
+    });
+
+    // Cleanup on page unload
+    window.addEventListener('beforeunload', () => {
+      cleanupCurrentAudio();
+    });
+
 
     // === NIGHTCORE CONVERTER FINAL ===
 
     // Tampilkan nama file setelah dipilih
     document.getElementById("audioInput").addEventListener("change", function () {
-  const file = this.files[0];
-  document.getElementById("fileName").textContent = file ? `🎵 ${file.name}` : "";
-});
+      const file = this.files[0];
+      document.getElementById("fileName").textContent = file ? `🎵 ${file.name}` : "";
+    });
 
-// Proses convert
-document.getElementById("nightcoreForm").addEventListener("submit", async function (e) {
-  e.preventDefault();
+    // Proses convert
+    document.getElementById("nightcoreForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
 
-  const file = document.getElementById("audioInput").files[0];
-  if (!file) return;
+      const file = document.getElementById("audioInput").files[0];
+      if (!file) return;
 
-  // Tampilkan loading
-  const submitBtn = document.getElementById("convertBtn");
-  const originalText = submitBtn.textContent;
-  submitBtn.textContent = "Sabar ya...";
-  submitBtn.disabled = true;
+      // Tampilkan loading
+      const submitBtn = document.getElementById("convertBtn");
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = "Sabar ya...";
+      submitBtn.disabled = true;
 
-  try {
-    // decode audio
-    const arrayBuffer = await file.arrayBuffer();
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+      try {
+        // decode audio
+        const arrayBuffer = await file.arrayBuffer();
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
 
-    const speedMultiplier = 1.18;
+        const speedMultiplier = 1.18;
 
-    // Offline context untuk render dengan sample rate lebih tinggi untuk kualitas
-    const offlineCtx = new OfflineAudioContext(
-      audioBuffer.numberOfChannels,
-      Math.ceil(audioBuffer.length / speedMultiplier),
-      Math.max(audioBuffer.sampleRate, 44100) // Minimal 44.1kHz
-    );
+        // Offline context untuk render dengan sample rate lebih tinggi untuk kualitas
+        const offlineCtx = new OfflineAudioContext(
+          audioBuffer.numberOfChannels,
+          Math.ceil(audioBuffer.length / speedMultiplier),
+          Math.max(audioBuffer.sampleRate, 44100) // Minimal 44.1kHz
+        );
 
-    const source = offlineCtx.createBufferSource();
-    source.buffer = audioBuffer;
-    source.playbackRate.value = speedMultiplier;
+        const source = offlineCtx.createBufferSource();
+        source.buffer = audioBuffer;
+        source.playbackRate.value = speedMultiplier;
 
-    // --- RANGKAIAN EFEK YANG DIPERHALUS DAN DIPERBAIKI ---
+        // --- RANGKAIAN EFEK YANG DIPERHALUS DAN DIPERBAIKI ---
 
-    // 1. Pre-processing: Noise Gate untuk mengurangi background noise
-    const noiseGate = offlineCtx.createDynamicsCompressor();
-    noiseGate.threshold.value = -45; // Potong suara di bawah -45dB
-    noiseGate.knee.value = 0;
-    noiseGate.ratio.value = 20;
-    noiseGate.attack.value = 0.001;
-    noiseGate.release.value = 0.05;
+        // 1. Pre-processing: Noise Gate untuk mengurangi background noise
+        const noiseGate = offlineCtx.createDynamicsCompressor();
+        noiseGate.threshold.value = -45; // Potong suara di bawah -45dB
+        noiseGate.knee.value = 0;
+        noiseGate.ratio.value = 20;
+        noiseGate.attack.value = 0.001;
+        noiseGate.release.value = 0.05;
 
-    // 2. High-pass filter yang lebih halus untuk menghilangkan rumble
-    const highpass = offlineCtx.createBiquadFilter();
-    highpass.type = "highpass";
-    highpass.frequency.value = 100; // Naikkan sedikit dari 80Hz
-    highpass.Q.value = 0.5; // Lebih halus
+        // 2. High-pass filter yang lebih halus untuk menghilangkan rumble
+        const highpass = offlineCtx.createBiquadFilter();
+        highpass.type = "highpass";
+        highpass.frequency.value = 100; // Naikkan sedikit dari 80Hz
+        highpass.Q.value = 0.5; // Lebih halus
 
-    // 3. Low-pass filter untuk anti-aliasing dan mengurangi harsh high frequencies
-    const antiAlias = offlineCtx.createBiquadFilter();
-    antiAlias.type = "lowpass";
-    antiAlias.frequency.value = 16000; // Potong frekuensi di atas 16kHz
-    antiAlias.Q.value = 0.7;
+        // 3. Low-pass filter untuk anti-aliasing dan mengurangi harsh high frequencies
+        const antiAlias = offlineCtx.createBiquadFilter();
+        antiAlias.type = "lowpass";
+        antiAlias.frequency.value = 16000; // Potong frekuensi di atas 16kHz
+        antiAlias.Q.value = 0.7;
 
-    // 4. Peaking filter untuk vokal anime (frequency range yang tepat)
-    const vocalBoost = offlineCtx.createBiquadFilter();
-    vocalBoost.type = "peaking";
-    vocalBoost.frequency.value = 2200; // Sweet spot untuk vokal anime
-    vocalBoost.Q.value = 1.2;
-    vocalBoost.gain.value = 3; // Boost yang cukup untuk kejelasan
+        // 4. Peaking filter untuk vokal anime (frequency range yang tepat)
+        const vocalBoost = offlineCtx.createBiquadFilter();
+        vocalBoost.type = "peaking";
+        vocalBoost.frequency.value = 2200; // Sweet spot untuk vokal anime
+        vocalBoost.Q.value = 1.2;
+        vocalBoost.gain.value = 3; // Boost yang cukup untuk kejelasan
 
-    // 5. Presence boost untuk kejelasan tanpa harsh
-    const presence = offlineCtx.createBiquadFilter();
-    presence.type = "peaking";
-    presence.frequency.value = 3500;
-    presence.Q.value = 0.8; // Q lebih lebar untuk transisi halus
-    presence.gain.value = 2;
+        // 5. Presence boost untuk kejelasan tanpa harsh
+        const presence = offlineCtx.createBiquadFilter();
+        presence.type = "peaking";
+        presence.frequency.value = 3500;
+        presence.Q.value = 0.8; // Q lebih lebar untuk transisi halus
+        presence.gain.value = 2;
 
-    // 6. Air band untuk sparkle yang lembut
-    const airBand = offlineCtx.createBiquadFilter();
-    airBand.type = "highshelf";
-    airBand.frequency.value = 8000;
-    airBand.gain.value = 1; // Sangat subtle
+        // 6. Air band untuk sparkle yang lembut
+        const airBand = offlineCtx.createBiquadFilter();
+        airBand.type = "highshelf";
+        airBand.frequency.value = 8000;
+        airBand.gain.value = 1; // Sangat subtle
 
-    // 7. De-esser yang lebih agresif untuk menghilangkan sibilance
-    const deEsser1 = offlineCtx.createBiquadFilter();
-    deEsser1.type = "peaking";
-    deEsser1.frequency.value = 6500; // Target frekuensi sibilant
-    deEsser1.Q.value = 2;
-    deEsser1.gain.value = -4; // Potong lebih dalam
+        // 7. De-esser yang lebih agresif untuk menghilangkan sibilance
+        const deEsser1 = offlineCtx.createBiquadFilter();
+        deEsser1.type = "peaking";
+        deEsser1.frequency.value = 6500; // Target frekuensi sibilant
+        deEsser1.Q.value = 2;
+        deEsser1.gain.value = -4; // Potong lebih dalam
 
-    const deEsser2 = offlineCtx.createBiquadFilter();
-    deEsser2.type = "peaking";
-    deEsser2.frequency.value = 8500; // Target kedua untuk sibilant
-    deEsser2.Q.value = 1.5;
-    deEsser2.gain.value = -3;
+        const deEsser2 = offlineCtx.createBiquadFilter();
+        deEsser2.type = "peaking";
+        deEsser2.frequency.value = 8500; // Target kedua untuk sibilant
+        deEsser2.Q.value = 1.5;
+        deEsser2.gain.value = -3;
 
-    // 8. Multi-band compressor simulation dengan beberapa compressor
-    // Low frequency compressor
-    const lowCompressor = offlineCtx.createDynamicsCompressor();
-    lowCompressor.threshold.value = -25;
-    lowCompressor.knee.value = 20;
-    lowCompressor.ratio.value = 3;
-    lowCompressor.attack.value = 0.01;
-    lowCompressor.release.value = 0.3;
+        // 8. Multi-band compressor simulation dengan beberapa compressor
+        // Low frequency compressor
+        const lowCompressor = offlineCtx.createDynamicsCompressor();
+        lowCompressor.threshold.value = -25;
+        lowCompressor.knee.value = 20;
+        lowCompressor.ratio.value = 3;
+        lowCompressor.attack.value = 0.01;
+        lowCompressor.release.value = 0.3;
 
-    // 9. Saturasi yang sangat halus untuk warmth
-    const waveshaper = offlineCtx.createWaveShaper();
-    waveshaper.curve = makeAdvancedDistortionCurve(2); // Sangat ringan
-    waveshaper.oversample = '4x';
+        // 9. Saturasi yang sangat halus untuk warmth
+        const waveshaper = offlineCtx.createWaveShaper();
+        waveshaper.curve = makeAdvancedDistortionCurve(2); // Sangat ringan
+        waveshaper.oversample = '4x';
 
-    // 10. Main compressor untuk kontrol dinamik
-    const mainCompressor = offlineCtx.createDynamicsCompressor();
-    mainCompressor.threshold.value = -18;
-    mainCompressor.knee.value = 25;
-    mainCompressor.ratio.value = 3.5;
-    mainCompressor.attack.value = 0.005;
-    mainCompressor.release.value = 0.2;
+        // 10. Main compressor untuk kontrol dinamik
+        const mainCompressor = offlineCtx.createDynamicsCompressor();
+        mainCompressor.threshold.value = -18;
+        mainCompressor.knee.value = 25;
+        mainCompressor.ratio.value = 3.5;
+        mainCompressor.attack.value = 0.005;
+        mainCompressor.release.value = 0.2;
 
-    // 11. Final limiter yang lebih gentle
-    const finalLimiter = offlineCtx.createDynamicsCompressor();
-    finalLimiter.threshold.value = -0.5;
-    finalLimiter.knee.value = 0;
-    finalLimiter.ratio.value = 15;
-    finalLimiter.attack.value = 0.0005;
-    finalLimiter.release.value = 0.05;
+        // 11. Final limiter yang lebih gentle
+        const finalLimiter = offlineCtx.createDynamicsCompressor();
+        finalLimiter.threshold.value = -0.5;
+        finalLimiter.knee.value = 0;
+        finalLimiter.ratio.value = 15;
+        finalLimiter.attack.value = 0.0005;
+        finalLimiter.release.value = 0.05;
 
-    // 12. Output gain control
-    const outputGain = offlineCtx.createGain();
-    outputGain.gain.value = 0.95; // Slight reduction untuk headroom
+        // 12. Output gain control
+        const outputGain = offlineCtx.createGain();
+        outputGain.gain.value = 0.95; // Slight reduction untuk headroom
 
-    // Rangkai semua efek dengan urutan yang dioptimalkan
-    source.connect(noiseGate);
-    noiseGate.connect(highpass);
-    highpass.connect(antiAlias);
-    antiAlias.connect(vocalBoost);
-    vocalBoost.connect(presence);
-    presence.connect(airBand);
-    airBand.connect(deEsser1);
-    deEsser1.connect(deEsser2);
-    deEsser2.connect(lowCompressor);
-    lowCompressor.connect(waveshaper);
-    waveshaper.connect(mainCompressor);
-    mainCompressor.connect(finalLimiter);
-    finalLimiter.connect(outputGain);
-    outputGain.connect(offlineCtx.destination);
+        // Rangkai semua efek dengan urutan yang dioptimalkan
+        source.connect(noiseGate);
+        noiseGate.connect(highpass);
+        highpass.connect(antiAlias);
+        antiAlias.connect(vocalBoost);
+        vocalBoost.connect(presence);
+        presence.connect(airBand);
+        airBand.connect(deEsser1);
+        deEsser1.connect(deEsser2);
+        deEsser2.connect(lowCompressor);
+        lowCompressor.connect(waveshaper);
+        waveshaper.connect(mainCompressor);
+        mainCompressor.connect(finalLimiter);
+        finalLimiter.connect(outputGain);
+        outputGain.connect(offlineCtx.destination);
 
-    source.start();
-    const renderedBuffer = await offlineCtx.startRendering();
+        source.start();
+        const renderedBuffer = await offlineCtx.startRendering();
 
-    // Post-processing: Dither untuk mengurangi quantization noise
-    const ditheredBuffer = applyDither(renderedBuffer);
+        // Post-processing: Dither untuk mengurangi quantization noise
+        const ditheredBuffer = applyDither(renderedBuffer);
 
-    const blob = encodeMp3(ditheredBuffer);
+        const blob = encodeMp3(ditheredBuffer);
 
-    const url = URL.createObjectURL(blob);
-    const originalName = file.name.split('.')[0];
-    const downloadLink = document.getElementById("downloadNightcore");
-    downloadLink.href = url;
-    downloadLink.download = `${originalName}_nightcore.mp3`;
+        const url = URL.createObjectURL(blob);
+        const originalName = file.name.split('.')[0];
+        const downloadLink = document.getElementById("downloadNightcore");
+        downloadLink.href = url;
+        downloadLink.download = `${originalName}_nightcore.mp3`;
 
-    document.getElementById("nightcorePlayer").src = url;
-    document.getElementById("nightcoreResult").style.display = "block";
+        document.getElementById("nightcorePlayer").src = url;
+        document.getElementById("nightcoreResult").style.display = "block";
 
-  } catch (error) {
-    console.error("Error converting audio:", error);
-    alert("Terjadi error saat convert audio. Pastikan file audio valid.");
-  } finally {
-    submitBtn.textContent = originalText;
-    submitBtn.disabled = false;
-  }
-});
+      } catch (error) {
+        console.error("Error converting audio:", error);
+        alert("Terjadi error saat convert audio. Pastikan file audio valid.");
+      } finally {
+        submitBtn.textContent = originalText;
+        submitBtn.disabled = false;
+      }
+    });
 
-// Function untuk membuat kurva distorsi yang lebih advanced dan halus
-function makeAdvancedDistortionCurve(amount) {
-  const samples = 44100;
-  const curve = new Float32Array(samples);
-  for (let i = 0; i < samples; i++) {
-    const x = (i * 2) / samples - 1;
-    // Soft clipping dengan fungsi tanh untuk warmth yang natural
-    curve[i] = Math.tanh(amount * x) / Math.tanh(amount);
-  }
-  return curve;
-}
-
-// Function untuk menerapkan dither dan mengurangi noise
-function applyDither(audioBuffer) {
-  const numChannels = audioBuffer.numberOfChannels;
-  const length = audioBuffer.length;
-  const sampleRate = audioBuffer.sampleRate;
-  
-  // Create new buffer untuk hasil
-  const ctx = new (window.AudioContext || window.webkitAudioContext)();
-  const newBuffer = ctx.createBuffer(numChannels, length, sampleRate);
-  
-  for (let channel = 0; channel < numChannels; channel++) {
-    const inputData = audioBuffer.getChannelData(channel);
-    const outputData = newBuffer.getChannelData(channel);
-    
-    for (let i = 0; i < length; i++) {
-      // Triangular dither untuk mengurangi quantization noise
-      const dither = (Math.random() + Math.random() - 1) * 0.0000152587890625; // 1/65536
-      outputData[i] = inputData[i] + dither;
-      
-      // Soft clipping untuk mencegah overflow
-      outputData[i] = Math.tanh(outputData[i] * 0.98) / Math.tanh(0.98);
+    // Function untuk membuat kurva distorsi yang lebih advanced dan halus
+    function makeAdvancedDistortionCurve(amount) {
+      const samples = 44100;
+      const curve = new Float32Array(samples);
+      for (let i = 0; i < samples; i++) {
+        const x = (i * 2) / samples - 1;
+        // Soft clipping dengan fungsi tanh untuk warmth yang natural
+        curve[i] = Math.tanh(amount * x) / Math.tanh(amount);
+      }
+      return curve;
     }
-  }
-  
-  return newBuffer;
-}
 
-// Enhanced MP3 encoding dengan kualitas tinggi
-function encodeMp3(renderedBuffer) {
-  const numChannels = renderedBuffer.numberOfChannels;
-  const sampleRate = renderedBuffer.sampleRate;
-  
-  // Gunakan bitrate yang lebih tinggi untuk kualitas yang lebih baik
-  const mp3encoder = new lamejs.Mp3Encoder(numChannels, sampleRate, 320);
-  const mp3Data = [];
+    // Function untuk menerapkan dither dan mengurangi noise
+    function applyDither(audioBuffer) {
+      const numChannels = audioBuffer.numberOfChannels;
+      const length = audioBuffer.length;
+      const sampleRate = audioBuffer.sampleRate;
 
-  const samplesLeft = floatTo16BitPCMEnhanced(renderedBuffer.getChannelData(0));
-  const samplesRight = numChannels > 1 ? floatTo16BitPCMEnhanced(renderedBuffer.getChannelData(1)) : null;
+      // Create new buffer untuk hasil
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const newBuffer = ctx.createBuffer(numChannels, length, sampleRate);
 
-  const blockSize = 1152;
-  for (let i = 0; i < samplesLeft.length; i += blockSize) {
-    const leftChunk = samplesLeft.subarray(i, i + blockSize);
-    let mp3buf;
-    if (samplesRight) {
-      const rightChunk = samplesRight.subarray(i, i + blockSize);
-      mp3buf = mp3encoder.encodeBuffer(leftChunk, rightChunk);
-    } else {
-      mp3buf = mp3encoder.encodeBuffer(leftChunk);
+      for (let channel = 0; channel < numChannels; channel++) {
+        const inputData = audioBuffer.getChannelData(channel);
+        const outputData = newBuffer.getChannelData(channel);
+
+        for (let i = 0; i < length; i++) {
+          // Triangular dither untuk mengurangi quantization noise
+          const dither = (Math.random() + Math.random() - 1) * 0.0000152587890625; // 1/65536
+          outputData[i] = inputData[i] + dither;
+
+          // Soft clipping untuk mencegah overflow
+          outputData[i] = Math.tanh(outputData[i] * 0.98) / Math.tanh(0.98);
+        }
+      }
+
+      return newBuffer;
     }
-    if (mp3buf.length > 0) mp3Data.push(mp3buf);
-  }
 
-  const end = mp3encoder.flush();
-  if (end.length > 0) mp3Data.push(end);
+    // Enhanced MP3 encoding dengan kualitas tinggi
+    function encodeMp3(renderedBuffer) {
+      const numChannels = renderedBuffer.numberOfChannels;
+      const sampleRate = renderedBuffer.sampleRate;
 
-  return new Blob(mp3Data, { type: "audio/mp3" });
-}
+      // Gunakan bitrate yang lebih tinggi untuk kualitas yang lebih baik
+      const mp3encoder = new lamejs.Mp3Encoder(numChannels, sampleRate, 320);
+      const mp3Data = [];
 
-// Enhanced konversi Float32 → Int16 dengan better dynamic range
-function floatTo16BitPCMEnhanced(float32Array) {
-  const buffer = new Int16Array(float32Array.length);
-  for (let i = 0; i < float32Array.length; i++) {
-    // Soft limiting untuk mencegah harsh clipping
-    let s = float32Array[i];
-    s = Math.tanh(s * 0.9) / Math.tanh(0.9); // Soft limit
-    s = Math.max(-0.98, Math.min(0.98, s)); // Hard limit dengan headroom
-    buffer[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
-  }
-  return buffer;
-}
+      const samplesLeft = floatTo16BitPCMEnhanced(renderedBuffer.getChannelData(0));
+      const samplesRight = numChannels > 1 ? floatTo16BitPCMEnhanced(renderedBuffer.getChannelData(1)) : null;
+
+      const blockSize = 1152;
+      for (let i = 0; i < samplesLeft.length; i += blockSize) {
+        const leftChunk = samplesLeft.subarray(i, i + blockSize);
+        let mp3buf;
+        if (samplesRight) {
+          const rightChunk = samplesRight.subarray(i, i + blockSize);
+          mp3buf = mp3encoder.encodeBuffer(leftChunk, rightChunk);
+        } else {
+          mp3buf = mp3encoder.encodeBuffer(leftChunk);
+        }
+        if (mp3buf.length > 0) mp3Data.push(mp3buf);
+      }
+
+      const end = mp3encoder.flush();
+      if (end.length > 0) mp3Data.push(end);
+
+      return new Blob(mp3Data, { type: "audio/mp3" });
+    }
+
+    // Enhanced konversi Float32 → Int16 dengan better dynamic range
+    function floatTo16BitPCMEnhanced(float32Array) {
+      const buffer = new Int16Array(float32Array.length);
+      for (let i = 0; i < float32Array.length; i++) {
+        // Soft limiting untuk mencegah harsh clipping
+        let s = float32Array[i];
+        s = Math.tanh(s * 0.9) / Math.tanh(0.9); // Soft limit
+        s = Math.max(-0.98, Math.min(0.98, s)); // Hard limit dengan headroom
+        buffer[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+      }
+      return buffer;
+    }
 
   </script>
 
